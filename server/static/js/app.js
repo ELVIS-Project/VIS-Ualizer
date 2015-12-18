@@ -21,5 +21,3 @@ d3.json("/graph/", function(error, json) {
     if (error) return console.warn(error);
     drawBarGraph(json);
 });
-
-console.log(graph);
