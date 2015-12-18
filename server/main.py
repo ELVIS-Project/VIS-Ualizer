@@ -7,17 +7,14 @@ app = FlaskAPI(__name__)
 
 @app.route("/graph/")
 def bar_graph():
-    return {
-        "bar1": 10,
-        "bar2": 30,
-        "bar3": 60
-    }
+    return [10, 30, 60, 100, 25, 17]
 
 @app.route("/")
 @set_renderers(HTMLRenderer)
 def hello():
     js_files = [
-        url_for("static", filename="js/d3.js")
+        url_for("static", filename="js/d3.js"),
+        url_for("static", filename="js/app.js")
     ]
     return render_template('index.html', js_files=js_files)
 

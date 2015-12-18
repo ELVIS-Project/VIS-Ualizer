@@ -3,9 +3,6 @@
 <head lang="en">
     <meta charset="UTF-8">
     <title>VIS-Ualizer</title>
-    {% for file in js_files %}
-    <script src="{{ file }}"></script>
-    {% endfor %}
 </head>
 <body>
 <h1>VIS-Ualizer</h1>
@@ -14,5 +11,9 @@
 <div class="bar-graph">
 </div>
 
+
+{% for file in js_files %}
+<script src="{{ file }}"></script>
+{% endfor %}
 </body>
 </html>
