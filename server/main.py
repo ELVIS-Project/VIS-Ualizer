@@ -14,7 +14,7 @@ def bar_graph():
 def hello():
     js_files = [
         url_for("static", filename="js/d3.js"),
-        url_for("static", filename="js/app.js")
+        url_for("static", filename="js/bargraph.js")
     ]
     return render_template('index.html', js_files=js_files)
 
