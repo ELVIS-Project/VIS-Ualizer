@@ -7,7 +7,28 @@ app = FlaskAPI(__name__)
 
 @app.route("/graph/")
 def bar_graph():
-    return [10, 30, 60, 100, 25, 17]
+    return [
+        {
+            "key": "one",
+            "value": 10
+        },
+        {
+            "key": "two",
+            "value": 30
+        },
+        {
+            "key": "three",
+            "value": 60
+        },
+        {
+            "key": "four",
+            "value": 100
+        },
+        {
+            "key": "five",
+            "value": 25
+        }
+    ]
 
 @app.route("/")
 @set_renderers(HTMLRenderer)
