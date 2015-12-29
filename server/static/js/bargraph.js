@@ -9,9 +9,9 @@ var drawBarGraph = function(data) {
     graph.selectAll("div")
         .data(data)
         .enter().append("div")
-        .style("width", function(d) { return d * 10 + "px"; })
-        .style("background", "#ff9900")
-        .text(function(d) { return d; });
+        .style("width", function(d) { return d.value * 10 + "px"; })
+        .style("background", "steelblue")
+        .text(function(d) { return d.key; });
 };
 
 /**
