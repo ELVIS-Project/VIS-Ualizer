@@ -9,23 +9,31 @@ app = FlaskAPI(__name__)
 def bar_graph():
     return [
         {
-            "key": "one",
+            "label": "Label One",
             "value": 10
         },
         {
-            "key": "two",
+            "label": "two",
             "value": 30
         },
         {
-            "key": "three",
+            "label": "three",
             "value": 60
         },
         {
-            "key": "four",
+            "label": "four",
             "value": 100
         },
         {
-            "key": "five",
+            "label": "five",
+            "value": 25
+        },
+        {
+            "label": "six",
+            "value": 100
+        },
+        {
+            "label": "seven",
             "value": 25
         }
     ]
