@@ -1,53 +1,59 @@
 
 
-var margin = {top: 20, right: 30, bottom: 30, left: 40},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+var BarGraph = function(selector) {
+    this.margin = {top: 20, right: 30, bottom: 30, left: 40};
 
-var x = d3.scale.ordinal()
-    .rangeRoundBands([0, width], .1);
+    this.width = 960 - this.margin.left - this.margin.right;
+    this.height = 960 - this.margin.left - this.margin.right;
 
-var y = d3.scale.linear()
-    .range([height, 0]);
+    this.x = d3.scale.ordinal()
+        .rangeRoundBands([0, this.width], .1);
 
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
+    this.y = d3.scale.linear()
+        .range([this.height, 0]);
 
-var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left");
+    this.xAxis = d3.svg.axis()
+        .scale(this.x)
+        .orient("bottom");
 
-var chart = d3.select(".bar-graph")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    this.yAxis = d3.svg.axis()
+        .scale(this.y)
+        .orient("left");
+
+    this.chart = d3.select(selector)
+        .attr("width", this.width + this.margin.left + this.margin.right)
+        .attr("height", this.height + this.margin.top + this.margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
+};
+
 
 /**
  * Load the bar graph data from the server, and render it if successful.
  */
 d3.json("/graph/", function(error, data) {
+    var barGraph = new BarGraph(".bar-graph");
+
     // Map x-axis labels
-    x.domain(data.map(function(d) { return d.label; }));
+    barGraph.x.domain(data.map(function(d) { return d.label; }));
     // Map y-axis values
-    y.domain([0, d3.max(data, function(d) { return d.value; })]);
+    barGraph.y.domain([0, d3.max(data, function(d) { return d.value; })]);
 
-    chart.append("g")
+    barGraph.chart.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis);
+        .attr("transform", "translate(0," + barGraph.height + ")")
+        .call(barGraph.xAxis);
 
-    chart.append("g")
+    barGraph.chart.append("g")
         .attr("class", "y axis")
-        .call(yAxis);
+        .call(barGraph.yAxis);
 
-    chart.selectAll(".bar")
+    barGraph.chart.selectAll(".bar")
         .data(data)
         .enter().append("rect")
         .attr("class", "bar")
-        .attr("x", function(d) { return x(d.label); })
-        .attr("y", function(d) { return y(d.value); })
-        .attr("height", function(d) { return height - y(d.value); })
-        .attr("width", x.rangeBand());
+        .attr("x", function(d) { return barGraph.x(d.label); })
+        .attr("y", function(d) { return barGraph.y(d.value); })
+        .attr("height", function(d) { return barGraph.height - barGraph.y(d.value); })
+        .attr("width", barGraph.x.rangeBand());
 });
