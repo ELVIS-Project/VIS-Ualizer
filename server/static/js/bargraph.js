@@ -1,10 +1,10 @@
 
 
-var BarGraph = function(selector) {
+var BarGraph = function(selector, width, height) {
     this.margin = {top: 20, right: 30, bottom: 30, left: 40};
 
-    this.width = 960 - this.margin.left - this.margin.right;
-    this.height = 960 - this.margin.left - this.margin.right;
+    this.width = width - this.margin.left - this.margin.right;
+    this.height = height - this.margin.left - this.margin.right;
 
     this.x = d3.scale.ordinal()
         .rangeRoundBands([0, this.width], .1);
@@ -32,7 +32,7 @@ var BarGraph = function(selector) {
  * Load the bar graph data from the server, and render it if successful.
  */
 d3.json("/graph/", function(error, data) {
-    var barGraph = new BarGraph(".bar-graph");
+    var barGraph = new BarGraph(".bar-graph", 640, 320);
 
     // Map x-axis labels
     barGraph.x.domain(data.map(function(d) { return d.label; }));
