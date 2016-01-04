@@ -58,7 +58,7 @@ def bar_graph():
         },
         {
             "label": "four",
-            "value": 100
+            "value": 75
         },
         {
             "label": "five",
@@ -66,11 +66,15 @@ def bar_graph():
         },
         {
             "label": "six",
-            "value": 100
+            "value": 95
         },
         {
             "label": "seven",
             "value": 25
+        },
+        {
+            "label": "eight",
+            "value": 50
         }
     ]
 
