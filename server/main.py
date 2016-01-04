@@ -7,6 +7,40 @@ import sys
 app = FlaskAPI(__name__)
 
 
+@app.route("/graph/grouped/")
+def grouped_bar_graph():
+    return [
+        {
+            "group_label": "first group",
+            "group_members":
+                [
+                    {
+                        "label": "Label One",
+                        "value": 10
+                    },
+                    {
+                        "label": "two",
+                        "value": 30
+                    },
+                ]
+        },
+        {
+            "group_label": "second group",
+            "group_members":
+                [
+                    {
+                        "label": "three",
+                        "value": 25
+                    },
+                    {
+                        "label": "four",
+                        "value": 15
+                    },
+                ]
+        },
+    ]
+
+
 @app.route("/graph/")
 def bar_graph():
     return [
