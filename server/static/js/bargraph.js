@@ -36,7 +36,7 @@ d3.json("/graph/", function(error, data) {
 
     var labels = d3.map(data, function(d) { return d.label }).keys();
 
-    var colors = d3.scale.category20().domain(labels);
+    var colours = d3.scale.category20().domain(labels);
 
     // Map x-axis labels
     barGraph.x.domain(data.map(function(d) { return d.label; }));
@@ -58,7 +58,7 @@ d3.json("/graph/", function(error, data) {
         .attr("class", "bar")
         .attr("x", function(d) { return barGraph.x(d.label); })
         .attr("y", function(d) { return barGraph.y(d.value); })
-        .attr("fill", function(d) { console.log(d); return colors(d.label) })
+        .attr("fill", function(d) { return colours(d.label) })
         .attr("height", function(d) { return barGraph.height - barGraph.y(d.value); })
         .attr("width", barGraph.x.rangeBand());
 });
