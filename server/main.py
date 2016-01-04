@@ -15,13 +15,29 @@ def grouped_bar_graph():
             "group_members":
                 [
                     {
-                        "label": "Label One",
+                        "label": "one",
                         "value": 10
                     },
                     {
                         "label": "two",
                         "value": 30
                     },
+                    {
+                        "label": "three",
+                        "value": 25
+                    },
+                    {
+                        "label": "four",
+                        "value": 10
+                    },
+                    {
+                        "label": "five",
+                        "value": 45
+                    },
+                    {
+                        "label": "six",
+                        "value": 25
+                    }
                 ]
         },
         {
@@ -29,13 +45,59 @@ def grouped_bar_graph():
             "group_members":
                 [
                     {
-                        "label": "three",
+                        "label": "one",
                         "value": 25
                     },
                     {
-                        "label": "four",
+                        "label": "two",
                         "value": 15
                     },
+                    {
+                        "label": "three",
+                        "value": 45
+                    },
+                    {
+                        "label": "four",
+                        "value": 35
+                    },
+                    {
+                        "label": "five",
+                        "value": 45
+                    },
+                    {
+                        "label": "six",
+                        "value": 20
+                    }
+                ]
+        },
+        {
+            "group_label": "third group",
+            "group_members":
+                [
+                    {
+                        "label": "one",
+                        "value": 50
+                    },
+                    {
+                        "label": "two",
+                        "value": 30
+                    },
+                    {
+                        "label": "three",
+                        "value": 40
+                    },
+                    {
+                        "label": "four",
+                        "value": 20
+                    },
+                    {
+                        "label": "five",
+                        "value": 45
+                    },
+                    {
+                        "label": "six",
+                        "value": 25
+                    }
                 ]
         },
     ]
@@ -83,8 +145,9 @@ def bar_graph():
 @set_renderers(HTMLRenderer)
 def hello():
     js_files = [
-        url_for("static", filename="js/bargraph.js")
         url_for("static", filename="js/libs/d3.js"),
+        url_for("static", filename="js/bargraph.js"),
+        url_for("static", filename="js/bargraph_grouped.js")
     ]
     return render_template('index.html', js_files=js_files)
 

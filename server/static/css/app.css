@@ -1,3 +1,7 @@
+.bar {
+    shape-rendering: crispEdges;
+}
+
 .axis text {
     font: 10px sans-serif;
 }
