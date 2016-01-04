@@ -2,6 +2,7 @@ from flask import Flask, render_template, url_for
 from flask.ext.api import FlaskAPI
 from flask.ext.api.decorators import set_renderers
 from flask.ext.api.renderers import HTMLRenderer
+import sys
 
 app = FlaskAPI(__name__)
 
@@ -52,4 +53,4 @@ def hello():
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host=sys.argv[1], port=int(sys.argv[2]))
