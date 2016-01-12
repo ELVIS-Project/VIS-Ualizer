@@ -1,21 +1,21 @@
 
-var width = 960,
-    height = 500;
+var ForceDirectedGraph = function(selector, width, height) {
+    this.color = d3.scale.category20();
+    this.force = d3.layout.force()
+        .linkDistance(10)
+        .linkStrength(2)
+        .size([width, height]);
 
-var color = d3.scale.category20();
-
-var force = d3.layout.force()
-    .linkDistance(10)
-    .linkStrength(2)
-    .size([width, height]);
-
-var svg = d3.select(".force-directed-graph")
-    .attr("width", width)
-    .attr("height", height);
+    this.svg = d3.select(selector)
+        .attr("width", width)
+        .attr("height", height);
+};
 
 
 d3.json("/force-directed-graph/", function(error, graph) {
     if (error) throw error;
+
+    var forceDirectedGraph = new ForceDirectedGraph(".force-directed-graph", 960, 500);
 
     var nodes = graph.nodes.slice(),
         links = [],
@@ -30,28 +30,28 @@ d3.json("/force-directed-graph/", function(error, graph) {
         bilinks.push([s, i, t]);
     });
 
-    force
+    forceDirectedGraph.force
         .nodes(nodes)
         .links(links)
         .start();
 
-    var link = svg.selectAll(".link")
+    var link = forceDirectedGraph.svg.selectAll(".link")
         .data(bilinks)
         .enter().append("path")
         .attr("class", "link");
 
-    var node = svg.selectAll(".node")
+    var node = forceDirectedGraph.svg.selectAll(".node")
         .data(graph.nodes)
         .enter().append("circle")
         .attr("class", "node")
         .attr("r", 5)
-        .style("fill", function(d) { return color(d.group); })
-        .call(force.drag);
+        .style("fill", function(d) { return forceDirectedGraph.color(d.group); })
+        .call(forceDirectedGraph.force.drag);
 
     node.append("title")
         .text(function(d) { return d.name; });
 
-    force.on("tick", function() {
+    forceDirectedGraph.force.on("tick", function() {
         link.attr("d", function(d) {
             return "M" + d[0].x + "," + d[0].y
                 + "S" + d[1].x + "," + d[1].y
