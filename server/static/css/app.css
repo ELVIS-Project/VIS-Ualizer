@@ -23,3 +23,17 @@
     fill: none;
     stroke: #bbb;
 }
+
+/* Co-Occurrence Matrix */
+
+.background {
+    fill: #eee;
+}
+
+line {
+    stroke: #fff;
+}
+
+text.active {
+    fill: red;
+}
