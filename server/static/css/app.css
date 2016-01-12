@@ -1,3 +1,8 @@
+/* General SVG properties */
+svg {
+    font: 10px sans-serif;
+}
+
 .bar {
     shape-rendering: crispEdges;
 }
