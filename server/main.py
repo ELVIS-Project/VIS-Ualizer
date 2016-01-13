@@ -3,8 +3,31 @@ from flask.ext.api import FlaskAPI
 from flask.ext.api.decorators import set_renderers
 from flask.ext.api.renderers import HTMLRenderer
 import sys
+import csv
 
 app = FlaskAPI(__name__)
+
+@app.route("/data/ave-maria/", defaults={'voice': None})
+@app.route("/data/ave-maria/<voice>/")
+def data_ave_maria(voice):
+    output = []
+    # Build the string
+    file_path = "../data/non-truncated/Josquin-Des-Prez_De-profundis-clamavi"
+    if voice == "alto":
+        file_path += "_Alto"
+    elif voice == "bass":
+        file_path += "_Bass"
+    elif voice == "soprano":
+        file_path += "_Soprano"
+    elif voice == "tenor":
+        file_path += "_Tenor"
+    file_path += ".csv"
+    # Load the correct file and process it
+    csv_file = open(file_path, "rb")
+    csv_reader = csv.reader(csv_file, delimiter=',', quotechar="|")
+    for row in csv_reader:
+        output.append(row)
+    return output
 
 
 @app.route("/force-directed-graph/")
