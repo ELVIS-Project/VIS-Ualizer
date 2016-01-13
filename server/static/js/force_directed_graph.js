@@ -1,46 +1,71 @@
 
 var ForceDirectedGraph = function(selector, width, height) {
     function chart(data) {
-        var nodes = data.nodes.slice(),
-            links = [],
-            bilinks = [];
+        console.log("test: ", data);
 
-        data.links.forEach(function(link) {
-            var s = nodes[link.source],
-                t = nodes[link.target],
-                i = {}; // intermediate node
-            nodes.push(i);
-            links.push({source: s, target: i}, {source: i, target: t});
-            bilinks.push([s, i, t]);
+        var keys = d3.keys(data);
+
+        var keyNodeMapping = {};
+
+        var nodes = [],
+            links = [];
+
+        keys.forEach(function(key) {
+            var node = {
+                name: key
+            };
+
+            keyNodeMapping[key] = node;
+            nodes.push(node);
         });
 
-        chart.force
+        // Build the links
+        keys.forEach(function(source) {
+            keys.forEach(function(target) {
+                if (data[source][target] > 0) {
+                    links.push({source: keyNodeMapping[source], target: keyNodeMapping[target]});
+                }
+            });
+        });
+
+        console.log("keys:", keys, "nodes:", nodes, "links:", links);
+
+        var force = d3.layout.force()
             .nodes(nodes)
             .links(links)
+            .size([width, height])
+            .linkStrength(0.05)
+            //.friction(0.9)
+            .linkDistance(30)
+            .charge(-30)
+            .gravity(0.1)
+            .theta(0.4)
+            .alpha(0.2)
             .start();
 
         var link = chart.svg.selectAll(".link")
-            .data(bilinks)
-            .enter().append("path")
-            .attr("class", "link");
+            .data(links)
+            .enter()
+            .append("path")
+            .attr("class", "link")
+            .attr("marker-end", "url(#arrow)"); // Add the arrowhead
 
         var node = chart.svg.selectAll(".node")
-            .data(data.nodes)
+            .data(nodes)
             .enter().append("circle")
             .attr("class", "node")
+            .attr("alt", function(d) { return d.name })
             .attr("r", 5)
-            .style("fill", function(d) { return chart.color(d.group); })
-            .call(chart.force.drag);
+            .style("fill", function(d) { return chart.color(d.name); })
+            .call(force.drag);
 
-        node.append("title")
-            .text(function(d) { return d.name; });
-
-        chart.force.on("tick", function() {
+        force.on("tick", function() {
             link.attr("d", function(d) {
-                return "M" + d[0].x + "," + d[0].y
-                    + "S" + d[1].x + "," + d[1].y
-                    + " " + d[2].x + "," + d[2].y;
+                var source = d["source"],
+                    target = d["target"];
+                return "M" + source.x + "," + source.y + "S" + source.x + "," + source.y + " " + target.x + "," + target.y;
             });
+
             node.attr("transform", function(d) {
                 return "translate(" + d.x + "," + d.y + ")";
             });
@@ -48,10 +73,7 @@ var ForceDirectedGraph = function(selector, width, height) {
     }
 
     chart.color = d3.scale.category20();
-    chart.force = d3.layout.force()
-        .linkDistance(10)
-        .linkStrength(2)
-        .size([width, height]);
+
 
     chart.svg = d3.select(selector)
         .attr("width", width)
@@ -61,9 +83,9 @@ var ForceDirectedGraph = function(selector, width, height) {
 };
 
 
-d3.json("/force-directed-graph/", function(error, data) {
+d3.json("/data/ave-maria/", function(error, data) {
     if (error) throw error;
 
-    var forceDirectedGraph = new ForceDirectedGraph(".force-directed-graph", 960, 500);
+    var forceDirectedGraph = new ForceDirectedGraph(".force-directed-graph", 640, 320);
     forceDirectedGraph(data);
 });
