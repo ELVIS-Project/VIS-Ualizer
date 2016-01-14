@@ -1,6 +1,7 @@
 
 var ForceDirectedGraph = function(selector, width, height) {
-    var circleRadius = 5;
+    var circleRadius = 10;
+    var maxLinkDistance = 200;
 
     function chart(data) {
         console.log("test: ", data);
@@ -29,7 +30,7 @@ var ForceDirectedGraph = function(selector, width, height) {
                     var i = {},
                         source = keyNodeMapping[sourceKey],
                         target = keyNodeMapping[targetKey];
- 
+
                     links.push({source: source, target: target, value: value});
                 }
             });
@@ -50,9 +51,14 @@ var ForceDirectedGraph = function(selector, width, height) {
             .nodes(nodes)
             .links(links)
             .size([width, height])
-            .linkStrength(0.05)
+            .linkStrength(function(link) {
+                return link.relativeValue;
+            })
             //.friction(0.9)
-            .linkDistance(100)
+            .linkDistance(function(link) {
+                // Stronger links are closer
+                return maxLinkDistance - (link.relativeValue * 0.5 * maxLinkDistance);
+            })
             .charge(-30)
             .gravity(0.01)
             .theta(0.4)
@@ -64,16 +70,32 @@ var ForceDirectedGraph = function(selector, width, height) {
             .enter()
             .append("path")
             .attr("class", "link")
-            .attr("stroke", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" });
+            .attr("stroke", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
+            .attr("stroke-width", function(link) { return 0.75 + (0.25 * link.relativeValue); });
 
         var node = chart.svg.selectAll(".node")
             .data(nodes)
-            .enter().append("circle")
+            .enter()
+            .append("g");
+
+
+        var circles = node
+            .append("circle")
             .attr("class", "node")
             .attr("alt", function(d) { return d.name })
             .attr("r", circleRadius)
-            .style("fill", function(d) { return chart.color(d.name); })
-            .call(force.drag);
+            .style("stroke", function(node) { return d3.rgb(chart.color(node.name)).darker(); })
+            .style("fill", function(d) { return chart.color(d.name); });
+
+        var text = node
+            .append("text")
+            .attr("fill", function(node) { return d3.rgb(chart.color(node.name)).darker(); })
+            .attr("transform", "translate(0, " + 2 * circleRadius + ")")
+            .text(function(node) { return node.name });
+
+
+        // Invoke force
+        node.call(force.drag);
 
         var pythag = Math.sqrt(3) / 2;
         force.on("tick", function() {
@@ -84,7 +106,7 @@ var ForceDirectedGraph = function(selector, width, height) {
                 if (source == target) {
                     // It's a self-link.  So, we make a little loop.
                     var r = 5;
-                    return 'M '+source.x + circleRadius +' '+source.y + circleRadius +' m 0, 0 a '+r+','+r+' 0 1,0 '+(r*2)+',0 a '+r+','+r+' 0 1,0 -'+(r*2)+',0';
+                    return 'M '+source.x +' '+source.y + 2*circleRadius +' m ' + circleRadius + ', 0 a '+r+','+r+' 0 1,0 '+(r*2)+',0 a '+r+','+r+' 0 1,0 -'+(r*2)+',0';
                 } else {
                     var distanceX = (target.x - source.x) / 2,
                         distanceY = (target.y - source.y) / 2,
@@ -115,6 +137,6 @@ var ForceDirectedGraph = function(selector, width, height) {
 d3.json("/data/ave-maria/", function(error, data) {
     if (error) throw error;
 
-    var forceDirectedGraph = new ForceDirectedGraph(".force-directed-graph", 640, 320);
+    var forceDirectedGraph = new ForceDirectedGraph(".force-directed-graph", 960, 640);
     forceDirectedGraph(data);
 });
