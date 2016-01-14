@@ -1,5 +1,7 @@
 
 var ForceDirectedGraph = function(selector, width, height) {
+    var circleRadius = 5;
+
     function chart(data) {
         console.log("test: ", data);
 
@@ -27,7 +29,7 @@ var ForceDirectedGraph = function(selector, width, height) {
                     var i = {},
                         source = keyNodeMapping[sourceKey],
                         target = keyNodeMapping[targetKey];
-
+ 
                     links.push({source: source, target: target, value: value});
                 }
             });
@@ -69,7 +71,7 @@ var ForceDirectedGraph = function(selector, width, height) {
             .enter().append("circle")
             .attr("class", "node")
             .attr("alt", function(d) { return d.name })
-            .attr("r", 5)
+            .attr("r", circleRadius)
             .style("fill", function(d) { return chart.color(d.name); })
             .call(force.drag);
 
@@ -79,12 +81,18 @@ var ForceDirectedGraph = function(selector, width, height) {
                 var source = d["source"],
                     target = d["target"];
 
-                var distanceX = (target.x - source.x) / 2,
-                    distanceY = (target.y - source.y) / 2,
-                    midX = ((source.x + target.x) / 2) + (-distanceY * pythag),
-                    midY = ((source.y + target.y) / 2) + (distanceX * pythag);
+                if (source == target) {
+                    // It's a self-link.  So, we make a little loop.
+                    var r = 5;
+                    return 'M '+source.x + circleRadius +' '+source.y + circleRadius +' m 0, 0 a '+r+','+r+' 0 1,0 '+(r*2)+',0 a '+r+','+r+' 0 1,0 -'+(r*2)+',0';
+                } else {
+                    var distanceX = (target.x - source.x) / 2,
+                        distanceY = (target.y - source.y) / 2,
+                        midX = ((source.x + target.x) / 2) + (-distanceY * pythag),
+                        midY = ((source.y + target.y) / 2) + (distanceX * pythag);
 
-                return "M" + source.x + " " + source.y + " Q " + midX + " " + midY + " " + target.x + " " + target.y;
+                    return "M" + source.x + " " + source.y + " Q " + midX + " " + midY + " " + target.x + " " + target.y;
+                }
             });
 
             node.attr("transform", function(d) {
