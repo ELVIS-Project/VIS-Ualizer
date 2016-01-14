@@ -105,13 +105,6 @@ var ForceDirectedGraph = function(selector, width, height) {
         var pythag = Math.sqrt(3) / 2;
 
 
-        function zoomTransformX(x) {
-            return zoom.scale() * x + zoom.translate()[0];
-        }
-        function zoomTransformY(y) {
-            return zoom.scale() * y + zoom.translate()[1];
-        }
-
         function zoomTick() {
             node.selectAll("circle").attr("r", circleRadius * zoom.scale());
             node.selectAll("text").attr("transform", "translate(0, " + zoom.scale() * 2 * circleRadius + ")");
@@ -120,7 +113,7 @@ var ForceDirectedGraph = function(selector, width, height) {
         }
         function tick() {
             node.attr("transform", function(d) {
-                return "translate(" + zoomTransformX(d.x) + "," + zoomTransformY(d.y) + ")";
+                return "translate(" + zoomTransformX(zoom, d.x) + "," + zoomTransformY(zoom, d.y) + ")";
             });
 
             link.attr("d", function(d) {
@@ -130,14 +123,22 @@ var ForceDirectedGraph = function(selector, width, height) {
                 if (source == target) {
                     // It's a self-link.  So, we make a little loop.
                     var r = zoom.scale() * 5;
-                    return 'M '+ zoomTransformX(source.x) +' '+ zoomTransformY(source.y) + 2*circleRadius +' m ' + zoom.scale() * circleRadius + ', 0 a '+r+','+r+' 0 1,0 '+(r*2)+',0 a '+r+','+r+' 0 1,0 -'+(r*2)+',0';
+                    return 'M '+ zoomTransformX(zoom, source.x) +' '
+                        + zoomTransformY(zoom, source.y) + 2*circleRadius
+                        +' m ' + zoom.scale() * circleRadius + ', 0 a '+r+','
+                        +r+' 0 1,0 '+(r*2)+',0 a '+r+','+r+' 0 1,0 -'+(r*2)+',0';
                 } else {
                     var distanceX = (target.x - source.x) / 2,
                         distanceY = (target.y - source.y) / 2,
                         midX = ((source.x + target.x) / 2) + (-distanceY * pythag),
                         midY = ((source.y + target.y) / 2) + (distanceX * pythag);
 
-                    return "M" + zoomTransformX(source.x) + " " + zoomTransformY(source.y) + " Q " + zoomTransformX(midX) + " " + zoomTransformY(midY) + " " + zoomTransformX(target.x) + " " + zoomTransformY(target.y);
+                    return "M" + zoomTransformX(zoom, source.x) + " "
+                        + zoomTransformY(zoom, source.y) + " Q "
+                        + zoomTransformX(zoom, midX) + " "
+                        + zoomTransformY(zoom, midY) + " "
+                        + zoomTransformX(zoom, target.x) + " "
+                        + zoomTransformY(zoom, target.y);
                 }
             });
         }
