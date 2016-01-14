@@ -504,6 +504,7 @@ def bar_graph():
 def hello():
     js_files = [
         url_for("static", filename="js/libs/d3.js"),
+        url_for("static", filename="js/utils.js"),
         url_for("static", filename="js/bargraph.js"),
         url_for("static", filename="js/bargraph_grouped.js"),
         url_for("static", filename="js/force_directed_graph.js"),
