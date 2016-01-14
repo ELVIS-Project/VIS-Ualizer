@@ -22,16 +22,25 @@ var ForceDirectedGraph = function(selector, width, height) {
         // Build the links
         keys.forEach(function(sourceKey) {
             keys.forEach(function(targetKey) {
-                if (data[sourceKey][targetKey] > 0) {
+                var value = parseFloat(data[sourceKey][targetKey]);
+                if (value > 0) {
                     var i = {},
                         source = keyNodeMapping[sourceKey],
                         target = keyNodeMapping[targetKey];
 
-
-                    links.push({source: source, target: target});
+                    links.push({source: source, target: target, value: value});
                 }
             });
         });
+
+        // Calculate the normalized values (that we will use to colour the lines
+        var linkValues = links.map(function(link) { return link.value }),
+            maxLinkValue = d3.min(linkValues),
+            minLinkValue = d3.max(linkValues);
+        links.forEach(function(link) {
+            link["relativeValue"] = (link.value - minLinkValue) / (maxLinkValue - minLinkValue);
+        });
+
 
         console.log("keys:", keys, "nodes:", nodes, "links:", links);
 
@@ -53,7 +62,7 @@ var ForceDirectedGraph = function(selector, width, height) {
             .enter()
             .append("path")
             .attr("class", "link")
-            .attr("marker-end", "url(#arrow)"); // Add the arrowhead
+            .attr("stroke", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" });
 
         var node = chart.svg.selectAll(".node")
             .data(nodes)
@@ -74,8 +83,6 @@ var ForceDirectedGraph = function(selector, width, height) {
                     distanceY = (target.y - source.y) / 2,
                     midX = ((source.x + target.x) / 2) + (-distanceY * pythag),
                     midY = ((source.y + target.y) / 2) + (distanceX * pythag);
-
-                console.log("Distance:", distanceX, distanceY);
 
                 return "M" + source.x + " " + source.y + " Q " + midX + " " + midY + " " + target.x + " " + target.y;
             });
