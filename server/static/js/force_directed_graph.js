@@ -20,10 +20,15 @@ var ForceDirectedGraph = function(selector, width, height) {
         });
 
         // Build the links
-        keys.forEach(function(source) {
-            keys.forEach(function(target) {
-                if (data[source][target] > 0) {
-                    links.push({source: keyNodeMapping[source], target: keyNodeMapping[target]});
+        keys.forEach(function(sourceKey) {
+            keys.forEach(function(targetKey) {
+                if (data[sourceKey][targetKey] > 0) {
+                    var i = {},
+                        source = keyNodeMapping[sourceKey],
+                        target = keyNodeMapping[targetKey];
+
+
+                    links.push({source: source, target: target});
                 }
             });
         });
@@ -36,9 +41,9 @@ var ForceDirectedGraph = function(selector, width, height) {
             .size([width, height])
             .linkStrength(0.05)
             //.friction(0.9)
-            .linkDistance(30)
+            .linkDistance(100)
             .charge(-30)
-            .gravity(0.1)
+            .gravity(0.01)
             .theta(0.4)
             .alpha(0.2)
             .start();
@@ -59,11 +64,20 @@ var ForceDirectedGraph = function(selector, width, height) {
             .style("fill", function(d) { return chart.color(d.name); })
             .call(force.drag);
 
+        var pythag = Math.sqrt(3) / 2;
         force.on("tick", function() {
             link.attr("d", function(d) {
                 var source = d["source"],
                     target = d["target"];
-                return "M" + source.x + "," + source.y + "S" + source.x + "," + source.y + " " + target.x + "," + target.y;
+
+                var distanceX = (target.x - source.x) / 2,
+                    distanceY = (target.y - source.y) / 2,
+                    midX = ((source.x + target.x) / 2) + (-distanceY * pythag),
+                    midY = ((source.y + target.y) / 2) + (distanceX * pythag);
+
+                console.log("Distance:", distanceX, distanceY);
+
+                return "M" + source.x + " " + source.y + " Q " + midX + " " + midY + " " + target.x + " " + target.y;
             });
 
             node.attr("transform", function(d) {
