@@ -4,7 +4,12 @@ var ForceDirectedGraph = function(selector, width, height) {
     var maxLinkDistance = 200;
 
     function chart(data) {
-        console.log("test: ", data);
+
+
+        var zoom = d3.behavior.zoom()
+            .scaleExtent([1, 10])
+            .size(width, height)
+            .on("zoom", zoomTick);
 
         var keys = d3.keys(data);
 
@@ -98,29 +103,48 @@ var ForceDirectedGraph = function(selector, width, height) {
         node.call(force.drag);
 
         var pythag = Math.sqrt(3) / 2;
-        force.on("tick", function() {
+
+
+        function zoomTransformX(x) {
+            return zoom.scale() * x + zoom.translate()[0];
+        }
+        function zoomTransformY(y) {
+            return zoom.scale() * y + zoom.translate()[1];
+        }
+
+        function zoomTick() {
+            node.selectAll("circle").attr("r", circleRadius * zoom.scale());
+            node.selectAll("text").attr("transform", "translate(0, " + zoom.scale() * 2 * circleRadius + ")");
+
+            tick();
+        }
+        function tick() {
+            node.attr("transform", function(d) {
+                return "translate(" + zoomTransformX(d.x) + "," + zoomTransformY(d.y) + ")";
+            });
+
             link.attr("d", function(d) {
                 var source = d["source"],
                     target = d["target"];
 
                 if (source == target) {
                     // It's a self-link.  So, we make a little loop.
-                    var r = 5;
-                    return 'M '+source.x +' '+source.y + 2*circleRadius +' m ' + circleRadius + ', 0 a '+r+','+r+' 0 1,0 '+(r*2)+',0 a '+r+','+r+' 0 1,0 -'+(r*2)+',0';
+                    var r = zoom.scale() * 5;
+                    return 'M '+ zoomTransformX(source.x) +' '+ zoomTransformY(source.y) + 2*circleRadius +' m ' + zoom.scale() * circleRadius + ', 0 a '+r+','+r+' 0 1,0 '+(r*2)+',0 a '+r+','+r+' 0 1,0 -'+(r*2)+',0';
                 } else {
                     var distanceX = (target.x - source.x) / 2,
                         distanceY = (target.y - source.y) / 2,
                         midX = ((source.x + target.x) / 2) + (-distanceY * pythag),
                         midY = ((source.y + target.y) / 2) + (distanceX * pythag);
 
-                    return "M" + source.x + " " + source.y + " Q " + midX + " " + midY + " " + target.x + " " + target.y;
+                    return "M" + zoomTransformX(source.x) + " " + zoomTransformY(source.y) + " Q " + zoomTransformX(midX) + " " + zoomTransformY(midY) + " " + zoomTransformX(target.x) + " " + zoomTransformY(target.y);
                 }
             });
+        }
 
-            node.attr("transform", function(d) {
-                return "translate(" + d.x + "," + d.y + ")";
-            });
-        });
+        force.on("tick", tick);
+
+        chart.svg.call(zoom);
     }
 
     chart.color = d3.scale.category20();
