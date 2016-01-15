@@ -131,7 +131,7 @@ var ForceDirectedGraph = function(selector, width, height) {
             .attr("alt", function(d) { return d.name })
             .attr("r", circleRadius)
             .style("stroke", function(node) { return d3.rgb(color(node.name)).darker(2); })
-            .style("fill", function(d) { return color(d.name); });
+            .style("fill", function(d) { return d3.rgb(color(d.name)).brighter(0.5); });
 
         var circleLabels = node
             .append("text")
