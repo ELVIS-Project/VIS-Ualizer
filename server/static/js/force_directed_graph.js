@@ -4,7 +4,7 @@ var ForceDirectedGraph = function(selector, width, height) {
     var maxLinkDistance = 200;
 
     function chart(data) {
-
+        var color = d3.scale.category20();
 
         var zoom = d3.behavior.zoom()
             .scaleExtent([1, 10])
@@ -145,11 +145,14 @@ var ForceDirectedGraph = function(selector, width, height) {
 
         force.on("tick", tick);
 
-        chart.svg.call(zoom);
+        // Don't have panning
+        chart.svg.call(zoom)
+            .on("mousedown.zoom", null)
+            .on("touchstart.zoom", null)
+            .on("touchmove.zoom", null)
+            .on("touchend.zoom", null);
+
     }
-
-    chart.color = d3.scale.category20();
-
 
     chart.svg = d3.select(selector)
         .attr("width", width)
