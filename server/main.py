@@ -4,8 +4,10 @@ from flask.ext.api.decorators import set_renderers
 from flask.ext.api.renderers import HTMLRenderer
 from helpers.CoOccurrenceMatrixParser import CoOccurrenceMatrixParser
 import sys
+import random
 
 app = FlaskAPI(__name__)
+
 
 @app.route("/data/ave-maria/", defaults={'voice': None})
 @app.route("/data/ave-maria/<voice>/")
@@ -24,138 +26,40 @@ def data_ave_maria(voice):
     # Load the correct file and process it
     return CoOccurrenceMatrixParser(file_path).parse()
 
+
 @app.route("/graph/grouped/")
 def grouped_bar_graph():
+    min = 0.0
+    max = 100.0
+    data = [[], [], []]
+    for i in range(3):
+        print i
+        for j in range(64):
+            data[i].append(dict(label=j, value=random.uniform(min, max)))
     return [
         {
             "group_label": "first group",
-            "group_members":
-                [
-                    {
-                        "label": "one",
-                        "value": 10
-                    },
-                    {
-                        "label": "two",
-                        "value": 30
-                    },
-                    {
-                        "label": "three",
-                        "value": 25
-                    },
-                    {
-                        "label": "four",
-                        "value": 10
-                    },
-                    {
-                        "label": "five",
-                        "value": 45
-                    },
-                    {
-                        "label": "six",
-                        "value": 25
-                    }
-                ]
+            "group_members": data[0]
         },
         {
             "group_label": "second group",
-            "group_members":
-                [
-                    {
-                        "label": "one",
-                        "value": 25
-                    },
-                    {
-                        "label": "two",
-                        "value": 15
-                    },
-                    {
-                        "label": "three",
-                        "value": 45
-                    },
-                    {
-                        "label": "four",
-                        "value": 35
-                    },
-                    {
-                        "label": "five",
-                        "value": 45
-                    },
-                    {
-                        "label": "six",
-                        "value": 20
-                    }
-                ]
+            "group_members": data[1]
         },
         {
             "group_label": "third group",
-            "group_members":
-                [
-                    {
-                        "label": "one",
-                        "value": 50
-                    },
-                    {
-                        "label": "two",
-                        "value": 30
-                    },
-                    {
-                        "label": "three",
-                        "value": 40
-                    },
-                    {
-                        "label": "four",
-                        "value": 20
-                    },
-                    {
-                        "label": "five",
-                        "value": 45
-                    },
-                    {
-                        "label": "six",
-                        "value": 25
-                    }
-                ]
+            "group_members": data[2]
         },
     ]
 
 
 @app.route("/graph/")
 def bar_graph():
-    return [
-        {
-            "label": "Label One",
-            "value": 10
-        },
-        {
-            "label": "two",
-            "value": 30
-        },
-        {
-            "label": "three",
-            "value": 60
-        },
-        {
-            "label": "four",
-            "value": 75
-        },
-        {
-            "label": "five",
-            "value": 25
-        },
-        {
-            "label": "six",
-            "value": 95
-        },
-        {
-            "label": "seven",
-            "value": 25
-        },
-        {
-            "label": "eight",
-            "value": 50
-        }
-    ]
+    min = 0.0
+    max = 100.0
+    output = []
+    for i in range(32):
+        output.append(dict(label=i, value=random.uniform(min,max)))
+    return output
 
 
 @app.route("/")
