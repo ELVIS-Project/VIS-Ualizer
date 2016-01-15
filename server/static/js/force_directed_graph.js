@@ -73,7 +73,9 @@ var ForceDirectedGraph = function(selector, width, height) {
         var link = chart.svg.selectAll(".link")
             .data(links)
             .enter()
-            .append("path")
+            .append("g");
+
+        var lines = link.append("path")
             .attr("class", "link")
             .attr("stroke", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
             .attr("stroke-width", function(link) { return 0.75 + (0.25 * link.relativeValue); });
@@ -89,15 +91,19 @@ var ForceDirectedGraph = function(selector, width, height) {
             .attr("class", "node")
             .attr("alt", function(d) { return d.name })
             .attr("r", circleRadius)
-            .style("stroke", function(node) { return d3.rgb(chart.color(node.name)).darker(); })
-            .style("fill", function(d) { return chart.color(d.name); });
+            .style("stroke", function(node) { return d3.rgb(color(node.name)).darker(); })
+            .style("fill", function(d) { return color(d.name); });
 
-        var text = node
+        var circleLabels = node
             .append("text")
-            .attr("fill", function(node) { return d3.rgb(chart.color(node.name)).darker(); })
+            .attr("fill", function(node) { return d3.rgb(color(node.name)).darker(); })
             .attr("transform", "translate(0, " + 2 * circleRadius + ")")
             .text(function(node) { return node.name });
 
+        var lineLabels = link
+            .append("text")
+            .attr("fill", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
+            .text(function(link) { return link.value });
 
         // Invoke force
         node.call(force.drag);
@@ -106,8 +112,8 @@ var ForceDirectedGraph = function(selector, width, height) {
 
 
         function zoomTick() {
-            node.selectAll("circle").attr("r", circleRadius * zoom.scale());
-            node.selectAll("text").attr("transform", "translate(0, " + zoom.scale() * 2 * circleRadius + ")");
+            //node.selectAll("circle").attr("r", circleRadius * zoom.scale());
+            //node.selectAll("text").attr("transform", "translate(0, " + zoom.scale() * 2 * circleRadius + ")");
 
             tick();
         }
@@ -116,16 +122,16 @@ var ForceDirectedGraph = function(selector, width, height) {
                 return "translate(" + zoomTransformX(zoom, d.x) + "," + zoomTransformY(zoom, d.y) + ")";
             });
 
-            link.attr("d", function(d) {
+            var r = zoom.scale() * 5;
+            lines.attr("d", function(d) {
                 var source = d["source"],
                     target = d["target"];
 
                 if (source == target) {
                     // It's a self-link.  So, we make a little loop.
-                    var r = zoom.scale() * 5;
                     return 'M '+ zoomTransformX(zoom, source.x) +' '
                         + zoomTransformY(zoom, source.y) + 2*circleRadius
-                        +' m ' + zoom.scale() * circleRadius + ', 0 a '+r+','
+                        +' m ' + circleRadius + ', 0 a '+r+','
                         +r+' 0 1,0 '+(r*2)+',0 a '+r+','+r+' 0 1,0 -'+(r*2)+',0';
                 } else {
                     var distanceX = (target.x - source.x) / 2,
@@ -140,6 +146,22 @@ var ForceDirectedGraph = function(selector, width, height) {
                         + zoomTransformX(zoom, target.x) + " "
                         + zoomTransformY(zoom, target.y);
                 }
+            });
+            lineLabels.attr("transform", function(link) {
+                var source = link["source"],
+                    target = link["target"];
+
+                if (source == target) {
+                    return "translate(" + (zoomTransformX(zoom, source.x) + 2 * r) + "," + zoomTransformY(zoom, source.y) + ")";
+                } else {
+                    var distanceX = (target.x - source.x) / 2,
+                        distanceY = (target.y - source.y) / 2,
+                        midX = ((source.x + target.x) / 2) + (-distanceY * pythag) / 2,
+                        midY = ((source.y + target.y) / 2) + (distanceX * pythag) / 2;
+
+                    return "translate(" + zoomTransformX(zoom, midX) + "," + zoomTransformY(zoom, midY) + ")";
+                }
+
             });
         }
 
