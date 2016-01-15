@@ -11,7 +11,7 @@ app = FlaskAPI(__name__)
 @app.route("/data/ave-maria/<voice>/")
 def data_ave_maria(voice):
     # Build the string
-    file_path = "../data/non-truncated/Josquin-Des-Prez_De-profundis-clamavi"
+    file_path = "../data/truncated/Josquin-Des-Prez_Ave-Maria...-virgo-serena"
     if voice == "alto":
         file_path += "_Alto"
     elif voice == "bass":
