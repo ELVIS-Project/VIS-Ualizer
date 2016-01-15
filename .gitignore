@@ -3,3 +3,5 @@ app_env/
 VIS-Ualizer.iml
 
 *.pyc
+
+/app_env
