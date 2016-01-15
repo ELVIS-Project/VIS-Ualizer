@@ -1,34 +1,15 @@
 
 var ForceDirectedGraph = function(selector, width, height) {
-    var circleRadius = 10;
+    var circleRadius = 12;
     var maxLinkDistance = 200;
 
     function chart(data) {
-        var color = d3.scale.category20();
+        console.log("data", data);
 
         // Marker definitions
-        defs = chart.svg.append("defs");
+        var defs = chart.svg.append("defs");
 
-        // Create 4 different arrow heads with different colours
-        var numberOfColours = 16;
-        for (var i = 0; i < numberOfColours; i++) {
-            var colour = 192 - (i / numberOfColours) * 128;
-
-            defs.append("marker")
-                .attr({
-                    "id":"arrow-" + i,
-                    "viewBox":"0 -5 10 10",
-                    "refX": 20,
-                    "refY":0,
-                    "markerWidth":10,
-                    "markerHeight":10,
-                    "orient":"auto",
-                    "fill": d3.rgb("rgb(" + colour + "," + colour + "," + colour + ")").toString()
-                })
-                .append("path")
-                .attr("d", "M0,-5L10,0L0,5")
-                .attr("class","arrowHead");
-        }
+        var color = d3.scale.category20();
 
         var zoom = d3.behavior.zoom()
             .scaleExtent([1, 10])
@@ -36,6 +17,8 @@ var ForceDirectedGraph = function(selector, width, height) {
             .on("zoom", zoomTick);
 
         var keys = d3.keys(data);
+        //var keys = d3.set(d3.keys(data));
+        //keys.add(d3.keys(data[keys[0]]));
 
         var keyNodeMapping = {};
 
@@ -99,12 +82,42 @@ var ForceDirectedGraph = function(selector, width, height) {
             .enter()
             .append("g");
 
+
+        // The set of names for the line arrowheads
+        var arrowNames = d3.set();
         var lines = link.append("path")
             .attr("class", "link")
-            .attr("stroke", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
-            .attr("stroke-width", function(link) { return 0.75 + (0.25 * link.relativeValue); })
+            .attr("stroke", function(link) { return d3.rgb(color(link.source.name)).darker(); })
+            //.attr("stroke", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
+            .attr("stroke-width", function(link) { return 1 * (0.75 + (0.25 * link.relativeValue)); })
             .attr("marker-fill", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
-            .attr("marker-end", function(link) { return "url(#arrow-" + parseInt(link.relativeValue * numberOfColours - 1) + ")"; });
+            .attr("marker-end", function(link) {
+                var colour = d3.rgb(color(link.source.name)).darker();
+                var arrowName = "arrow" + colour.toString().substring(1);
+
+                if (!arrowNames.has(arrowName)) {
+                    // Create an arrowhead of the specified colour
+                    arrowNames.add(arrowName);
+
+                    defs.append("marker")
+                        .attr({
+                            "id": arrowName,
+                            "viewBox":"0 -5 10 10",
+                            "refX": 20,
+                            "refY":0,
+                            "markerWidth":10,
+                            "markerHeight":10,
+                            "orient":"auto",
+                            "fill": colour
+                        })
+                        .append("path")
+                        .attr("d", "M0,-5L10,0L0,5")
+                        .attr("class","arrowHead");
+                }
+
+                return "url(#" + arrowName + ")";
+            })
+            .style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
 
         var node = chart.svg.selectAll(".node")
             .data(nodes)
@@ -123,13 +136,15 @@ var ForceDirectedGraph = function(selector, width, height) {
         var circleLabels = node
             .append("text")
             .attr("fill", function(node) { return d3.rgb(color(node.name)).darker(); })
-            .attr("transform", "translate(0, " + 2 * circleRadius + ")")
+            .attr("transform", "translate(-3, 3)")
             .text(function(node) { return node.name });
 
         var lineLabels = link
             .append("text")
-            .attr("fill", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
-            .text(function(link) { return link.value });
+            .style("fill", function(link) { return d3.rgb(color(link.source.name)).darker(); })
+            //.attr("fill", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
+            .text(function(link) { return link.value })
+            .style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
 
         // Invoke force
         node.call(force.drag);
