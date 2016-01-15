@@ -6,6 +6,30 @@ var ForceDirectedGraph = function(selector, width, height) {
     function chart(data) {
         var color = d3.scale.category20();
 
+        // Marker definitions
+        defs = chart.svg.append("defs");
+
+        // Create 4 different arrow heads with different colours
+        var numberOfColours = 16;
+        for (var i = 0; i < numberOfColours; i++) {
+            var colour = 192 - (i / numberOfColours) * 128;
+
+            defs.append("marker")
+                .attr({
+                    "id":"arrow-" + i,
+                    "viewBox":"0 -5 10 10",
+                    "refX": 20,
+                    "refY":0,
+                    "markerWidth":10,
+                    "markerHeight":10,
+                    "orient":"auto",
+                    "fill": d3.rgb("rgb(" + colour + "," + colour + "," + colour + ")").toString()
+                })
+                .append("path")
+                .attr("d", "M0,-5L10,0L0,5")
+                .attr("class","arrowHead");
+        }
+
         var zoom = d3.behavior.zoom()
             .scaleExtent([1, 10])
             .size(width, height)
@@ -78,7 +102,9 @@ var ForceDirectedGraph = function(selector, width, height) {
         var lines = link.append("path")
             .attr("class", "link")
             .attr("stroke", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
-            .attr("stroke-width", function(link) { return 0.75 + (0.25 * link.relativeValue); });
+            .attr("stroke-width", function(link) { return 0.75 + (0.25 * link.relativeValue); })
+            .attr("marker-fill", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
+            .attr("marker-end", function(link) { return "url(#arrow-" + parseInt(link.relativeValue * numberOfColours - 1) + ")"; });
 
         var node = chart.svg.selectAll(".node")
             .data(nodes)
