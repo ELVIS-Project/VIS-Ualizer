@@ -16,9 +16,13 @@ var ForceDirectedGraph = function(selector, width, height) {
             .size(width, height)
             .on("zoom", zoomTick);
 
-        var keys = d3.keys(data);
-        //var keys = d3.set(d3.keys(data));
-        //keys.add(d3.keys(data[keys[0]]));
+        //var keys = d3.keys(data);
+        var keys = d3.set(d3.keys(data));
+        keys.forEach(function(key) {
+            d3.keys(data[key]).forEach(function (newKey) {
+                keys.add(newKey);
+            });
+        });
 
         var keyNodeMapping = {};
 
@@ -37,13 +41,16 @@ var ForceDirectedGraph = function(selector, width, height) {
         // Build the links
         keys.forEach(function(sourceKey) {
             keys.forEach(function(targetKey) {
-                var value = parseFloat(data[sourceKey][targetKey]);
-                if (value > 0) {
-                    var i = {},
-                        source = keyNodeMapping[sourceKey],
-                        target = keyNodeMapping[targetKey];
+                // It could theoretically be undefined
+                if (data[sourceKey]) {
+                    var value = parseFloat(data[sourceKey][targetKey]);
+                    if (value > 0) {
+                        var i = {},
+                            source = keyNodeMapping[sourceKey],
+                            target = keyNodeMapping[targetKey];
 
-                    links.push({source: source, target: target, value: value});
+                        links.push({source: source, target: target, value: value});
+                    }
                 }
             });
         });
