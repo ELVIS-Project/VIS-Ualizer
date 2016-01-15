@@ -40,3 +40,8 @@ line {
 text.active {
     fill: red;
 }
+
+.arrow{
+    stroke-width:5;
+    stroke-dasharray:5, 5;
+}
