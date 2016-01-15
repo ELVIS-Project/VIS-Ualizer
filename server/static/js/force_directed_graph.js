@@ -87,12 +87,12 @@ var ForceDirectedGraph = function(selector, width, height) {
         var arrowNames = d3.set();
         var lines = link.append("path")
             .attr("class", "link")
-            .attr("stroke", function(link) { return d3.rgb(color(link.source.name)).darker(); })
+            .attr("stroke", function(link) { return d3.rgb(color(link.source.name)).darker(2); })
             //.attr("stroke", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
             .attr("stroke-width", function(link) { return (0.75 + (0.25 * link.relativeValue)); })
             .attr("marker-fill", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
             .attr("marker-end", function(link) {
-                var colour = d3.rgb(color(link.source.name)).darker();
+                var colour = d3.rgb(color(link.source.name)).darker(2);
                 var arrowName = "arrow" + colour.toString().substring(1);
 
                 if (!arrowNames.has(arrowName)) {
@@ -130,18 +130,18 @@ var ForceDirectedGraph = function(selector, width, height) {
             .attr("class", "node")
             .attr("alt", function(d) { return d.name })
             .attr("r", circleRadius)
-            .style("stroke", function(node) { return d3.rgb(color(node.name)).darker(); })
+            .style("stroke", function(node) { return d3.rgb(color(node.name)).darker(2); })
             .style("fill", function(d) { return color(d.name); });
 
         var circleLabels = node
             .append("text")
-            .attr("fill", function(node) { return d3.rgb(color(node.name)).darker(); })
+            .attr("fill", function(node) { return d3.rgb(color(node.name)).darker(2); })
             .attr("transform", "translate(-3, 3)")
             .text(function(node) { return node.name });
 
         var lineLabels = link
             .append("text")
-            .style("fill", function(link) { return d3.rgb(color(link.source.name)).darker(); })
+            .style("fill", function(link) { return d3.rgb(color(link.source.name)).darker(2); })
             //.attr("fill", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
             .text(function(link) { return link.value })
             .style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
