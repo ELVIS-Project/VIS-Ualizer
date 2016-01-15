@@ -43,8 +43,8 @@ var ForceDirectedGraph = function(selector, width, height) {
 
         // Calculate the normalized values (that we will use to colour the lines
         var linkValues = links.map(function(link) { return link.value }),
-            maxLinkValue = d3.min(linkValues),
-            minLinkValue = d3.max(linkValues);
+            minLinkValue = d3.min(linkValues),
+            maxLinkValue = d3.max(linkValues);
         links.forEach(function(link) {
             link["relativeValue"] = (link.value - minLinkValue) / (maxLinkValue - minLinkValue);
         });
