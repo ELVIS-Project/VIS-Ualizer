@@ -177,17 +177,17 @@ var ForceDirectedGraph = function(selector, width, height) {
             });
 
             var r = zoom.scale() * 5;
-            lines.attr("d", function(d) {
-                var source = d["source"],
-                    target = d["target"];
+            lines.attr("d", function(link) {
+                var source = link["source"],
+                    target = link["target"];
 
                 if (source == target) {
                     // It's a self-link.  So, we make a little loop.
                     var originX = zoomTransformX(zoom, source.x),
                         originY = zoomTransformY(zoom, source.y),
-                        loop1X = zoomTransformX(zoom, source.x + (3 * circleRadius)),
-                        loopY = zoomTransformY(zoom, source.y + (3 * circleRadius)),
-                        loop2X = zoomTransformX(zoom, source.x - (3 * circleRadius));
+                        loop1X = zoomTransformX(zoom, source.x + (3 * circleRadius) - (link.relativeValue * 2 * circleRadius)),
+                        loopY = zoomTransformY(zoom, source.y + (3 * circleRadius) - (link.relativeValue * 2 * circleRadius)),
+                        loop2X = zoomTransformX(zoom, source.x - (3 * circleRadius) + (link.relativeValue * 2 * circleRadius));
 
                     return "M" + originX + "," + originY + " C" + loop1X + "," + loopY + " " + loop2X + "," + loopY + " " + originX + "," + originY;
                 } else {
@@ -209,7 +209,7 @@ var ForceDirectedGraph = function(selector, width, height) {
                     target = link["target"];
 
                 if (source == target) {
-                    return "translate(" + zoomTransformX(zoom, source.x)  + "," + zoomTransformY(zoom, source.y + 2.25 * circleRadius) + ")";
+                    return "translate(" + zoomTransformX(zoom, source.x)  + "," + zoomTransformY(zoom, source.y + ((1 - link.relativeValue) * 2.5 * circleRadius)) + ")";
                 } else {
                     var distanceX = (target.x - source.x) / 2,
                         distanceY = (target.y - source.y) / 2,
