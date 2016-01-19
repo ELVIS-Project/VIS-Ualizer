@@ -94,13 +94,13 @@ var ForceDirectedGraph = function(selector, width, height) {
         var arrowNames = d3.set();
         var lines = link.append("path")
             .attr("class", "link")
-            .attr("stroke", function(link) { return d3.rgb(color(link.source.name)).darker(2); })
+            .attr("stroke", function(link) { return d3.rgb(color(link.source.name)).darker(1); })
             //.attr("stroke", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
             //.attr("stroke-width", function(link) { return (0.75 + (0.25 * link.relativeValue)); })
             .attr("stroke-width", 1)
             .attr("marker-fill", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
             .attr("marker-end", function(link) {
-                var colour = d3.rgb(color(link.source.name)).darker(2);
+                var colour = d3.rgb(color(link.source.name)).darker(1);
                 var arrowName = "arrow" + colour.toString().substring(1);
 
                 if (!arrowNames.has(arrowName)) {
