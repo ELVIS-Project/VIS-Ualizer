@@ -9,6 +9,12 @@ import random
 app = FlaskAPI(__name__)
 
 
+@app.route("/data/duet/heat/")
+def data_heatmap_duet():
+    file_path = "../data/non-truncated/Heatmap-vis36duet_int_corrs.csv"
+    return CoOccurrenceMatrixParser(file_path).parse()
+
+
 @app.route("/data/ave-maria/", defaults={'voice': None})
 @app.route("/data/ave-maria/<voice>/")
 def data_ave_maria(voice):
@@ -72,6 +78,7 @@ def hello():
         url_for("static", filename="js/bargraph_grouped.js"),
         url_for("static", filename="js/force_directed_graph.js"),
         url_for("static", filename="js/co_occurrence_matrix.js")
+        url_for("static", filename="js/heat_map.js"),
     ]
     return render_template('index.html', js_files=js_files)
 
