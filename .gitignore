@@ -1,3 +1,7 @@
 app_env/
 .idea/
 VIS-Ualizer.iml
+
+*.pyc
+
+/app_env
