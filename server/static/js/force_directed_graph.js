@@ -99,7 +99,7 @@ var ForceDirectedGraph = function(selector, width, height) {
             //.attr("stroke", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
             //.attr("stroke-width", function(link) { return (0.75 + (0.25 * link.relativeValue)); })
             .attr("stroke-width", function(link) {
-                return 1 + link.relativeValue;
+                return 1 + link.relativeValue);
             })
             .attr("marker-fill", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
             .attr("marker-end", function(link) {
@@ -120,6 +120,7 @@ var ForceDirectedGraph = function(selector, width, height) {
                             "markerHeight":10,
                             "orient":"auto",
                             "fill": colour,
+                            // If we don't set markerUnits, then scaling the stroke-width messes up the arrow heads
                             "markerUnits": "userSpaceOnUse"
                         })
                         .append("path")
