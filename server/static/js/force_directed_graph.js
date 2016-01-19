@@ -71,14 +71,15 @@ var ForceDirectedGraph = function(selector, width, height) {
             .links(links)
             .size([width, height])
             .linkStrength(function(link) {
-                return link.relativeValue;
+                return 1;
+                //return link.relativeValue;
             })
             //.friction(0.9)
             .linkDistance(function(link) {
                 // Stronger links are closer
-                return maxLinkDistance - (link.relativeValue * 0.5 * maxLinkDistance);
+                return maxLinkDistance - (link.relativeValue * maxLinkDistance);
             })
-            .charge(-60)
+            .charge(-20)
             .gravity(0.01)
             .theta(0.4)
             .alpha(0.2)
