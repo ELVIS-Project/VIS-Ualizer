@@ -178,10 +178,13 @@ var ForceDirectedGraph = function(selector, width, height) {
 
                 if (source == target) {
                     // It's a self-link.  So, we make a little loop.
-                    return 'M '+ zoomTransformX(zoom, source.x) +' '
-                        + zoomTransformY(zoom, source.y) + 2*circleRadius
-                        +' m ' + circleRadius + ', 0 a '+r+','
-                        +r+' 0 1,0 '+(r*2)+',0 a '+r+','+r+' 0 1,0 -'+(r*2)+',0';
+                    var originX = zoomTransformX(zoom, source.x),
+                        originY = zoomTransformY(zoom, source.y),
+                        loop1X = zoomTransformX(zoom, source.x + (3 * circleRadius)),
+                        loopY = zoomTransformY(zoom, source.y + (3 * circleRadius)),
+                        loop2X = zoomTransformX(zoom, source.x - (3 * circleRadius));
+
+                    return "M" + originX + "," + originY + " C" + loop1X + "," + loopY + " " + loop2X + "," + loopY + " " + originX + "," + originY;
                 } else {
                     var distanceX = (target.x - source.x) / 2,
                         distanceY = (target.y - source.y) / 2,
@@ -201,7 +204,7 @@ var ForceDirectedGraph = function(selector, width, height) {
                     target = link["target"];
 
                 if (source == target) {
-                    return "translate(" + (zoomTransformX(zoom, source.x) + 2 * r) + "," + zoomTransformY(zoom, source.y) + ")";
+                    return "translate(" + zoomTransformX(zoom, source.x)  + "," + zoomTransformY(zoom, source.y + 2.25 * circleRadius) + ")";
                 } else {
                     var distanceX = (target.x - source.x) / 2,
                         distanceY = (target.y - source.y) / 2,
