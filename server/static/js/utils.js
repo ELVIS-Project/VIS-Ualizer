@@ -27,3 +27,24 @@ function extractKeysFromMatrix(matrix) {
     });
     return keys;
 }
+
+function printToSVG(svg) {
+    console.log("svg:", svg);
+    var s = new XMLSerializer();
+    // Build the file
+    var file = '<?xml version="1.0" standalone="no"?>\r\n'
+        + "<!-- Generated with VIS-Ualizer (https://github.com/ELVIS-Project/VIS-Ualizer)-->\n"
+        + s.serializeToString(svg);
+
+    var blob = new Blob([file], {type: 'image/svg'});
+    var url = window.URL.createObjectURL(blob);
+
+    // For now, we append a link to the document
+    var a = document.createElement("a");
+    a.textContent = "File";
+    a.href = url;
+    document.body.appendChild(a);
+    a.click();
+    document.removeChild(a);
+    delete a;
+}
