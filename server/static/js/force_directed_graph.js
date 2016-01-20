@@ -16,13 +16,8 @@ var ForceDirectedGraph = function(selector, width, height) {
             .size(width, height)
             .on("zoom", zoomTick);
 
-        //var keys = d3.keys(data);
-        var keys = d3.set(d3.keys(data));
-        keys.forEach(function(key) {
-            d3.keys(data[key]).forEach(function (newKey) {
-                keys.add(newKey);
-            });
-        });
+        // Get all keys
+        var keys = extractKeysFromMatrix(data);
 
         var keyNodeMapping = {};
 
