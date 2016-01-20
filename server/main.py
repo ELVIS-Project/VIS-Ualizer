@@ -77,8 +77,8 @@ def hello():
         url_for("static", filename="js/bargraph.js"),
         url_for("static", filename="js/bargraph_grouped.js"),
         url_for("static", filename="js/force_directed_graph.js"),
-        url_for("static", filename="js/co_occurrence_matrix.js")
         url_for("static", filename="js/heat_map.js"),
+        # url_for("static", filename="js/co_occurrence_matrix.js")
     ]
     return render_template('index.html', js_files=js_files)
 
