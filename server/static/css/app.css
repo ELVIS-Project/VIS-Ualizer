@@ -1,8 +1,4 @@
 /* General SVG properties */
-svg {
-    font: 10px sans-serif;
-}
-
 .bar {
     shape-rendering: crispEdges;
 }
@@ -18,14 +14,6 @@ svg {
     shape-rendering: crispEdges;
 }
 
-/* Force-Directed Graph */
-.node {
-    stroke-width: 1px;
-}
-
-.link {
-    fill: none;
-}
 
 /* Co-Occurrence Matrix */
 
@@ -39,9 +27,4 @@ line {
 
 text.active {
     fill: red;
-}
-
-.arrow{
-    stroke-width:5;
-    stroke-dasharray:5, 5;
 }
