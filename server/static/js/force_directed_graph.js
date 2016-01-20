@@ -242,9 +242,17 @@ var ForceDirectedGraph = function(selector, width, height) {
 };
 
 
-d3.json("/data/ave-maria/", function(error, data) {
+d3.json("/data/ave-maria/bass/", function(error, data) {
     if (error) throw error;
 
-    var forceDirectedGraph = new ForceDirectedGraph(".force-directed-graph", 960, 640);
+    var selector = ".force-directed-graph";
+
+    var forceDirectedGraph = new ForceDirectedGraph(selector, 1600, 900);
     forceDirectedGraph(data);
+
+    var printButton = d3.select(".print");
+    printButton.on("click", function() {
+        printToSVG(forceDirectedGraph.svg[0][0]);
+    });
+
 });
