@@ -1,12 +1,13 @@
 import csv
 
 
-class CoOccurrenceMatrixParser():
-
+class CSVParser():
     def __init__(self, csv_file_path):
         csv_file = open(csv_file_path, "rb")
         self.csv_reader = csv.reader(csv_file, delimiter=',', quotechar="|")
 
+
+class CoOccurrenceMatrixParser(CSVParser):
     def parse(self):
         output = dict()
         # Get the keys
