@@ -5,11 +5,6 @@ var HeatMap = function(selector, width, height) {
     width = 960 - margin.left - margin.right;
     height = 500 - margin.top - margin.bottom;
 
-    // The size of the data in the CSV data file.
-    // This could be inferred from the data if it weren't sparse.
-    var xStep = 200,
-        yStep = 100;
-
     function chart(data) {
         // Get the keys as a sorted int array
         var keys = extractKeysFromMatrix(data).values().map(function(key) {
@@ -18,37 +13,16 @@ var HeatMap = function(selector, width, height) {
             return a - b;
         });
 
-        console.log("keys:", keys);
-
-        // Coerce the CSV data to the appropriate types.
-        //data.forEach(function(d) {
-        //    d.date = parseDate(d.date);
-        //    d.bucket = +d.bucket;
-        //    d.count = +d.count;
-        //});
-
-        var x = d3.scale.ordinal().range([0, keys[5]]),
-        //.range([0, width]),
+        var x = d3.scale.ordinal()
+                .range([0, keys[5]]),
             y = d3.scale.ordinal(),
-        //.range([height, 0]),
-            z = d3.scale.linear().range(["white", "steelblue"]);
+            z = d3.scale.linear()
+                .domain([0, 0.4, 0.65, 0.8 ,1])
+                .range(["#000000", "#1C3F3F", "#48941A", "#E8E20C", "#F50204"]);
 
         // Compute the scale domains.
-        //x.domain(d3.extent(data, function(d) { return d.date; }));
         x.domain(keys).rangeBands([0, width]);
         y.domain(keys.reverse()).rangeBands([0, height]);
-        z.domain([0, 1]);
-
-        console.log("x domain:", x.domain());
-
-        //y.domain(d3.extent(data, function(d) { return d.bucket; }));
-        //z.domain([0, d3.max(data, function(d) { return d.count; })]);
-
-        //// Extend the x- and y-domain to fit the last bucket.
-        //// For example, the y-bucket 3200 corresponds to values [3200, 3300].
-        //x.domain([x.domain()[0], +x.domain()[1] + xStep]);
-        //y.domain([y.domain()[0], y.domain()[1] + yStep]);
-
 
         var dataArray = [];
         for (var i = 0; i < keys.length; i++) {
@@ -60,9 +34,6 @@ var HeatMap = function(selector, width, height) {
                 dataArray.push(dataPoint);
             }
         }
-
-        console.log("dataArray:", dataArray);
-
 
         // Display the tiles for each non-zero bucket.
         chart.svg.selectAll(selector).data(dataArray)
@@ -82,7 +53,7 @@ var HeatMap = function(selector, width, height) {
 
         // Add a legend for the color values.
         var legend = chart.svg.selectAll(".legend")
-            .data(z.ticks(6).slice(1).reverse())
+            .data(z.ticks(20).slice(1).reverse())
             .enter().append("g")
             .attr("class", "legend")
             .attr("transform", function(d, i) { return "translate(" + (width + 20) + "," + (20 + i * 20) + ")"; });
@@ -138,8 +109,6 @@ var HeatMap = function(selector, width, height) {
 
     return chart;
 };
-
-
 
 
 d3.json("/data/duet/heat/", function(error, data) {
