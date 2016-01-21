@@ -1,5 +1,5 @@
 
-var HeatMap = function(selector, width, height) {
+var HeatMap = function(selector, width, height, xAxisLabel, yAxisLabel) {
     var margin = {top: 20, right: 90, bottom: 30, left: 50};
 
     width = width - margin.left - margin.right;
@@ -97,7 +97,7 @@ var HeatMap = function(selector, width, height) {
             .attr("x", width)
             .attr("y", -6)
             .attr("text-anchor", "end")
-            .text("X-Axis");
+            .text(xAxisLabel);
 
         // Add a y-axis with label.
         chart.g.append("g")
@@ -109,7 +109,7 @@ var HeatMap = function(selector, width, height) {
             .attr("dy", ".71em")
             .attr("text-anchor", "end")
             .attr("transform", "rotate(-90)")
-            .text("Y-Axis");
+            .text(yAxisLabel);
 
         // Style the axes
         console.log("domain:", chart.g.select(".axis path"));
@@ -179,7 +179,7 @@ var HeatMap = function(selector, width, height) {
 
 d3.json("/data/duet/heat/", function(error, data) {
     if (error) throw error;
-    var heatMap = new HeatMap(".heat-map", 1280, 960);
+    var heatMap = new HeatMap(".heat-map", 1280, 960, "Lorem", "Ipsum");
     heatMap(data);
 
     var colourPicker = d3.select(".heat-map-color");
