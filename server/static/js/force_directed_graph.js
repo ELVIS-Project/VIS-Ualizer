@@ -232,6 +232,40 @@ var ForceDirectedGraph = function(selector, width, height) {
             .on("touchmove.zoom", null)
             .on("touchend.zoom", null);
 
+        /**
+         * "Search" for a particular node.  Highlight that node and the nodes
+         * connected to it.
+         *
+         * @param searchTerm
+         */
+        chart.search = function(searchTerm) {
+            // Handle non-search case
+            if (searchTerm == "") {
+                link.attr("opacity", 1);
+                node.attr("opacity", 1);
+                return;
+            }
+
+            var highLightedNodes = d3.set();
+            // Select the nodes and those it is connected to
+            link.attr("opacity", function(link) {
+                if (link.source.name == searchTerm) {
+                    highLightedNodes.add(link.source.name);
+                    highLightedNodes.add(link.target.name);
+                    return 1
+                } else {
+                    return 0.1;
+                }
+            });
+            // We have the set of nodes to highlight.  Now, we highlight them.
+            node.attr("opacity", function(node) {
+                if (highLightedNodes.has(node.name)) {
+                    return 1;
+                } else {
+                    return 0.1;
+                }
+            });
+        };
     }
 
     chart.svg = d3.select(selector)
@@ -249,6 +283,12 @@ d3.json("/data/ave-maria/bass/", function(error, data) {
 
     var forceDirectedGraph = new ForceDirectedGraph(selector, 1600, 900);
     forceDirectedGraph(data);
+
+    var searchBox = d3.select(".force-directed-graph-search");
+    searchBox.on("change", function(event) {
+        var value = searchBox[0][0].value;
+        forceDirectedGraph.search(value);
+    });
 
     var printButton = d3.select(".print");
     printButton.on("click", function() {
