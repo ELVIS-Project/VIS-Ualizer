@@ -141,6 +141,11 @@ var HeatMap = function(selector, width, height) {
             domain: [0, 0.4, 0.65, 0.8, 1],
             range: ["#000000", "#1C3F3F", "#48941A", "#E8E20C", "#F50204"]
         },
+        "flame": {
+            name: "Flame",
+            domain: [0, 0.5, 0.75, 0.875, 1],
+            range: ["#CCCCCC", "#FFFFB2", "#FECC5C", "#FD8D3C", "#E31A1C"]
+        },
         "greyscale": {
             name: "Greyscale",
             domain: [0, 1],
@@ -151,7 +156,6 @@ var HeatMap = function(selector, width, height) {
             domain: [0, 0.25, 0.5, 0.75, 1],
             range: ["#1A1A1A", "#D4D5DB", "#003696", "#FFFC61", "#625900"]
         }
-
     };
 
     return chart;
