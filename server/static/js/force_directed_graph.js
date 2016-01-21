@@ -237,8 +237,10 @@ var ForceDirectedGraph = function(selector, width, height) {
          * connected to it.
          *
          * @param searchTerm
+         * @param isInbound
+         * @param isOutbound
          */
-        chart.search = function(searchTerm) {
+        chart.search = function(searchTerm, isInbound, isOutbound) {
             // Handle non-search case
             if (searchTerm == "") {
                 link.attr("opacity", 1);
@@ -249,13 +251,18 @@ var ForceDirectedGraph = function(selector, width, height) {
             var highLightedNodes = d3.set([searchTerm]);
             // Select the nodes and those it is connected to
             link.attr("opacity", function(link) {
-                if (link.source.name == searchTerm) {
-                    highLightedNodes.add(link.source.name);
+                var highLight = 0.1;
+
+                if (isOutbound && link.source.name == searchTerm) {
                     highLightedNodes.add(link.target.name);
-                    return 1
-                } else {
-                    return 0.1;
+                    highLight = 1;
                 }
+                if (isInbound && link.target.name == searchTerm) {
+                    highLightedNodes.add(link.source.name);
+                    highLight = 1;
+                }
+
+                return highLight;
             });
             // We have the set of nodes to highlight.  Now, we highlight them.
             node.attr("opacity", function(node) {
@@ -284,10 +291,15 @@ d3.json("/data/ave-maria/bass/", function(error, data) {
     var forceDirectedGraph = new ForceDirectedGraph(selector, 1600, 900);
     forceDirectedGraph(data);
 
-    var searchBox = d3.select(".force-directed-graph-search");
-    searchBox.on("change", function(event) {
-        var value = searchBox[0][0].value;
-        forceDirectedGraph.search(value);
+    var search = d3.select(".force-directed-graph-search");
+    search.on("submit", function(event, i) {
+        d3.event.preventDefault();
+        console.log(search);
+        var value = search[0][0][0].value,
+            isInbound = search[0][0][1].checked,
+            isOutbound = search[0][0][2].checked;
+        console.log(isInbound, isOutbound);
+        forceDirectedGraph.search(value, isInbound, isOutbound);
     });
 
     var printButton = d3.select(".print");
