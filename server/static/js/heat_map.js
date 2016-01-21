@@ -155,6 +155,11 @@ var HeatMap = function(selector, width, height) {
             name: "Deuteranopia",
             domain: [0, 0.25, 0.5, 0.75, 1],
             range: ["#1A1A1A", "#D4D5DB", "#003696", "#FFFC61", "#625900"]
+        },
+        "tritanopia": {
+            name: "Tritanopia",
+            domain: [0, (1.0/6.0), (2.5/6.0), (3.5/6.0), 1],
+            range: ["#4D2328", "#035B5E", "#79EBFF", "#FFF0FA", "#FE1601"]
         }
     };
 
