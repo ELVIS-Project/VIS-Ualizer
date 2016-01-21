@@ -5,6 +5,10 @@ var HeatMap = function(selector, width, height) {
     width = 960 - margin.left - margin.right;
     height = 500 - margin.top - margin.bottom;
 
+    chart.z = d3.scale.linear();
+    chart.legend = undefined;
+    chart.boxes = undefined;
+
     function chart(data) {
         // Get the keys as a sorted int array
         var keys = extractKeysFromMatrix(data).values().map(function(key) {
@@ -15,10 +19,10 @@ var HeatMap = function(selector, width, height) {
 
         var x = d3.scale.ordinal()
                 .range([0, keys[5]]),
-            y = d3.scale.ordinal(),
-            z = d3.scale.linear()
-                .domain([0, 0.4, 0.65, 0.8 ,1])
-                .range(["#000000", "#1C3F3F", "#48941A", "#E8E20C", "#F50204"]);
+            y = d3.scale.ordinal();
+
+        chart.z.domain([0, 0.4, 0.65, 0.8 ,1])
+               .range(["#000000", "#1C3F3F", "#48941A", "#E8E20C", "#F50204"]);
 
         // Compute the scale domains.
         x.domain(keys).rangeBands([0, width]);
@@ -36,8 +40,10 @@ var HeatMap = function(selector, width, height) {
         }
 
         // Display the tiles for each non-zero bucket.
-        chart.svg.selectAll(selector).data(dataArray)
-            .enter().append("rect")
+        chart.boxes = chart.svg.selectAll(selector).data(dataArray)
+            .enter().append("rect");
+
+        chart.boxes
             .attr("class", "tile")
             .attr("x", function(d) {
                 return x(d.firstKey);
@@ -48,22 +54,22 @@ var HeatMap = function(selector, width, height) {
             .attr("width", x.rangeBand())
             .attr("height", y.rangeBand())
             .style("fill", function(d) {
-                return z(d.value);
+                return chart.z(d.value);
             });
 
         // Add a legend for the color values.
-        var legend = chart.svg.selectAll(".legend")
-            .data(z.ticks(20).slice(1).reverse())
+        chart.legend = chart.svg.selectAll(".legend")
+            .data(chart.z.ticks(20).slice(1).reverse())
             .enter().append("g")
             .attr("class", "legend")
             .attr("transform", function(d, i) { return "translate(" + (width + 20) + "," + (20 + i * 20) + ")"; });
 
-        legend.append("rect")
+        chart.legend.append("rect")
             .attr("width", 20)
             .attr("height", 20)
-            .style("fill", z);
+            .style("fill", chart.z);
 
-        legend.append("text")
+        chart.legend.append("text")
             .attr("x", 26)
             .attr("y", 10)
             .attr("dy", ".35em")
@@ -107,6 +113,47 @@ var HeatMap = function(selector, width, height) {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    /**
+     * Set the colour scheme of the heat map.
+     * @param schemeName
+     */
+    chart.setColourScheme = function(schemeId) {
+        var colourPalette = chart.colourPalettes[schemeId];
+        // Quit if not valid colour palette
+        if (colourPalette == undefined) return;
+        chart.z.domain(colourPalette.domain).range(colourPalette.range);
+
+        // Redraw the box colors
+        chart.boxes.style("fill", function(d) {
+            return chart.z(d.value);
+        });
+        chart.legend.select("rect").remove();
+        chart.legend.append("rect")
+            .attr("width", 20)
+            .attr("height", 20)
+            .style("fill", chart.z);
+    };
+
+
+    chart.colourPalettes = {
+        "fruit-salad": {
+            name: "Fruit Salad",
+            domain: [0, 0.4, 0.65, 0.8, 1],
+            range: ["#000000", "#1C3F3F", "#48941A", "#E8E20C", "#F50204"]
+        },
+        "greyscale": {
+            name: "Greyscale",
+            domain: [0, 1],
+            range: ["#000000", "#FFFFFF"]
+        },
+        "deuteranopia": {
+            name: "Deuteranopia",
+            domain: [0, 0.25, 0.5, 0.75, 1],
+            range: ["#1A1A1A", "#D4D5DB", "#003696", "#FFFC61", "#625900"]
+        }
+
+    };
+
     return chart;
 };
 
@@ -115,4 +162,17 @@ d3.json("/data/duet/heat/", function(error, data) {
     if (error) throw error;
     var heatMap = new HeatMap(".heat-map", 960, 640);
     heatMap(data);
+
+    var colourPicker = d3.select(".heat-map-color");
+    d3.keys(heatMap.colourPalettes).forEach(function(palette) {
+        colourPicker.append("option")
+            .attr("value", palette)
+            .text(heatMap.colourPalettes[palette].name);
+    });
+    colourPicker.on("change", function() {
+        // Grab the name of the colour scheme from the picker
+        var schemeName = colourPicker[0][0].value;
+        // Change the scheme
+        heatMap.setColourScheme(schemeName);
+    });
 });
