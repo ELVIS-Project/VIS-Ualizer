@@ -9,6 +9,17 @@ import random
 app = FlaskAPI(__name__)
 
 
+@app.route("/arbitrary-matrix/<max>/")
+def big_ass_data(max):
+    max = int(max)
+    output = dict()
+    for i in range(max):
+        output[i] = dict()
+        for j in range(max):
+            output[i][j] = (i * j) / float(max * max)
+    return output
+
+
 @app.route("/data/duet/heat/")
 def data_heatmap_duet():
     file_path = "../data/non-truncated/Heatmap-vis36duet_int_corrs.csv"
