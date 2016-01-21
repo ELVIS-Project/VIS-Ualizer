@@ -302,7 +302,7 @@ d3.json("/data/ave-maria/bass/", function(error, data) {
         forceDirectedGraph.search(value, isInbound, isOutbound);
     });
 
-    var printButton = d3.select(".print");
+    var printButton = d3.select(".save-force-directed-graph");
     printButton.on("click", function() {
         printToSVG(forceDirectedGraph.svg[0][0]);
     });

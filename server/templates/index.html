@@ -21,7 +21,7 @@
     Outbound: <input type="checkbox" name="outbound" checked>
     <input type="submit" value="Search">
 </form>
-<p><button class="print">Save SVG</button></p>
+<p><button class="save-force-directed-graph">Save SVG</button></p>
 
 <svg class="force-directed-graph"></svg>
 
@@ -29,9 +29,9 @@
 {#<svg class="co-occurrence-matrix"></svg>#}
 
 <h2>Heat Map</h2>
+<p>Colour Scheme: <select class="heat-map-color"></select></p>
+<p><button class="save-heat-map">Save SVG</button></p>
 <svg class="heat-map"></svg>
-<p>Colour Scheme:</p>
-<select class="heat-map-color"></select>
 
 {% for file in js_files %}<script src="{{ file }}"></script>
 {% endfor %}

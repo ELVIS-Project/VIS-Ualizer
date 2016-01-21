@@ -29,7 +29,6 @@ function extractKeysFromMatrix(matrix) {
 }
 
 function printToSVG(svg) {
-    console.log("svg:", svg);
     var s = new XMLSerializer();
     // Build the file
     var file = '<?xml version="1.0" standalone="no"?>\r\n'
@@ -45,6 +44,21 @@ function printToSVG(svg) {
     a.href = url;
     document.body.appendChild(a);
     a.click();
-    document.removeChild(a);
+    document.body.removeChild(a);
     delete a;
 }
+
+var cssStyling = {
+    "global": {
+        "font-family": "sans-serif",
+        "font-size": "10px"
+    },
+    "axis": {
+        "fill": "none",
+        "stroke": "#000000",
+        "shape-rendering": "crispEdges"
+    },
+    "bar": {
+        "shape-rendering": "crispEdges"
+    }
+};

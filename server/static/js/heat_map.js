@@ -2,12 +2,20 @@
 var HeatMap = function(selector, width, height) {
     var margin = {top: 20, right: 90, bottom: 30, left: 50};
 
-    width = 960 - margin.left - margin.right;
-    height = 500 - margin.top - margin.bottom;
+    width = width - margin.left - margin.right;
+    height = height - margin.top - margin.bottom;
 
     chart.z = d3.scale.linear();
     chart.legend = undefined;
     chart.boxes = undefined;
+
+    function renderLegend() {
+        chart.legend.select("rect").remove();
+        chart.legend.append("rect")
+            .attr("width", 20)
+            .attr("height", 20)
+            .style("fill", chart.z);
+    }
 
     function chart(data) {
         // Get the keys as a sorted int array
@@ -21,8 +29,8 @@ var HeatMap = function(selector, width, height) {
                 .range([0, keys[5]]),
             y = d3.scale.ordinal();
 
-        chart.z.domain([0, 0.4, 0.65, 0.8 ,1])
-               .range(["#000000", "#1C3F3F", "#48941A", "#E8E20C", "#F50204"]);
+        chart.z.domain(chart.colourPalettes.fruitSalad.domain)
+               .range(chart.colourPalettes.fruitSalad.range);
 
         // Compute the scale domains.
         x.domain(keys).rangeBands([0, width]);
@@ -40,7 +48,7 @@ var HeatMap = function(selector, width, height) {
         }
 
         // Display the tiles for each non-zero bucket.
-        chart.boxes = chart.svg.selectAll(selector).data(dataArray)
+        chart.boxes = chart.g.selectAll(selector).data(dataArray)
             .enter().append("rect");
 
         chart.boxes
@@ -58,16 +66,13 @@ var HeatMap = function(selector, width, height) {
             });
 
         // Add a legend for the color values.
-        chart.legend = chart.svg.selectAll(".legend")
+        chart.legend = chart.g.selectAll(".legend")
             .data(chart.z.ticks(20).slice(1).reverse())
             .enter().append("g")
             .attr("class", "legend")
             .attr("transform", function(d, i) { return "translate(" + (width + 20) + "," + (20 + i * 20) + ")"; });
 
-        chart.legend.append("rect")
-            .attr("width", 20)
-            .attr("height", 20)
-            .style("fill", chart.z);
+        renderLegend();
 
         chart.legend.append("text")
             .attr("x", 26)
@@ -75,7 +80,7 @@ var HeatMap = function(selector, width, height) {
             .attr("dy", ".35em")
             .text(String);
 
-        chart.svg.append("text")
+        chart.g.append("text")
             .attr("class", "label")
             .attr("x", width + 20)
             .attr("y", 10)
@@ -83,7 +88,7 @@ var HeatMap = function(selector, width, height) {
             .text("Value");
 
         // Add an x-axis with label.
-        chart.svg.append("g")
+        chart.g.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.svg.axis().scale(x).orient("bottom"))
@@ -95,7 +100,7 @@ var HeatMap = function(selector, width, height) {
             .text("X-Axis");
 
         // Add a y-axis with label.
-        chart.svg.append("g")
+        chart.g.append("g")
             .attr("class", "y axis")
             .call(d3.svg.axis().scale(y).orient("left"))
             .append("text")
@@ -105,11 +110,18 @@ var HeatMap = function(selector, width, height) {
             .attr("text-anchor", "end")
             .attr("transform", "rotate(-90)")
             .text("Y-Axis");
+
+        // Style the axes
+        console.log("domain:", chart.g.select(".axis path"));
+        chart.g.selectAll(".axis path").style(cssStyling.axis);
     }
 
     chart.svg = d3.select(selector)
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
+        .style(cssStyling.global);
+
+    chart.g = chart.svg
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -127,16 +139,14 @@ var HeatMap = function(selector, width, height) {
         chart.boxes.style("fill", function(d) {
             return chart.z(d.value);
         });
-        chart.legend.select("rect").remove();
-        chart.legend.append("rect")
-            .attr("width", 20)
-            .attr("height", 20)
-            .style("fill", chart.z);
+
+        // Render the legend
+        renderLegend();
     };
 
 
     chart.colourPalettes = {
-        "fruit-salad": {
+        "fruitSalad": {
             name: "Fruit Salad",
             domain: [0, 0.4, 0.65, 0.8, 1],
             range: ["#000000", "#1C3F3F", "#48941A", "#E8E20C", "#F50204"]
@@ -169,7 +179,7 @@ var HeatMap = function(selector, width, height) {
 
 d3.json("/data/duet/heat/", function(error, data) {
     if (error) throw error;
-    var heatMap = new HeatMap(".heat-map", 960, 640);
+    var heatMap = new HeatMap(".heat-map", 1280, 960);
     heatMap(data);
 
     var colourPicker = d3.select(".heat-map-color");
@@ -183,5 +193,10 @@ d3.json("/data/duet/heat/", function(error, data) {
         var schemeName = colourPicker[0][0].value;
         // Change the scheme
         heatMap.setColourScheme(schemeName);
+    });
+
+    var printButton = d3.select(".save-heat-map");
+    printButton.on("click", function() {
+        printToSVG(heatMap.svg[0][0]);
     });
 });
