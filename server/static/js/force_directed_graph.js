@@ -246,7 +246,7 @@ var ForceDirectedGraph = function(selector, width, height) {
                 return;
             }
 
-            var highLightedNodes = d3.set();
+            var highLightedNodes = d3.set([searchTerm]);
             // Select the nodes and those it is connected to
             link.attr("opacity", function(link) {
                 if (link.source.name == searchTerm) {
