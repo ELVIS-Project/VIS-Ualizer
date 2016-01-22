@@ -1,0 +1,16 @@
+{% extends "index.html" %}
+{% block body %}
+<h2>Force-Directed Graph</h2>
+<p>Edges:
+    <select class="force-directed-graph-lines"></select>
+</p>
+<form class="force-directed-graph-search" action="#">
+    Node: <input name="node"/>
+    Inbound: <input type="checkbox" name="inbound" >
+    Outbound: <input type="checkbox" name="outbound" checked>
+    <input type="submit" value="Search">
+</form>
+<p><button class="save-force-directed-graph">Save SVG</button></p>
+
+<svg class="force-directed-graph"></svg>
+{% endblock %}

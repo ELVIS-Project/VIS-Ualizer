@@ -1,0 +1,9 @@
+{%  extends "index.html" %}
+{% block body %}
+<h2>Examples:</h2>
+<ul>
+    {% for link in example_links %}
+    <li><a href="{{ link.url }}">{{ link.name }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

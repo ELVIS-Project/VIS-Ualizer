@@ -1,39 +1,17 @@
-<!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title>VIS-Ualizer</title>
-    <link rel="stylesheet" type="text/css" href="/static/css/app.css">
-</head>
-<body>
-<h1>VIS-Ualizer</h1>
-
-<h2>Sample Bar Graph</h2>
-<svg class="bar-graph"></svg>
-
-<h2>Clustered Bar Graph</h2>
-<svg class="bar-graph-grouped"></svg>
-
-<h2>Force-Directed Graph</h2>
-<form class="force-directed-graph-search" action="#">
-    Node: <input name="node"/>
-    Inbound: <input type="checkbox" name="inbound" >
-    Outbound: <input type="checkbox" name="outbound" checked>
-    <input type="submit" value="Search">
-</form>
-<p><button class="save-force-directed-graph">Save SVG</button></p>
-
-<svg class="force-directed-graph"></svg>
-
-{#<h2>Co-Occurrence Matrix</h2>#}
-{#<svg class="co-occurrence-matrix"></svg>#}
-
-<h2>Heat Map</h2>
-<p>Colour Scheme: <select class="heat-map-color"></select></p>
-<p><button class="save-heat-map">Save SVG</button></p>
-<svg class="heat-map"></svg>
-
-{% for file in js_files %}<script src="{{ file }}"></script>
-{% endfor %}
-</body>
-</html>
+{% block head %}
+    <!DOCTYPE html>
+    <html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title>VIS-Ualizer</title>
+        <link rel="stylesheet" type="text/css" href="/static/css/app.css">
+    </head>
+    <body>
+    <h1><a href="/">VIS-Ualizer</a></h1>
+{% endblock %}
+{% block body %}{% endblock %}
+{% block foot %}
+    {% for file in js_files %}<script src="{{ file }}"></script>{% endfor %}
+    </body>
+    </html>
+{% endblock %}
