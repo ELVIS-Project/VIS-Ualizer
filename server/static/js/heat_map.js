@@ -9,6 +9,11 @@ var HeatMap = function(selector, width, height, xAxisLabel, yAxisLabel) {
     chart.legend = undefined;
     chart.boxes = undefined;
 
+
+    /*
+    Code handling the legend
+     */
+
     function renderLegend() {
         chart.legend.select("rect").remove();
         chart.legend.append("rect")
@@ -111,9 +116,8 @@ var HeatMap = function(selector, width, height, xAxisLabel, yAxisLabel) {
             .attr("transform", "rotate(-90)")
             .text(yAxisLabel);
 
-        // Style the axes
-        console.log("domain:", chart.g.select(".axis path"));
-        chart.g.selectAll(".axis path").style(cssStyling.axis);
+        // Apply CSS styling
+        chart.svg.selectAll([".axis path ", ".axis line"]).style(cssStyling.axis);
     }
 
     chart.svg = d3.select(selector)
