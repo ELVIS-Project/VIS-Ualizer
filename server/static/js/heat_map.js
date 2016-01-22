@@ -184,7 +184,7 @@ var HeatMap = function(selector, width, height, xAxisLabel, yAxisLabel) {
 
 d3.json("/data/duet/heat/", function(error, data) {
     if (error) throw error;
-    var heatMap = new HeatMap(".heat-map", 1280, 960, "Lorem", "Ipsum");
+    var heatMap = new HeatMap(".heat-map", 960, 640, "Lorem", "Ipsum");
     heatMap(data);
 
     var colourPicker = d3.select(".heat-map-color");
