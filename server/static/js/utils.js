@@ -49,16 +49,16 @@ function printToSVG(svg) {
 }
 
 var cssStyling = {
-    "global": {
+    global: {
         "font-family": "sans-serif",
         "font-size": "10px"
     },
-    "axis": {
+    axis: {
         "fill": "none",
         "stroke": "#000000",
         "shape-rendering": "crispEdges"
     },
-    "bar": {
+    bar: {
         "shape-rendering": "crispEdges"
     }
 };
