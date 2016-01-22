@@ -21,7 +21,7 @@ def data_dendrogram():
 
 
 @app.route("/data/arbitrary-matrix/<max>/")
-def big_ass_data(max):
+def data_arbitrary_matrix(max):
     max = int(max)
     output = dict()
     for i in range(max):
