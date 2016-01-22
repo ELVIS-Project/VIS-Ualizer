@@ -127,7 +127,8 @@ var HeatMap = function(selector, width, height, xAxisLabel, yAxisLabel) {
 
     chart.g = chart.svg
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .attr("shape-rendering", "crispEdges");
 
     /**
      * Set the colour scheme of the heat map.
