@@ -3,6 +3,24 @@ var ForceDirectedGraph = function(selector, width, height) {
     var circleRadius = 12;
     var maxLinkDistance = 200;
 
+    /*
+     Code handling Line Styling
+     */
+    chart.lineStyles = {
+        curved: "Curved",
+        straight: "Straight"
+    };
+    var lineStyle = chart.lineStyles.curved;
+    chart.lineStyle = function(style) {
+        if (style == undefined) {
+            // Get
+            return lineStyle;
+        } else {
+            // Set
+            lineStyle = chart.lineStyles[style];
+        }
+    };
+
     function chart(data) {
         console.log("data", data);
 
@@ -192,17 +210,24 @@ var ForceDirectedGraph = function(selector, width, height) {
 
                     return "M" + originX + "," + originY + " C" + loop1X + "," + loopY + " " + loop2X + "," + loopY + " " + originX + "," + originY;
                 } else {
-                    var distanceX = (target.x - source.x) / 2,
-                        distanceY = (target.y - source.y) / 2,
-                        midX = ((source.x + target.x) / 2) + (-distanceY * pythag),
-                        midY = ((source.y + target.y) / 2) + (distanceX * pythag);
+                    if (lineStyle == chart.lineStyles.curved) {
+                        var distanceX = (target.x - source.x) / 2,
+                            distanceY = (target.y - source.y) / 2,
+                            midX = ((source.x + target.x) / 2) + (-distanceY * pythag),
+                            midY = ((source.y + target.y) / 2) + (distanceX * pythag);
 
-                    return "M" + zoomTransformX(zoom, source.x) + " "
-                        + zoomTransformY(zoom, source.y) + " Q "
-                        + zoomTransformX(zoom, midX) + " "
-                        + zoomTransformY(zoom, midY) + " "
-                        + zoomTransformX(zoom, target.x) + " "
-                        + zoomTransformY(zoom, target.y);
+                        return "M" + zoomTransformX(zoom, source.x) + " "
+                            + zoomTransformY(zoom, source.y) + " Q "
+                            + zoomTransformX(zoom, midX) + " "
+                            + zoomTransformY(zoom, midY) + " "
+                            + zoomTransformX(zoom, target.x) + " "
+                            + zoomTransformY(zoom, target.y);
+                    } else {
+                        return "M" + zoomTransformX(zoom, source.x)
+                            + "," + zoomTransformY(zoom, source.y)
+                            + " L" + zoomTransformX(zoom, target.x)
+                            + "," + zoomTransformY(zoom, target.y);
+                    }
                 }
             });
             lineLabels.attr("transform", function(link) {
@@ -290,6 +315,16 @@ d3.json("/data/ave-maria/bass/", function(error, data) {
 
     var forceDirectedGraph = new ForceDirectedGraph(selector, 1600, 900);
     forceDirectedGraph(data);
+
+    var lineStylePicker = d3.select(".force-directed-graph-lines");
+    d3.keys(forceDirectedGraph.lineStyles).forEach(function(style) {
+        lineStylePicker.append("option")
+            .attr("value", style)
+            .text(forceDirectedGraph.lineStyles[style]);
+    });
+    lineStylePicker.on("change", function() {
+        forceDirectedGraph.lineStyle(lineStylePicker[0][0].value);
+    });
 
     var search = d3.select(".force-directed-graph-search");
     search.on("submit", function(event, i) {
