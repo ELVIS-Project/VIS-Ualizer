@@ -1,10 +1,12 @@
-from flask import Flask, render_template, url_for, abort
+import random
+import sys
+
+from examples import example_types
+from flask import render_template, url_for, abort
 from flask.ext.api import FlaskAPI
 from flask.ext.api.decorators import set_renderers
 from flask.ext.api.renderers import HTMLRenderer
 from helpers.CoOccurrenceMatrixParser import CoOccurrenceMatrixParser
-import sys
-import random
 
 app = FlaskAPI(__name__)
 
@@ -79,53 +81,33 @@ def bar_graph():
     return output
 
 
-@app.route("/example/<name>/")
+@app.route("/example/<id>/")
 @set_renderers(HTMLRenderer)
-def example(name):
+def example(id):
     js_files = [
         url_for("static", filename="js/libs/d3.js"),
         url_for("static", filename="js/utils.js")
     ]
-    if name == "bar-graph":
-        js_files.append(url_for("static", filename="js/bargraph.js"))
-        return render_template('example/bar-graph.html', js_files=js_files)
-    elif name == "bar-graph-grouped":
-        js_files.append(url_for("static", filename="js/bargraph_grouped.js"))
-        return render_template('example/bar-graph-grouped.html', js_files=js_files)
-    elif name == "force-directed-graph":
-        js_files.append(url_for("static", filename="js/force_directed_graph.js"))
-        return render_template('example/force-directed-graph.html', js_files=js_files)
-    elif name == "heat-map":
-        js_files.append(url_for("static", filename="js/heat_map.js"))
-        return render_template('example/heat-map.html', js_files=js_files)
-    elif name == "co-occurrence-matrix":
-        js_files.append((url_for("static", filename="js/co_occurrence_matrix.js")))
-        return render_template("example/co-occurrence-matrix.html")
+    if example_types.has_key(id):
+        example = example_types[id]
+        js_files.append(url_for("static", filename=example["js"]))
+        return render_template(example["template"], js_files=js_files)
     else:
+        # Invalid ID
         abort(404)
 
 
 @app.route("/")
 @set_renderers(HTMLRenderer)
 def hello():
-    js_files = [
-        # url_for("static", filename="js/libs/d3.js"),
-        # url_for("static", filename="js/utils.js"),
-        # url_for("static", filename="js/bargraph.js"),
-        # url_for("static", filename="js/bargraph_grouped.js"),
-        # url_for("static", filename="js/force_directed_graph.js"),
-        # url_for("static", filename="js/heat_map.js"),
-        # # url_for("static", filename="js/co_occurrence_matrix.js")
-    ]
-    example_links = [
-        {"name": "Bar Graph", "url": "/example/bar-graph/"},
-        {"name": "Bar Graph Grouped", "url": "/example/bar-graph-grouped/"},
-        {"name": "Force-Directed Graph", "url": "/example/force-directed-graph/"},
-        {"name": "Heat Map", "url": "/example/heat-map/"},
-        {"name": "Co-Occurrence Matrix", "url": "/example/co-occurrence-matrix/"}
-    ]
+    example_links = []
+    for id in example_types.keys():
+        example_links.append({
+            "name": example_types[id]["name"],
+            "url": "/example/{0}/".format(id)
+        })
     return render_template('example-list.html',
-                           js_files=js_files,
+                           js_files=[],
                            example_links=example_links)
 
 
