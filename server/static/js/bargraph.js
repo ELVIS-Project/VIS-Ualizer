@@ -12,24 +12,28 @@ var BarGraph = function(selector, width, height) {
         // Map y-axis values
         chart.y.domain([0, d3.max(data, function(d) { return d.value; })]);
 
-        chart.svg.append("g")
+        var xAxis = chart.g.append("g")
             .attr("class", "x axis")
             .attr("transform", "translate(0," + chart.height + ")")
             .call(chart.xAxis);
 
-        chart.svg.append("g")
+        var yAxis = chart.g.append("g")
             .attr("class", "y axis")
             .call(chart.yAxis);
 
-        chart.svg.selectAll(".bar")
+        // Apply CSS styling
+        chart.svg.selectAll([".axis path ", ".axis line"]).style(cssStyling.axis);
+
+        var bars = chart.g.selectAll(".bar")
             .data(data)
             .enter().append("rect")
-            .attr("class", "bar")
             .attr("x", function(d) { return chart.x(d.label); })
             .attr("y", function(d) { return chart.y(d.value); })
             .attr("fill", function(d) { return colours(d.label) })
             .attr("height", function(d) { return chart.height - chart.y(d.value); })
-            .attr("width", chart.x.rangeBand());
+            .attr("width", chart.x.rangeBand())
+            .style(cssStyling.bar);
+
     }
 
     chart.width = width - margin.left - margin.right;
@@ -52,6 +56,9 @@ var BarGraph = function(selector, width, height) {
     chart.svg = d3.select(selector)
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
+        .style(cssStyling.global);
+
+    chart.g = chart.svg
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -65,4 +72,9 @@ var BarGraph = function(selector, width, height) {
 d3.json("/graph/", function(error, data) {
     var barGraph = new BarGraph(".bar-graph", 640, 320);
     barGraph(data);
+
+    var printButton = d3.select(".save-bar-graph");
+    printButton.on("click", function() {
+        printToSVG(barGraph.svg[0][0]);
+    });
 });
