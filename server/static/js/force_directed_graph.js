@@ -165,8 +165,6 @@ var ForceDirectedGraph = function(selector, width, height) {
             .append("text")
             .attr("fill", function(node) { return d3.rgb(color(node.name)).darker(2); })
             .attr("transform", "translate(-3, 3)")
-            .attr("font-family", "sans-serif")
-            .attr("font-size", "10px")
             .text(function(node) { return node.name });
 
         var lineLabels = link
@@ -174,8 +172,6 @@ var ForceDirectedGraph = function(selector, width, height) {
             .style("fill", function(link) { return d3.rgb(color(link.source.name)).darker(2); })
             //.attr("fill", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
             .text(function(link) { return link.value })
-            .attr("font-family", "sans-serif")
-            .attr("font-size", "10px")
             .style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
 
         // Invoke force
@@ -307,7 +303,8 @@ var ForceDirectedGraph = function(selector, width, height) {
 
     chart.svg = d3.select(selector)
         .attr("width", width)
-        .attr("height", height);
+        .attr("height", height)
+        .style(cssStyling.global);
 
     return chart;
 };
