@@ -1,17 +1,26 @@
 import random
 import sys
 
-from examples import example_types
 from flask import render_template, url_for, abort
 from flask.ext.api import FlaskAPI
 from flask.ext.api.decorators import set_renderers
 from flask.ext.api.renderers import HTMLRenderer
 from helpers.CoOccurrenceMatrixParser import CoOccurrenceMatrixParser
 
+# Data from external modules
+from data import dendrogram
+from examples import example_types
+
+
 app = FlaskAPI(__name__)
 
 
-@app.route("/arbitrary-matrix/<max>/")
+@app.route("/data/dendrogram/")
+def data_dendrogram():
+    return dendrogram.matrix
+
+
+@app.route("/data/arbitrary-matrix/<max>/")
 def big_ass_data(max):
     max = int(max)
     output = dict()
