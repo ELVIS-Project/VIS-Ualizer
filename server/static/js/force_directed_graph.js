@@ -90,7 +90,7 @@ var ForceDirectedGraph = function(selector, width, height) {
             //.friction(0.9)
             .linkDistance(function(link) {
                 // Stronger links are closer
-                return maxLinkDistance - (link.relativeValue * maxLinkDistance);
+                return maxLinkDistance - (link.relativeValue * maxLinkDistance) + 2.5 * circleRadius;
             })
             .charge(-20)
             .gravity(0.01)
