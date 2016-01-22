@@ -164,7 +164,7 @@ var ForceDirectedGraph = function(selector, width, height) {
         var circleLabels = node
             .append("text")
             .attr("fill", function(node) { return d3.rgb(color(node.name)).darker(2); })
-            .attr("transform", "translate(-3, 3)")
+            .attr("transform", "translate(0, 3)")
             .text(function(node) { return node.name });
 
         var lineLabels = link
@@ -304,7 +304,8 @@ var ForceDirectedGraph = function(selector, width, height) {
     chart.svg = d3.select(selector)
         .attr("width", width)
         .attr("height", height)
-        .style(cssStyling.global);
+        .style(cssStyling.global)
+        .attr("text-anchor", "middle");
 
     return chart;
 };
