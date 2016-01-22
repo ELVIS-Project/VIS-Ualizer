@@ -237,14 +237,19 @@ var ForceDirectedGraph = function(selector, width, height) {
                 if (source == target) {
                     return "translate(" + zoomTransformX(zoom, source.x)  + "," + zoomTransformY(zoom, source.y + ((1 - link.relativeValue) * 2.5 * circleRadius)) + ")";
                 } else {
+                    // Multiply determines how far from the line to draw the label.
+                    var multiplier = 2;
+                    if (lineStyle == chart.lineStyles.straight) {
+                        multiplier = 4
+                    }
+
                     var distanceX = (target.x - source.x) / 2,
                         distanceY = (target.y - source.y) / 2,
-                        midX = ((source.x + target.x) / 2) + (-distanceY * pythag) / 2,
-                        midY = ((source.y + target.y) / 2) + (distanceX * pythag) / 2;
+                        midX = ((source.x + target.x) / 2) + (-distanceY * pythag) / multiplier,
+                        midY = ((source.y + target.y) / 2) + (distanceX * pythag) / multiplier;
 
                     return "translate(" + zoomTransformX(zoom, midX) + "," + zoomTransformY(zoom, midY) + ")";
                 }
-
             });
         }
 
