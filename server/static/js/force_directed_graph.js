@@ -267,6 +267,9 @@ var ForceDirectedGraph = function(selector, width, height) {
          * @param isOutbound
          */
         chart.search = function(searchTerm, isInbound, isOutbound) {
+            // Trim whitespace
+            searchTerm = searchTerm.trim();
+
             // Handle non-search case
             if (searchTerm == "") {
                 link.attr("opacity", 1);
