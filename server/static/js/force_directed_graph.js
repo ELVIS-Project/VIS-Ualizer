@@ -24,6 +24,9 @@ var ForceDirectedGraph = function(selector, width, height) {
     function chart(data) {
         console.log("data", data);
 
+        // Make sure the SVG is clean
+        chart.svg.selectAll("*").remove();
+
         // Marker definitions
         var defs = chart.svg.append("defs");
 
@@ -313,39 +316,48 @@ var ForceDirectedGraph = function(selector, width, height) {
     return chart;
 };
 
+var selector = ".force-directed-graph";
+var forceDirectedGraph = new ForceDirectedGraph(selector, 1600, 900);
 
-d3.json("/data/ave-maria/bass/", function(error, data) {
-    if (error) throw error;
-
-    var selector = ".force-directed-graph";
-
-    var forceDirectedGraph = new ForceDirectedGraph(selector, 1600, 900);
-    forceDirectedGraph(data);
-
-    var lineStylePicker = d3.select(".force-directed-graph-lines");
-    d3.keys(forceDirectedGraph.lineStyles).forEach(function(style) {
-        lineStylePicker.append("option")
-            .attr("value", style)
-            .text(forceDirectedGraph.lineStyles[style]);
-    });
-    lineStylePicker.on("change", function() {
-        forceDirectedGraph.lineStyle(lineStylePicker[0][0].value);
-    });
-
-    var search = d3.select(".force-directed-graph-search");
-    search.on("submit", function(event, i) {
-        d3.event.preventDefault();
-        console.log(search);
-        var value = search[0][0][0].value,
-            isInbound = search[0][0][1].checked,
-            isOutbound = search[0][0][2].checked;
-        console.log(isInbound, isOutbound);
-        forceDirectedGraph.search(value, isInbound, isOutbound);
-    });
-
-    var printButton = d3.select(".save-force-directed-graph");
-    printButton.on("click", function() {
-        printToSVG(forceDirectedGraph.svg[0][0]);
-    });
-
+var lineStylePicker = d3.select(".force-directed-graph-lines");
+d3.keys(forceDirectedGraph.lineStyles).forEach(function(style) {
+    lineStylePicker.append("option")
+        .attr("value", style)
+        .text(forceDirectedGraph.lineStyles[style]);
 });
+lineStylePicker.on("change", function() {
+    forceDirectedGraph.lineStyle(lineStylePicker[0][0].value);
+});
+
+var search = d3.select(".force-directed-graph-search");
+search.on("submit", function() {
+    d3.event.preventDefault();
+    console.log(search);
+    var value = search[0][0][0].value,
+        isInbound = search[0][0][1].checked,
+        isOutbound = search[0][0][2].checked;
+    console.log(isInbound, isOutbound);
+    forceDirectedGraph.search(value, isInbound, isOutbound);
+});
+
+var printButton = d3.select(".save-force-directed-graph");
+printButton.on("click", function() {
+    printToSVG(forceDirectedGraph.svg[0][0]);
+});
+
+var dataPicker = d3.select(".force-directed-graph-data");
+dataPicker.on("change", function() {
+    var value = dataPicker[0][0].value;
+    var dataUrl = "/data/ave-maria/" + value + "/";
+    forceDirectedGraphLoad(dataUrl);
+});
+
+
+function forceDirectedGraphLoad(dataSource) {
+    d3.json(dataSource, function(error, data) {
+        if (error) throw error;
+        forceDirectedGraph(data);
+    });
+}
+
+forceDirectedGraphLoad("/data/ave-maria/alto/");
