@@ -19,6 +19,7 @@ var ForceDirectedGraph = function(selector, width, height) {
             // Set
             lineStyle = chart.lineStyles[style];
         }
+        chart.tick();
     };
 
     function chart(data) {
@@ -187,9 +188,9 @@ var ForceDirectedGraph = function(selector, width, height) {
             //node.selectAll("circle").attr("r", circleRadius * zoom.scale());
             //node.selectAll("text").attr("transform", "translate(0, " + zoom.scale() * 2 * circleRadius + ")");
 
-            tick();
+            chart.tick();
         }
-        function tick() {
+        chart.tick = function() {
             node.attr("transform", function(d) {
                 return "translate(" + zoomTransformX(zoom, d.x) + "," + zoomTransformY(zoom, d.y) + ")";
             });
@@ -250,9 +251,9 @@ var ForceDirectedGraph = function(selector, width, height) {
                     return "translate(" + zoomTransformX(zoom, midX) + "," + zoomTransformY(zoom, midY) + ")";
                 }
             });
-        }
+        };
 
-        force.on("tick", tick);
+        force.on("tick", chart.tick);
 
         // Don't have panning
         chart.svg.call(zoom)
