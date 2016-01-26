@@ -36,7 +36,7 @@ var ForceDirectedGraph = function(selector, width, height) {
         var zoom = d3.behavior.zoom()
             .scaleExtent([1, 10])
             .size(width, height)
-            .on("zoom", zoomTick);
+            .on("zoom", chart.tick);
 
         // Get all keys
         var keys = extractKeysFromMatrix(data);
@@ -181,40 +181,39 @@ var ForceDirectedGraph = function(selector, width, height) {
         // Invoke force
         node.call(force.drag);
 
-        var pythag = Math.sqrt(3) / 2;
 
-
-        function zoomTick() {
-            //node.selectAll("circle").attr("r", circleRadius * zoom.scale());
-            //node.selectAll("text").attr("transform", "translate(0, " + zoom.scale() * 2 * circleRadius + ")");
-
-            chart.tick();
-        }
+        /**
+         * Advance the force-based simulation by one "tick".
+         */
         chart.tick = function() {
-            node.attr("transform", function(d) {
-                return "translate(" + zoomTransformX(zoom, d.x) + "," + zoomTransformY(zoom, d.y) + ")";
+            var pythagoreanConstant = Math.sqrt(3) / 2;
+
+            node.attr("transform", function(node) {
+                return "translate(" +
+                    zoomTransformX(zoom, node.x) + "," +
+                    zoomTransformY(zoom, node.y) + ")";
             });
 
-            var r = zoom.scale() * 5;
             lines.attr("d", function(link) {
                 var source = link["source"],
                     target = link["target"];
 
                 if (source == target) {
+                    // Values that affect the loop size
+                    var radiusMultiplier = 3 * circleRadius,
+                        relativeMultiplier = link.relativeValue * 2 * circleRadius;
                     // It's a self-link.  So, we make a little loop.
                     var originX = zoomTransformX(zoom, source.x),
                         originY = zoomTransformY(zoom, source.y),
-                        loop1X = zoomTransformX(zoom, source.x + (3 * circleRadius) - (link.relativeValue * 2 * circleRadius)),
-                        loopY = zoomTransformY(zoom, source.y + (3 * circleRadius) - (link.relativeValue * 2 * circleRadius)),
-                        loop2X = zoomTransformX(zoom, source.x - (3 * circleRadius) + (link.relativeValue * 2 * circleRadius));
+                        loop1X = zoomTransformX(zoom, source.x + radiusMultiplier - relativeMultiplier),
+                        loopY = zoomTransformY(zoom, source.y + radiusMultiplier - relativeMultiplier),
+                        loop2X = zoomTransformX(zoom, source.x - radiusMultiplier + relativeMultiplier);
 
                     return "M" + originX + "," + originY + " C" + loop1X + "," + loopY + " " + loop2X + "," + loopY + " " + originX + "," + originY;
                 } else {
                     if (lineStyle == chart.lineStyles.curved) {
-                        var distanceX = (target.x - source.x) / 2,
-                            distanceY = (target.y - source.y) / 2,
-                            midX = ((source.x + target.x) / 2) + (-distanceY * pythag),
-                            midY = ((source.y + target.y) / 2) + (distanceX * pythag);
+                        var midX = ((source.x + target.x) / 2) + (-((target.y - source.y) / 2) * pythagoreanConstant),
+                            midY = ((source.y + target.y) / 2) + (((target.x - source.x) / 2) * pythagoreanConstant);
 
                         return "M" + zoomTransformX(zoom, source.x) + " "
                             + zoomTransformY(zoom, source.y) + " Q "
@@ -223,32 +222,38 @@ var ForceDirectedGraph = function(selector, width, height) {
                             + zoomTransformX(zoom, target.x) + " "
                             + zoomTransformY(zoom, target.y);
                     } else {
-                        return "M" + zoomTransformX(zoom, source.x)
-                            + "," + zoomTransformY(zoom, source.y)
-                            + " L" + zoomTransformX(zoom, target.x)
-                            + "," + zoomTransformY(zoom, target.y);
+                        return "M" +
+                            zoomTransformX(zoom, source.x) + "," +
+                            zoomTransformY(zoom, source.y) + " L" +
+                            zoomTransformX(zoom, target.x) + "," +
+                            zoomTransformY(zoom, target.y);
                     }
                 }
             });
+
             lineLabels.attr("transform", function(link) {
                 var source = link["source"],
                     target = link["target"];
 
                 if (source == target) {
-                    return "translate(" + zoomTransformX(zoom, source.x)  + "," + zoomTransformY(zoom, source.y + ((1 - link.relativeValue) * 2.5 * circleRadius)) + ")";
+                    return "translate(" +
+                        zoomTransformX(zoom, source.x)  + "," +
+                        zoomTransformY(zoom, source.y + ((1 - link.relativeValue) * 2.5 * circleRadius)) + ")";
                 } else {
                     // Multiply determines how far from the line to draw the label.
-                    var multiplier = 2;
+                    var multiplier;
                     if (lineStyle == chart.lineStyles.straight) {
                         multiplier = 4
+                    } else {
+                        multiplier = 2;
                     }
 
-                    var distanceX = (target.x - source.x) / 2,
-                        distanceY = (target.y - source.y) / 2,
-                        midX = ((source.x + target.x) / 2) + (-distanceY * pythag) / multiplier,
-                        midY = ((source.y + target.y) / 2) + (distanceX * pythag) / multiplier;
+                    var midX = ((source.x + target.x) / 2) + (-((target.y - source.y) / 2) * pythagoreanConstant) / multiplier;
+                        midY = ((source.y + target.y) / 2) + (((target.x - source.x) / 2) * pythagoreanConstant) / multiplier;
 
-                    return "translate(" + zoomTransformX(zoom, midX) + "," + zoomTransformY(zoom, midY) + ")";
+                    return "translate(" +
+                        zoomTransformX(zoom, midX) + "," +
+                        zoomTransformY(zoom, midY) + ")";
                 }
             });
         };
