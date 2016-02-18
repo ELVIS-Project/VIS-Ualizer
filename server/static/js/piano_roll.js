@@ -13,11 +13,30 @@ var PianoRoll = function(selector, width, height) {
         .attr("shape-rendering", "crispEdges");
 
     function chart(data) {
+        // Build axes
+        chart.x = d3.scale.linear().range([0, data["scorelength"][0]]);
+
+        console.log(chart.x(0.5));
+
         chart.scoreLength = data["scorelength"][0];
         var colours = d3.scale.category10().domain(data["partcount"]);
 
         // For now, we will merge all of the parts into a single array of blocks.
-        console.log(data["partdata"]);
+        console.log(data["barlines"]);
+
+        chart.g.selectAll(selector).data(data["barlines"]).enter().append('line')
+            .attr("x1", function(note) {
+                return note["time"][0];
+            })
+            .attr("y1", 0)
+            .attr("x2", function(note) {
+                return note["time"][0];
+            })
+            .attr("y2", height)
+            .style({
+                "stroke": "rgb(192,192,192)",
+                "stroke-width": 1
+            });
 
         data["partdata"].forEach(function(part) {
             var colour = colours(part["partindex"]);
@@ -43,14 +62,20 @@ var PianoRoll = function(selector, width, height) {
 
     chart.zoomTick = function (xZoom, yZoom, xLocation) {
         console.log(xZoom, yZoom, xLocation);
-        var locationFraction = xLocation / 100.0;
-        console.log(locationFraction);
-        var noteLocation = locationFraction * chart.scoreLength;
-        var pixelLocation = noteLocation * xZoom;
+        // Update the x range
+        chart.x.range([0, chart.scoreLength * xZoom]);
 
-        console.log(noteLocation);
+        var pixelLocation = chart.x(xLocation / 100);
 
-        chart.g.selectAll("rect").attr("height", noteHeight)
+        chart.g.selectAll("line") 
+            .attr("x1", function(note) {
+                return note["time"][0] * xZoom - pixelLocation;
+            })
+            .attr("x2", function(note) {
+                return note["time"][0] * xZoom - pixelLocation;
+            });
+
+        chart.g.selectAll("rect")
             .attr("width", function(note) {
                 return note["duration"][0] * xZoom;
             })

@@ -1,4 +1,5 @@
 import csv
+import json
 
 
 class CSVParser():
@@ -21,3 +22,11 @@ class CoOccurrenceMatrixParser(CSVParser):
                     output_row[keys[index]] = value
             output[row[0]] = output_row
         return output
+
+
+class JsonParser():
+    def __init__(self, file_path):
+        self.file = open(file_path, "rb")
+
+    def parse(self):
+        return json.load(self.file)

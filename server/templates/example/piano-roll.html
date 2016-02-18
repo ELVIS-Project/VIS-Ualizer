@@ -1,0 +1,25 @@
+{% extends "index.html" %}
+{% block body %}
+    <h2>Piano Roll</h2>
+    <p><button class="save-bar-graph">Save SVG</button></p>
+    <h3>Controls</h3>
+    <p>
+        <label>
+            X-Zoom
+            <input type="range" name="x_zoom" min="1" max="10" value="1"/>
+        </label>
+    </p>
+    <p>
+        <label>
+            Y-Zoom
+            <input type="range" name="y_zoom" min="1" max="5" value="1"/>
+        </label>
+    </p>
+    <p>
+        <label>
+            X-Location
+            <input type="range" name="x_location" min="0" max="99" value="0"/>
+        </label>
+    </p>
+    <svg class="piano-roll"></svg>
+{% endblock %}
