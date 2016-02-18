@@ -29,6 +29,19 @@ var PianoRoll = function(selector, width, height) {
         .style("fill", "none");
 
     function chart(data) {
+        // Construct a mapping between midi numbers and pitches
+        var midiNumberToPitch = {};
+        data["partdata"].forEach(function(part) {
+            part["notedata"].forEach(function(note) {
+                var pitch = note["pitch"];
+                midiNumberToPitch[pitch["b12"]] = pitch["name"];
+            });
+        });
+        // This is the formatting function we will pass to the y-axis
+        function formatMidiPitch(midiNumber) {
+            return midiNumberToPitch[midiNumber];
+        }
+
         // Build scales
         chart.x = d3.scale.linear().range([0, data["scorelength"][0]]);
         chart.pitch = d3.scale.ordinal()
@@ -40,6 +53,7 @@ var PianoRoll = function(selector, width, height) {
             .orient("bottom");
         chart.yAxis = d3.svg.axis()
             .scale(chart.pitch)
+            .tickFormat(formatMidiPitch)
             .orient("left");
 
         var xAxis = chart.g.append("g")
@@ -114,13 +128,10 @@ var PianoRoll = function(selector, width, height) {
     }
 
     chart.zoomTick = function (xZoom, yZoom, xLocation) {
-        //console.log(xZoom, yZoom, xLocation);
         // Update the x range
         chart.x.range([0, chart.scoreLength * xZoom]);
 
         var pixelLocation = chart.x(xLocation / 100);
-
-        console.log(chart.pitch.rangeBand());
 
         chart.g.selectAll(".x-axis")
             .call(chart.xAxis);
