@@ -24,4 +24,9 @@ example_types = {
     #     "js": "js/co_occurrence_matrix.js",
     #     "template": "example/co-occurrence-matrix.html"
     # },
+    "piano-roll": {
+        "name": "Piano Roll",
+        "js": "js/piano_roll.js",
+        "template": "example/piano-roll.html"
+    }
 }

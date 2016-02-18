@@ -5,14 +5,17 @@ from flask import render_template, url_for, abort
 from flask.ext.api import FlaskAPI
 from flask.ext.api.decorators import set_renderers
 from flask.ext.api.renderers import HTMLRenderer
-from helpers.CoOccurrenceMatrixParser import CoOccurrenceMatrixParser
-
+from helpers.parsers import CoOccurrenceMatrixParser, JsonParser
 # Data from external modules
 from data import dendrogram
 from examples import example_types
 
 
 app = FlaskAPI(__name__)
+
+@app.route("/data/piano-roll/")
+def data_piano_roll():
+    return JsonParser("../data/json/Domine_non_secundum_peccata.json").parse()
 
 
 @app.route("/data/dendrogram/")
