@@ -15,6 +15,9 @@ var PianoRoll = function(selector, width, height) {
     function chart(data) {
         // Build axes
         chart.x = d3.scale.linear().range([0, data["scorelength"][0]]);
+        chart.pitch = d3.scale.ordinal()
+            .domain(d3.range(data["minpitch"]["b12"], data["maxpitch"]["b12"]))
+            .rangeRoundBands([0, height], 0, 0);
 
         console.log(chart.x(0.5));
 
@@ -33,6 +36,7 @@ var PianoRoll = function(selector, width, height) {
                 return note["time"][0];
             })
             .attr("y2", height)
+            .attr("class", "barline")
             .style({
                 "stroke": "rgb(192,192,192)",
                 "stroke-width": 1
@@ -67,7 +71,9 @@ var PianoRoll = function(selector, width, height) {
 
         var pixelLocation = chart.x(xLocation / 100);
 
-        chart.g.selectAll("line") 
+        console.log(chart.pitch.rangeBand());
+
+        chart.g.selectAll(".barline")
             .attr("x1", function(note) {
                 return note["time"][0] * xZoom - pixelLocation;
             })
@@ -80,13 +86,14 @@ var PianoRoll = function(selector, width, height) {
                 return note["duration"][0] * xZoom;
             })
             .attr("height", function(note) {
-                return noteHeight * yZoom;
+                return chart.pitch.rangeBand();
             })
             .attr("x", function(note) {
                 return note["starttime"][0] * xZoom - pixelLocation;
             })
             .attr("y", function(note) {
-                return note["pitch"]["b12"] * noteHeight * yZoom;
+                //console.log(chart.pitch(note["pitch"]["b12"]));
+                return chart.pitch(note["pitch"]["b12"]);
             })
     };
 
@@ -95,7 +102,7 @@ var PianoRoll = function(selector, width, height) {
 
 d3.json("/data/piano-roll/", function(error, data) {
     if (error) throw error;
-    var pianoRoll = new PianoRoll(".piano-roll", 1280, 640);
+    var pianoRoll = new PianoRoll(".piano-roll", 1280, 160);
     pianoRoll(data);
 
     var xZoomPicker = d3.select('input[name="x_zoom"]');
