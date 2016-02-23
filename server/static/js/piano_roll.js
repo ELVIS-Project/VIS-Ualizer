@@ -45,7 +45,7 @@ var PianoRoll = function(selector, width, height) {
         // Build scales
         chart.x = d3.scale.linear().range([0, data["scorelength"][0]]);
         chart.pitch = d3.scale.ordinal()
-            .domain(d3.range(data["minpitch"]["b12"], data["maxpitch"]["b12"]))
+            .domain(d3.range(data["minpitch"]["b12"], data["maxpitch"]["b12"]).reverse())
             .rangeRoundBands([0, height - margins.bottom - margins.top], 0, 0);
         // Build the axes
         chart.xAxis = d3.svg.axis()
