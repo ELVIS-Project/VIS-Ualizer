@@ -62,3 +62,33 @@ var cssStyling = {
         "shape-rendering": "crispEdges"
     }
 };
+
+/**
+ * Construct a legend at the top right of the visualization.
+ *
+ * @param element
+ * @param names
+ * @param colourScale
+ * @param rightMargin
+ * @param topMargin
+ * @param width
+ */
+function buildLegend(element, names, colourScale, rightMargin, topMargin, width) {
+    // Construct the legend
+    var legend = element.append("g")
+        .attr("transform", "translate(" + (width - rightMargin + 10) + "," + topMargin + ")");
+
+    var cubeSize = 10;
+    for(var i = 0; i < names.length; i++) {
+        legend.append("rect")
+            .attr("width", cubeSize)
+            .attr("height", cubeSize)
+            .attr("y", i * (cubeSize + 2))
+            .style("fill", colourScale(i));
+
+        legend.append("text")
+            .text(names[i])
+            .attr("y", i * (cubeSize + 2) + cubeSize - 1)
+            .attr("x", cubeSize + 2);
+    }
+}
