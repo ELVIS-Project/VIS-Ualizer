@@ -28,5 +28,10 @@ example_types = {
         "name": "Piano Roll",
         "js": "js/piano_roll.js",
         "template": "example/piano-roll.html"
+    },
+    "pie-chart": {
+        "name": "Pie Chart",
+        "js": "js/pie_chart.js",
+        "template": "example/pie-chart.html"
     }
 }

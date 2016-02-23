@@ -13,6 +13,41 @@ from examples import example_types
 
 app = FlaskAPI(__name__)
 
+
+@app.route("/data/pie-chart/")
+def data_pie_chart():
+    return [
+        {
+            "label": "a",
+            "value": 2704659
+        },
+        {
+            "label": "b",
+            "value": 4499890
+        },
+        {
+            "label": "c",
+            "value": 2159981
+        },
+        {
+            "label": "d",
+            "value": 3853788
+        },
+        {
+            "label": "e",
+            "value": 14106543
+        },
+        {
+            "label": "f",
+            "value": 8819342
+        },
+        {
+            "label": "g",
+            "value": 612463
+        }
+    ]
+
+
 @app.route("/data/piano-roll/")
 def data_piano_roll():
     return JsonParser("../data/json/Domine_non_secundum_peccata.json").parse()
