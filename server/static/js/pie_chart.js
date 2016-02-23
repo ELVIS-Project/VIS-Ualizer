@@ -54,7 +54,7 @@ var PieChart = function(selector, width, height) {
 /**
  * Load the bar graph data from the server, and render it if successful.
  */
-d3.json("/data/pie-chart/", function(error, data) {
+d3.json("/graph/10/", function(error, data) {
     var pieChart = new PieChart(".pie-chart", 640, 320);
     pieChart(data);
 
