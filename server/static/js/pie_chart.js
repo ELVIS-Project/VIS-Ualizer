@@ -11,6 +11,11 @@ var PieChart = function(selector, width, height) {
         .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
         .style(cssStyling.global);
 
+    chart.getSVGforPrinting = function() {
+        return d3.select(selector).select("svg")[0][0];
+    };
+
+
     function chart(data) {
         console.log(data);
 
@@ -60,7 +65,6 @@ d3.json("/graph/10/", function(error, data) {
 
     var printButton = d3.select(".save-pie-chart");
     printButton.on("click", function() {
-        console.log(pieChart.svg);
-        printToSVG(pieChart.svg);
+        printToSVG(pieChart.getSVGforPrinting());
     });
 });
