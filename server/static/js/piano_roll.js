@@ -69,7 +69,7 @@ var PianoRoll = function(selector, width, height) {
 
 
         chart.scoreLength = data["scorelength"][0];
-        var colours = d3.scale.category10().domain(data["partcount"]);
+        var colours = d3.scale.category20().domain(data["partcount"]);
 
         chart.contentArea.selectAll(selector).data(data["barlines"]).enter().append('line')
             .attr("x1", function(note) {
