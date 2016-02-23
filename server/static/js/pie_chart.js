@@ -60,6 +60,13 @@ var PieChart = function(selector, width, height) {
             .text(function(d) {
                 console.log(d);
                 return d.data["label"]; });
+
+        // Build the legend
+        var names = data.map(function(datum) {
+            return datum["label"];
+        });
+        console.log(names);
+        buildLegend(chart.svg, names, colours, margin, margin, width);
     }
 
     return chart;
