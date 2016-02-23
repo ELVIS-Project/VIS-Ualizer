@@ -99,7 +99,7 @@ def data_ave_maria(voice):
 
 
 @app.route("/graph/grouped/")
-def grouped_bar_graph():
+def data_grouped_bar_graph():
     min = 0.0
     max = 100.0
     data = [[], [], []]
@@ -124,11 +124,21 @@ def grouped_bar_graph():
 
 
 @app.route("/graph/")
-def bar_graph():
+def data_bar_graph():
     min = 0.0
     max = 100.0
     output = []
     for i in range(32):
+        output.append(dict(label=i, value=random.uniform(min,max)))
+    return output
+
+
+@app.route("/graph/<num>/")
+def data_bar_graph_num(num):
+    min = 0.0
+    max = 100.0
+    output = []
+    for i in range(int(num)):
         output.append(dict(label=i, value=random.uniform(min,max)))
     return output
 
