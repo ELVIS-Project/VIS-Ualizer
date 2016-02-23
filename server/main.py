@@ -18,6 +18,11 @@ def data_piano_roll():
     return JsonParser("../data/json/Domine_non_secundum_peccata.json").parse()
 
 
+@app.route("/data/piano-roll/qui-habitat/")
+def data_piano_roll_qui_habitat():
+    return JsonParser("../data/json/qui_habitat.json").parse()
+
+
 @app.route("/data/dendrogram/")
 def data_dendrogram():
     return dendrogram.matrix
