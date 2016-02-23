@@ -1,25 +1,35 @@
 
 
 var PieChart = function(selector, width, height) {
-    var margin = {top: 20, right: 30, bottom: 30, left: 40};
+    var margin = 120;
+
+    var centre = {x: width/2, y: height/2};
 
     chart.svg = d3.select(selector)
         .append("svg")
         .attr("width", width)
         .attr("height", height)
-        .append("g")
-        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
         .style(cssStyling.global);
+
+    chart.g = chart.svg.append("g")
+        .attr("transform", "translate(" + centre.x + "," + centre.y + ")")
+        .call(d3.behavior.zoom().scaleExtent([1, 8]).on("zoom", zoom));
 
     chart.getSVGforPrinting = function() {
         return d3.select(selector).select("svg")[0][0];
     };
 
+    function zoom() {
+        var newTranslation = d3.event.translate;
+        newTranslation[0] += centre.x;
+        newTranslation[1] += centre.y;
+        chart.g.attr("transform", "translate(" + newTranslation + ")scale(" + d3.event.scale + ")");
+    }
 
     function chart(data) {
         console.log(data);
 
-        var radius = Math.min(width, height) / 2;
+        var radius = Math.min(width, height) / 2 - margin;
 
         var colours = d3.scale.category20();
 
@@ -35,7 +45,7 @@ var PieChart = function(selector, width, height) {
             .sort(null)
             .value(function(data) { return data["value"]; });
 
-        var g = chart.svg.selectAll(".arc")
+        var g = chart.g.selectAll(".arc")
             .data(pie(data))
             .enter().append("g")
             .attr("class", "arc");
@@ -60,7 +70,7 @@ var PieChart = function(selector, width, height) {
  * Load the bar graph data from the server, and render it if successful.
  */
 d3.json("/graph/10/", function(error, data) {
-    var pieChart = new PieChart(".pie-chart", 640, 320);
+    var pieChart = new PieChart(".pie-chart", 1280, 640);
     pieChart(data);
 
     var printButton = d3.select(".save-pie-chart");
