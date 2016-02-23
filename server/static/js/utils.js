@@ -92,3 +92,29 @@ function buildLegend(element, names, colourScale, rightMargin, topMargin, width)
             .attr("x", cubeSize + 2);
     }
 }
+
+/**
+ * Given a vector, return the normalized vector.
+ *
+ * @param vector
+ * @returns {Array|*}
+ */
+function normalizeVector(vector) {
+    var norm = getNorm(vector);
+    return vector.map(function(x) {
+        return x / norm;
+    })
+}
+
+function getNorm(array) {
+    var squares = array.map(function (x) {
+        return x * x;
+    });
+    return Math.sqrt(sumArray(squares));
+}
+
+function sumArray(array) {
+    return array.reduce(function(a,b) {
+        return a + b;
+    });
+}
