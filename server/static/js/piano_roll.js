@@ -111,23 +111,8 @@ var PianoRoll = function(selector, width, height) {
         // Hover titles
         chart.g.selectAll(".note").append("title").text(function(note) { return note["pitch"]["name"]; });
 
-        // Construct the legend
-        var legend = chart.g.append("g")
-            .attr("transform", "translate(" + (width - margins.right + 10) + "," + margins.top + ")");
-
-        var cubeSize = 10;
-        for(var i = 0; i < data["partcount"]; i++) {
-            legend.append("rect")
-                .attr("width", cubeSize)
-                .attr("height", cubeSize)
-                .attr("y", i * (cubeSize + 2))
-                .style("fill", colours(i));
-
-            legend.append("text")
-                .text(data["partnames"][i])
-                .attr("y", i * (cubeSize + 2) + margins.top)
-                .attr("x", cubeSize + 2);
-        }
+        // Build the legend
+        buildLegend(chart.g, data["partnames"], colours, margins.right, margins.top, width);
     }
 
     chart.zoomTick = function (xZoom, yZoom, xLocation) {
