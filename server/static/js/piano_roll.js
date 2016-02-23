@@ -166,7 +166,7 @@ var PianoRoll = function(selector, width, height) {
 
 d3.json("/data/piano-roll/", function(error, data) {
     if (error) throw error;
-    var pianoRoll = new PianoRoll(".piano-roll", 1280, 250);
+    var pianoRoll = new PianoRoll(".piano-roll", 1280, 320);
     pianoRoll(data);
 
     var xZoomPicker = d3.select('input[name="x_zoom"]');
