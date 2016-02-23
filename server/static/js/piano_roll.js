@@ -108,6 +108,9 @@ var PianoRoll = function(selector, width, height) {
                 .style("fill", colour);
         });
 
+        // Hover titles
+        chart.g.selectAll(".note").append("title").text(function(note) { return note["pitch"]["name"]; });
+
         // Construct the legend
         var legend = chart.g.append("g")
             .attr("transform", "translate(" + (width - margins.right + 10) + "," + margins.top + ")");
