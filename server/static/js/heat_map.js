@@ -34,8 +34,8 @@ var HeatMap = function(selector, width, height, xAxisLabel, yAxisLabel) {
                 .range([0, keys[5]]),
             y = d3.scale.ordinal();
 
-        chart.z.domain(chart.colourPalettes.fruitSalad.domain)
-               .range(chart.colourPalettes.fruitSalad.range);
+        chart.z.domain(colourPalettes.fruitSalad.domain)
+               .range(colourPalettes.fruitSalad.range);
 
         // Compute the scale domains.
         x.domain(keys).rangeBands([0, width]);
@@ -121,6 +121,7 @@ var HeatMap = function(selector, width, height, xAxisLabel, yAxisLabel) {
     }
 
     chart.svg = d3.select(selector)
+        .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .style(cssStyling.global);
@@ -135,7 +136,7 @@ var HeatMap = function(selector, width, height, xAxisLabel, yAxisLabel) {
      * @param schemeName
      */
     chart.setColourScheme = function(schemeId) {
-        var colourPalette = chart.colourPalettes[schemeId];
+        var colourPalette = colourPalettes[schemeId];
         // Quit if not valid colour palette
         if (colourPalette == undefined) return;
         chart.z.domain(colourPalette.domain).range(colourPalette.range);
@@ -150,7 +151,7 @@ var HeatMap = function(selector, width, height, xAxisLabel, yAxisLabel) {
     };
 
 
-    chart.colourPalettes = {
+    var colourPalettes = {
         "fruitSalad": {
             name: "Fruit Salad",
             domain: [0, 0.4, 0.65, 0.8, 1],
@@ -183,6 +184,34 @@ var HeatMap = function(selector, width, height, xAxisLabel, yAxisLabel) {
         }
     };
 
+    /*
+    Colour Picker
+     */
+    var colourPicker = d3.select(selector).append("p")
+        .append("label")
+        .text("Colour Scheme:")
+        .append("select")
+        .on("change", function() {
+        // Grab the name of the colour scheme from the picker
+        var schemeName = colourPicker[0][0].value;
+        // Change the scheme
+        chart.setColourScheme(schemeName);
+    });
+    d3.keys(colourPalettes).forEach(function(palette) {
+        colourPicker.append("option")
+            .attr("value", palette)
+            .text(colourPalettes[palette].name);
+    });
+
+    /*
+     Print Button
+     */
+    var printButton = d3.select(selector).append("p").append("button")
+        .text("Save SVG")
+        .on("click", function() {
+            printToSVG(d3.select(selector).select("svg")[0][0]);
+        });
+
     return chart;
 };
 
@@ -191,22 +220,4 @@ d3.json("/data/duet/heat/", function(error, data) {
     if (error) throw error;
     var heatMap = new HeatMap(".heat-map", 960, 640, "Lorem", "Ipsum");
     heatMap(data);
-
-    var colourPicker = d3.select(".heat-map-color");
-    d3.keys(heatMap.colourPalettes).forEach(function(palette) {
-        colourPicker.append("option")
-            .attr("value", palette)
-            .text(heatMap.colourPalettes[palette].name);
-    });
-    colourPicker.on("change", function() {
-        // Grab the name of the colour scheme from the picker
-        var schemeName = colourPicker[0][0].value;
-        // Change the scheme
-        heatMap.setColourScheme(schemeName);
-    });
-
-    var printButton = d3.select(".save-heat-map");
-    printButton.on("click", function() {
-        printToSVG(heatMap.svg[0][0]);
-    });
 });
