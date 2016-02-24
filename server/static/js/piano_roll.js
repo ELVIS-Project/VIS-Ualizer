@@ -7,11 +7,16 @@ var PianoRoll = function(selector, width, height) {
         bottom: 30
     };
 
+    var minZoom = 0.001,
+        maxZoom = 0.01;
+    var zoom = d3.behavior.zoom().scaleExtent([minZoom, maxZoom]).on("zoom", zoomTick);
+
     chart.svg = d3.select(selector)
         .append("svg")
         .attr("width", width)
         .attr("height", height)
-        .style(cssStyling.global);
+        .style(cssStyling.global)
+        .call(zoom);
 
     chart.g = chart.svg
         .append("g")
@@ -46,6 +51,11 @@ var PianoRoll = function(selector, width, height) {
         chart.pitch = d3.scale.ordinal()
             .domain(d3.range(data["minpitch"]["b12"], data["maxpitch"]["b12"]).reverse())
             .rangeRoundBands([0, height - margins.bottom - margins.top], 0, 0);
+
+        // X and Pitch axes will be zoomed on
+        zoom.x(chart.x);
+        //zoom.y(chart.pitch);
+
         // Build the axes
         chart.xAxis = d3.svg.axis()
             .scale(chart.x)
@@ -114,40 +124,39 @@ var PianoRoll = function(selector, width, height) {
         buildLegend(chart.g, data["partnames"], colours, margins.right, margins.top, width);
     }
 
-    chart.zoomTick = function (xZoom, yZoom, xLocation) {
-        // Update the x range
-        chart.x.range([0, chart.scoreLength * xZoom]);
+    function zoomTick() {
+        // Scale the axes
+        chart.svg.select(".x-axis").call(chart.xAxis);
+        chart.svg.select(".y-axis").call(chart.yAxis);
 
-        var pixelLocation = chart.x(xLocation / 100);
-
-        chart.g.selectAll(".x-axis")
-            .call(chart.xAxis);
-        chart.g.selectAll(".y-axis")
-            .call(chart.yAxis);
-
+        // Reuse x1 for performance
+        var x1 = {};
         chart.g.selectAll(".barline")
-            .attr("x1", function(note) {
-                return note["time"][0] * xZoom - pixelLocation;
-            })
-            .attr("x2", function(note) {
-                return note["time"][0] * xZoom - pixelLocation;
+            .attr({
+                "x1": function (note) {
+                    var x = chart.x(note["time"][0]);
+                    x1[note["time"][0]] = x;
+                    return x;
+                },
+                "x2": function (note) {
+                    return x1[note["time"][0]];
+                }
             });
-
         chart.g.selectAll(".note")
             .attr("width", function(note) {
-                return note["duration"][0] * xZoom;
+                var startPoint = note["starttime"][0];
+                return chart.x(startPoint + note["duration"][0]) - chart.x(startPoint);
             })
-            .attr("height", function(note) {
-                return chart.pitch.rangeBand();
-            })
+            //.attr("height", function(note) {
+            //    return chart.pitch.rangeBand();
+            //})
             .attr("x", function(note) {
-                return note["starttime"][0] * xZoom - pixelLocation;
-            })
-            .attr("y", function(note) {
-                return chart.pitch(note["pitch"]["b12"]);
+                return chart.x(note["starttime"][0]);
             });
-
-    };
+            //.attr("y", function(note) {
+            //    return chart.pitch(note["pitch"]["b12"]);
+            //});
+    }
 
     /*
     Zoom Controls
@@ -182,7 +191,7 @@ var PianoRoll = function(selector, width, height) {
     function onPickerChange() {
         var xZoom = xZoomPicker[0][0].value;
         var xLocation = xLocationPicker[0][0].value;
-        chart.zoomTick(xZoom, 1, xLocation);
+        zoomTick(xZoom, 1, xLocation);
     }
 
     /*
@@ -197,7 +206,7 @@ var PianoRoll = function(selector, width, height) {
     return chart;
 };
 
-d3.json("/data/piano-roll/qui-habitat/", function(error, data) {
+d3.json("/data/piano-roll/", function(error, data) {
     if (error) throw error;
     var pianoRoll = new PianoRoll(".piano-roll", 1280, 420);
     pianoRoll(data);
