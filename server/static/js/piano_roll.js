@@ -129,30 +129,28 @@ var PianoRoll = function(selector, width, height) {
         chart.svg.select(".x-axis").call(chart.xAxis);
         chart.svg.select(".y-axis").call(chart.yAxis);
 
-        // Reuse x1 for performance
-        var x1 = {};
         chart.g.selectAll(".barline")
             .attr({
                 "x1": function (note) {
-                    var x = chart.x(note["time"][0]);
-                    x1[note["time"][0]] = x;
-                    return x;
+                    return chart.x(note["time"][0]);
                 },
                 "x2": function (note) {
-                    return x1[note["time"][0]];
+                    return chart.x(note["time"][0]);
                 }
             });
         chart.g.selectAll(".note")
-            .attr("width", function(note) {
-                var startPoint = note["starttime"][0];
-                return chart.x(startPoint + note["duration"][0]) - chart.x(startPoint);
-            })
+            .attr({
+                "width": function(note) {
+                    var startPoint = note["starttime"][0];
+                    return chart.x(startPoint + note["duration"][0]) - chart.x(startPoint);
+                },
+                "x": function(note){
+                    return chart.x(note["starttime"][0]);
+                }
+            });
             //.attr("height", function(note) {
             //    return chart.pitch.rangeBand();
             //})
-            .attr("x", function(note) {
-                return chart.x(note["starttime"][0]);
-            });
             //.attr("y", function(note) {
             //    return chart.pitch(note["pitch"]["b12"]);
             //});
