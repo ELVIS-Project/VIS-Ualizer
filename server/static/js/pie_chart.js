@@ -22,22 +22,6 @@ var PieChart = function(selector, width, height) {
         return d3.select(selector).select("svg")[0][0];
     };
 
-    var numberOfZoomNotches = 20;
-    var zoomSlider = d3.select(selector).append("p").append("label")
-        .text("Zoom")
-        .append("input")
-        .attr("name", "zoom")
-        .attr("type", "range")
-        .attr("min", "1")
-        .attr("max", numberOfZoomNotches)
-        .attr("value", "1")
-        .on("change", function() {
-            console.log("test");
-            var value = zoomSlider[0][0].value;
-            zoom.scale((value / numberOfZoomNotches) * maxZoom);
-            zoom.event(d3.select(selector));
-        });
-
     function zoomCallback() {
         var newTranslation = d3.event.translate;
         newTranslation[0] += centre.x;
@@ -91,7 +75,7 @@ var PieChart = function(selector, width, height) {
     /**
      * Pull out the pie pieces.
      */
-    chart.explode = function() {
+    var explode = function() {
         d3.selectAll(".arc").attr("transform", function(datum) {
             var distance = 70;
             var normVector = normalizeVector(chart.arc.centroid(datum));
@@ -102,9 +86,55 @@ var PieChart = function(selector, width, height) {
     /**
      * Put the pie pieces back together again.
      */
-    chart.implode = function() {
+    var implode = function() {
         d3.selectAll(".arc").attr("transform", "translate(0,0)");
     };
+
+    /*
+     Print Button
+     */
+    var printButton = d3.select(selector).append("p").append("button")
+        .text("Save SVG")
+        .on("click", function() {
+            printToSVG(chart.getSVGforPrinting());
+        });
+
+    /*
+     Explode Button
+     */
+    var isExploding = true;
+    var explodeButton = d3.select(selector).append("p").append("button")
+        .text("Explode")
+        .on("click", function() {
+            // Flip explode/implode
+            isExploding = !isExploding;
+            if (isExploding) {
+                implode();
+                explodeButton.text("Explode");
+            } else {
+                explode();
+                explodeButton.text("Implode");
+            }
+        });
+
+    /*
+     Zoom Slider
+     */
+    var numberOfZoomNotches = 20;
+    var zoomSlider = d3.select(selector).append("p").append("label")
+        .text("Zoom")
+        .append("input")
+        .attr("name", "zoom")
+        .attr("type", "range")
+        .attr("min", "1")
+        .attr("max", numberOfZoomNotches)
+        .attr("value", "1")
+        .on("change", function() {
+            console.log("test");
+            var value = zoomSlider[0][0].value;
+            zoom.scale((value / numberOfZoomNotches) * maxZoom);
+            zoom.event(d3.select(selector));
+        });
 
     return chart;
 };
@@ -116,24 +146,4 @@ var PieChart = function(selector, width, height) {
 d3.json("/graph/10/", function(error, data) {
     var pieChart = new PieChart(".pie-chart", 1280, 640);
     pieChart(data);
-
-    var printButton = d3.select(".save-pie-chart");
-    printButton.on("click", function() {
-        printToSVG(pieChart.getSVGforPrinting());
-    });
-
-    var explodeButton = d3.select(".explode-button");
-    var isExploding = true;
-    explodeButton.on("click", function() {
-        // Flip explode/implode
-        isExploding = !isExploding;
-        if (isExploding) {
-            pieChart.implode();
-            explodeButton.text("Explode");
-        } else {
-            pieChart.explode();
-            explodeButton.text("Implode");
-        }
-        //explodeButton.text("Implode");
-    });
 });
