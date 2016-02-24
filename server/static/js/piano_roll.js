@@ -10,6 +10,7 @@ var PianoRoll = function(selector, width, height) {
     var noteHeight = 4;
 
     chart.svg = d3.select(selector)
+        .append("svg")
         .attr("width", width)
         .attr("height", height)
         .style(cssStyling.global);
@@ -147,7 +148,53 @@ var PianoRoll = function(selector, width, height) {
             .attr("y", function(note) {
                 return chart.pitch(note["pitch"]["b12"]);
             });
+
     };
+
+    /*
+    Zoom Controls
+     */
+
+    var xZoomPicker = d3.select(selector).append("p")
+        .append("label")
+        .text("X-Zoom")
+        .append("input")
+        .attr({
+            name: "x_zoom",
+            type: "range",
+            min: 1,
+            max: 10,
+            value: 1
+        }).on("input", onPickerChange);
+    var xLocationPicker = d3.select(selector).append("p")
+        .append("label")
+        .text("X-Location")
+        .append("input")
+        .attr({
+            name: "x_location",
+            type: "range",
+            min: 0,
+            max: 99,
+            value: 0
+        }).on("input", onPickerChange);
+
+    /**
+     * Handle the zoom and location picker input.
+     */
+    function onPickerChange() {
+        var xZoom = xZoomPicker[0][0].value;
+        var xLocation = xLocationPicker[0][0].value;
+        chart.zoomTick(xZoom, 1, xLocation);
+    }
+
+    /*
+     Print Button
+     */
+    var printButton = d3.select(selector).append("p").append("button")
+        .text("Save SVG")
+        .on("click", function() {
+            printToSVG(d3.select(selector).select("svg")[0][0]);
+        });
 
     return chart;
 };
@@ -156,28 +203,4 @@ d3.json("/data/piano-roll/", function(error, data) {
     if (error) throw error;
     var pianoRoll = new PianoRoll(".piano-roll", 1280, 320);
     pianoRoll(data);
-
-    var xZoomPicker = d3.select('input[name="x_zoom"]');
-    //var yZoomPicker = d3.select('input[name="y_zoom"]');
-    var xLocationPicker = d3.select('input[name="x_location"]');
-    console.log(xLocationPicker);
-
-    function onPickerChange() {
-        var xZoom = xZoomPicker[0][0].value;
-        //var yZoom = yZoomPicker[0][0].value;
-        var xLocation = xLocationPicker[0][0].value;
-        pianoRoll.zoomTick(
-            xZoom,
-            1,
-            xLocation);
-    }
-
-    xZoomPicker.on("input", onPickerChange);
-    //yZoomPicker.on("change", onPickerChange);
-    xLocationPicker.on("input", onPickerChange);
-
-    var printButton = d3.select(".save-piano-roll");
-    printButton.on("click", function() {
-        printToSVG(pianoRoll.svg[0][0]);
-    });
 });
