@@ -54,6 +54,7 @@ var BarGraph = function(selector, width, height) {
         .orient("left");
 
     chart.svg = d3.select(selector)
+        .append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .style(cssStyling.global);
@@ -61,6 +62,15 @@ var BarGraph = function(selector, width, height) {
     chart.g = chart.svg
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    /*
+     Print Button
+     */
+    var printButton = d3.select(selector).append("p").append("button")
+        .text("Save SVG")
+        .on("click", function() {
+            printToSVG(d3.select(selector).select("svg")[0][0]);
+        });
 
     return chart;
 };
@@ -72,9 +82,4 @@ var BarGraph = function(selector, width, height) {
 d3.json("/graph/", function(error, data) {
     var barGraph = new BarGraph(".bar-graph", 640, 320);
     barGraph(data);
-
-    var printButton = d3.select(".save-bar-graph");
-    printButton.on("click", function() {
-        printToSVG(barGraph.svg[0][0]);
-    });
 });

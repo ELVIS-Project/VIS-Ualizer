@@ -98,6 +98,7 @@ var BarGraphGrouped = function(selector, width, height) {
         .orient("left");
 
     chart.svg = d3.select(selector)
+        .append("svg")
         .attr("width", chart.width + margin.left + margin.right)
         .attr("height", chart.height + margin.top + margin.bottom)
         .style(cssStyling.global);
@@ -106,6 +107,14 @@ var BarGraphGrouped = function(selector, width, height) {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    /*
+     Print Button
+     */
+    var printButton = d3.select(selector).append("p").append("button")
+        .text("Save SVG")
+        .on("click", function() {
+            printToSVG(d3.select(selector).select("svg")[0][0]);
+        });
 
     return chart;
 };
