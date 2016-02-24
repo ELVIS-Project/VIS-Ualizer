@@ -2,8 +2,11 @@
 
 var PieChart = function(selector, width, height) {
     var margin = 120;
-
     var centre = {x: width/2, y: height/2};
+
+    var minZoom = 1,
+        maxZoom = 4;
+    var zoom = d3.behavior.zoom().scaleExtent([minZoom, maxZoom]).on("zoom", zoomCallback);
 
     chart.svg = d3.select(selector)
         .append("svg")
@@ -13,13 +16,29 @@ var PieChart = function(selector, width, height) {
 
     chart.g = chart.svg.append("g")
         .attr("transform", "translate(" + centre.x + "," + centre.y + ")")
-        .call(d3.behavior.zoom().scaleExtent([1, 8]).on("zoom", zoom));
+        .call(zoom);
 
     chart.getSVGforPrinting = function() {
         return d3.select(selector).select("svg")[0][0];
     };
 
-    function zoom() {
+    var numberOfZoomNotches = 20;
+    var zoomSlider = d3.select(selector).append("p").append("label")
+        .text("Zoom")
+        .append("input")
+        .attr("name", "zoom")
+        .attr("type", "range")
+        .attr("min", "1")
+        .attr("max", numberOfZoomNotches)
+        .attr("value", "1")
+        .on("change", function() {
+            console.log("test");
+            var value = zoomSlider[0][0].value;
+            zoom.scale((value / numberOfZoomNotches) * maxZoom);
+            zoom.event(d3.select(selector));
+        });
+
+    function zoomCallback() {
         var newTranslation = d3.event.translate;
         newTranslation[0] += centre.x;
         newTranslation[1] += centre.y;
