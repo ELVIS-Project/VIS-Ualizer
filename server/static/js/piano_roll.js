@@ -197,8 +197,8 @@ var PianoRoll = function(selector, width, height) {
     return chart;
 };
 
-d3.json("/data/piano-roll/", function(error, data) {
+d3.json("/data/piano-roll/qui-habitat/", function(error, data) {
     if (error) throw error;
-    var pianoRoll = new PianoRoll(".piano-roll", 1280, 320);
+    var pianoRoll = new PianoRoll(".piano-roll", 1280, 420);
     pianoRoll(data);
 });
