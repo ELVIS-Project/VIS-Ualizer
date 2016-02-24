@@ -2,24 +2,36 @@
 {% block body %}
 <h2>Force-Directed Graph</h2>
     <p>
-        Part:
-        <select class="force-directed-graph-data">
-            <option value="alto">Alto</option>
-            <option value="bass">Bass</option>
-            <option value="soprano">Soprano</option>
-            <option value="tenor">Tenor</option>
-        </select>
+        <label>
+            Part:
+            <select class="force-directed-graph-data">
+                <option value="alto">Alto</option>
+                <option value="bass">Bass</option>
+                <option value="soprano">Soprano</option>
+                <option value="tenor">Tenor</option>
+            </select>
+        </label>
     </p>
-<p>Edges:
-    <select class="force-directed-graph-lines"></select>
+<p>
+    <label>
+        Edges:
+        <select class="force-directed-graph-lines"></select>
+    </label>
 </p>
 <form class="force-directed-graph-search" action="#">
-    Node: <input name="node"/>
-    Inbound: <input type="checkbox" name="inbound" >
-    Outbound: <input type="checkbox" name="outbound" checked>
+    <label>
+        Node:
+        <input name="node"/>
+    </label>
+    <label>
+        Inbound:
+        <input type="checkbox" name="inbound">
+    </label>
+    <label>
+        Outbound:
+        <input type="checkbox" name="outbound" checked>
+    </label>
     <input type="submit" value="Search">
 </form>
-<p><button class="save-force-directed-graph">Save SVG</button></p>
-
-<svg class="force-directed-graph"></svg>
+<div class="force-directed-graph"></div>
 {% endblock %}
