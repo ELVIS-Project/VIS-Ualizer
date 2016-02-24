@@ -7,8 +7,6 @@ var PianoRoll = function(selector, width, height) {
         bottom: 30
     };
 
-    var noteHeight = 4;
-
     chart.svg = d3.select(selector)
         .append("svg")
         .attr("width", width)
