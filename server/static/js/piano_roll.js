@@ -172,9 +172,9 @@ d3.json("/data/piano-roll/", function(error, data) {
             xLocation);
     }
 
-    xZoomPicker.on("change", onPickerChange);
+    xZoomPicker.on("input", onPickerChange);
     //yZoomPicker.on("change", onPickerChange);
-    xLocationPicker.on("change", onPickerChange);
+    xLocationPicker.on("input", onPickerChange);
 
     var printButton = d3.select(".save-piano-roll");
     printButton.on("click", function() {

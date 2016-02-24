@@ -129,7 +129,7 @@ var PieChart = function(selector, width, height) {
         .attr("min", "1")
         .attr("max", numberOfZoomNotches)
         .attr("value", "1")
-        .on("change", function() {
+        .on("input", function() {
             console.log("test");
             var value = zoomSlider[0][0].value;
             zoom.scale((value / numberOfZoomNotches) * maxZoom);
