@@ -231,6 +231,13 @@ var ForceDirectedGraph = function(selector, width, height) {
                 }
             });
 
+            // Multiply determines how far from the line to draw the label.
+            var multiplier;
+            if (lineStyle == lineStyles.straight) {
+                multiplier = 4
+            } else {
+                multiplier = 2;
+            }
             lineLabels.attr("transform", function(link) {
                 var source = link["source"],
                     target = link["target"];
@@ -240,14 +247,6 @@ var ForceDirectedGraph = function(selector, width, height) {
                         zoomTransformX(zoom, source.x)  + "," +
                         zoomTransformY(zoom, source.y + ((1 - link.relativeValue) * 2.5 * circleRadius)) + ")";
                 } else {
-                    // Multiply determines how far from the line to draw the label.
-                    var multiplier;
-                    if (lineStyle == lineStyles.straight) {
-                        multiplier = 4
-                    } else {
-                        multiplier = 2;
-                    }
-
                     var midX = ((source.x + target.x) / 2) + (-((target.y - source.y) / 2) * pythagoreanConstant) / multiplier,
                         midY = ((source.y + target.y) / 2) + (((target.x - source.x) / 2) * pythagoreanConstant) / multiplier;
 
