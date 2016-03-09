@@ -30,10 +30,7 @@ var PieChart = function(selector, width, height) {
     }
 
     function chart(data) {
-        console.log(data);
-
         var radius = Math.min(width, height) / 2 - margin;
-
         var colours = d3.scale.category20();
 
         chart.arc = d3.svg.arc()
@@ -60,15 +57,13 @@ var PieChart = function(selector, width, height) {
         g.append("text")
             .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
             .attr("dy", ".35em")
-            .text(function(d) {
-                console.log(d);
-                return d.data["label"]; });
+            .text(function(d) { return d.data["label"]; });
 
         // Build the legend
         var names = data.map(function(datum) {
             return datum["label"];
         });
-        console.log(names);
+
         buildLegend(chart.svg, names, colours, margin, margin, width);
     }
 
@@ -130,7 +125,6 @@ var PieChart = function(selector, width, height) {
         .attr("max", numberOfZoomNotches)
         .attr("value", "1")
         .on("input", function() {
-            console.log("test");
             var value = zoomSlider[0][0].value;
             zoom.scale((value / numberOfZoomNotches) * maxZoom);
             zoom.event(d3.select(selector));
