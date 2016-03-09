@@ -4,4 +4,4 @@ VIS-Ualizer.iml
 
 *.pyc
 
-/app_env
+.env/
