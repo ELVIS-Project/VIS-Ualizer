@@ -314,6 +314,7 @@ var ForceDirectedGraph = function(selector, width, height) {
     }
 
     chart.svg = d3.select(selector)
+        .append("svg")
         .attr("width", width)
         .attr("height", height)
         .style(cssStyling.global)
