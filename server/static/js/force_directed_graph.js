@@ -102,11 +102,10 @@ var ForceDirectedGraph = function(selector, width, height) {
             .alpha(0.2)
             .start();
 
-        var link = chart.svg.selectAll(".link")
+        var link = chart.svg.append("g").attr("name", "links")
+            .selectAll(".link")
             .data(links)
-            .enter()
-            .append("g");
-
+            .enter();
 
         // The set of names for the line arrowheads
         var arrowNames = d3.set();
@@ -150,33 +149,35 @@ var ForceDirectedGraph = function(selector, width, height) {
             })
             .style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
 
-        var node = chart.svg.selectAll(".node")
-            .data(nodes)
-            .enter()
-            .append("g");
-
-
-        var circles = node
-            .append("circle")
-            .attr("class", "node")
-            .attr("alt", function(d) { return d.name })
-            .attr("r", circleRadius)
-            .attr("stroke-width", "1px")
-            .style("stroke", function(node) { return d3.rgb(color(node.name)).darker(2); })
-            .style("fill", function(d) { return d3.rgb(color(d.name)).brighter(0.5); });
-
-        var circleLabels = node
-            .append("text")
-            .attr("fill", function(node) { return d3.rgb(color(node.name)).darker(2); })
-            .attr("transform", "translate(0, 3)")
-            .text(function(node) { return node.name });
-
         var lineLabels = link
             .append("text")
             .style("fill", function(link) { return d3.rgb(color(link.source.name)).darker(2); })
             //.attr("fill", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
             .text(function(link) { return link.value })
             .style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
+
+        /*
+        Create Node Graphics
+         */
+
+        var node = chart.svg.append("g").attr("name", "nodes")
+            .selectAll(".node")
+            .data(nodes)
+            .enter()
+            .append("g");
+        // Create the circles
+        node.append("circle")
+            .attr("class", "node")
+            .attr("alt", function(d) { return d.name })
+            .attr("r", circleRadius)
+            .attr("stroke-width", "1px")
+            .style("stroke", function(node) { return d3.rgb(color(node.name)).darker(2); })
+            .style("fill", function(d) { return d3.rgb(color(d.name)).brighter(0.5); });
+        // Create the circle labels
+        node.append("text")
+            .attr("fill", function(node) { return d3.rgb(color(node.name)).darker(2); })
+            .attr("transform", "translate(0, 3)")
+            .text(function(node) { return node.name });
 
         // Invoke force
         node.call(force.drag);
