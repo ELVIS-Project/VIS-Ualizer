@@ -63,14 +63,14 @@ def data_dendrogram():
     return dendrogram.matrix
 
 
-@app.route("/data/arbitrary-matrix/<max>/")
-def data_arbitrary_matrix(max):
-    max = int(max)
+@app.route("/data/arbitrary-matrix/<data_max>/")
+def data_arbitrary_matrix(data_max):
+    data_max = int(data_max)
     output = dict()
-    for i in range(max):
+    for i in range(data_max):
         output[i] = dict()
-        for j in range(max):
-            output[i][j] = (i * j) / float(max * max)
+        for j in range(data_max):
+            output[i][j] = (i * j) / float(data_max * data_max)
     return output
 
 
@@ -100,13 +100,13 @@ def data_ave_maria(voice):
 
 @app.route("/graph/grouped/")
 def data_grouped_bar_graph():
-    min = 0.0
-    max = 100.0
-    data = [[], [], []]
+    data_min = 0.0
+    data_max = 100.0
+    data = [list(), list(), list()]
     for i in range(3):
         print i
         for j in range(64):
-            data[i].append(dict(label=j, value=random.uniform(min, max)))
+            data[i].append(dict(label=j, value=random.uniform(data_min, data_max)))
     return [
         {
             "group_label": "first group",
@@ -125,35 +125,35 @@ def data_grouped_bar_graph():
 
 @app.route("/graph/")
 def data_bar_graph():
-    min = 0.0
-    max = 100.0
+    data_min = 0.0
+    data_max = 100.0
     output = []
     for i in range(32):
-        output.append(dict(label=i, value=random.uniform(min,max)))
+        output.append(dict(label=i, value=random.uniform(data_min, data_max)))
     return output
 
 
 @app.route("/graph/<num>/")
 def data_bar_graph_num(num):
-    min = 0.0
-    max = 100.0
+    data_min = 0.0
+    data_max = 100.0
     output = []
     for i in range(int(num)):
-        output.append(dict(label=i, value=random.uniform(min,max)))
+        output.append(dict(label=i, value=random.uniform(data_min, data_max)))
     return output
 
 
-@app.route("/example/<id>/")
+@app.route("/example/<example_id>/")
 @set_renderers(HTMLRenderer)
-def example(id):
+def example(example_id):
     js_files = [
         url_for("static", filename="js/libs/d3.js"),
         url_for("static", filename="js/utils.js")
     ]
-    if example_types.has_key(id):
-        example = example_types[id]
-        js_files.append(url_for("static", filename=example["js"]))
-        return render_template(example["template"], js_files=js_files)
+    if example_types.has_key(example_id):
+        example_item = example_types[example_id]
+        js_files.append(url_for("static", filename=example_item["js"]))
+        return render_template(example_item["template"], js_files=js_files)
     else:
         # Invalid ID
         abort(404)
@@ -163,10 +163,10 @@ def example(id):
 @set_renderers(HTMLRenderer)
 def hello():
     example_links = []
-    for id in example_types.keys():
+    for example_id in example_types.keys():
         example_links.append({
-            "name": example_types[id]["name"],
-            "url": "/example/{0}/".format(id)
+            "name": example_types[example_id]["name"],
+            "url": "/example/{0}/".format(example_id)
         })
     return render_template('example-list.html',
                            js_files=[],
