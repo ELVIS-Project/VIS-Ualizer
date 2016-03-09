@@ -18,10 +18,6 @@ var PieChart = function(selector, width, height) {
         .attr("transform", "translate(" + centre.x + "," + centre.y + ")")
         .call(zoom);
 
-    chart.getSVGforPrinting = function() {
-        return d3.select(selector).select("svg")[0][0];
-    };
-
     function zoomCallback() {
         var newTranslation = d3.event.translate;
         newTranslation[0] += centre.x;
@@ -88,11 +84,7 @@ var PieChart = function(selector, width, height) {
     /*
      Print Button
      */
-    var printButton = d3.select(selector).append("p").append("button")
-        .text("Save SVG")
-        .on("click", function() {
-            printToSVG(chart.getSVGforPrinting());
-        });
+    attachPrintButton(selector, chart.svg[0][0]);
 
     /*
      Explode Button
