@@ -182,12 +182,12 @@ var ForceDirectedGraph = function(selector, width, height) {
         node.call(force.drag);
 
 
+        var pythagoreanConstant = Math.sqrt(3) / 2;
+        var radiusMultiplier = 3 * circleRadius;
         /**
          * Advance the force-based simulation by one "tick".
          */
         chart.tick = function() {
-            var pythagoreanConstant = Math.sqrt(3) / 2;
-
             node.attr("transform", function(node) {
                 return "translate(" +
                     zoomTransformX(zoom, node.x) + "," +
@@ -200,8 +200,7 @@ var ForceDirectedGraph = function(selector, width, height) {
 
                 if (source == target) {
                     // Values that affect the loop size
-                    var radiusMultiplier = 3 * circleRadius,
-                        relativeMultiplier = link.relativeValue * 2 * circleRadius;
+                    var relativeMultiplier = link.relativeValue * 2 * circleRadius;
                     // It's a self-link.  So, we make a little loop.
                     var originX = zoomTransformX(zoom, source.x),
                         originY = zoomTransformY(zoom, source.y),
