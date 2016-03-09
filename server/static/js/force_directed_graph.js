@@ -6,18 +6,18 @@ var ForceDirectedGraph = function(selector, width, height) {
     /*
      Code handling Line Styling
      */
-    chart.lineStyles = {
+    var lineStyles = {
         curved: "Curved",
         straight: "Straight"
     };
-    var lineStyle = chart.lineStyles.curved;
+    var lineStyle = lineStyles.curved;
     chart.lineStyle = function(style) {
         if (style == undefined) {
             // Get
             return lineStyle;
         } else {
             // Set
-            lineStyle = chart.lineStyles[style];
+            lineStyle = lineStyles[style];
         }
         chart.tick();
     };
@@ -211,7 +211,7 @@ var ForceDirectedGraph = function(selector, width, height) {
 
                     return "M" + originX + "," + originY + " C" + loop1X + "," + loopY + " " + loop2X + "," + loopY + " " + originX + "," + originY;
                 } else {
-                    if (lineStyle == chart.lineStyles.curved) {
+                    if (lineStyle == lineStyles.curved) {
                         var midX = ((source.x + target.x) / 2) + (-((target.y - source.y) / 2) * pythagoreanConstant),
                             midY = ((source.y + target.y) / 2) + (((target.x - source.x) / 2) * pythagoreanConstant);
 
@@ -242,13 +242,13 @@ var ForceDirectedGraph = function(selector, width, height) {
                 } else {
                     // Multiply determines how far from the line to draw the label.
                     var multiplier;
-                    if (lineStyle == chart.lineStyles.straight) {
+                    if (lineStyle == lineStyles.straight) {
                         multiplier = 4
                     } else {
                         multiplier = 2;
                     }
 
-                    var midX = ((source.x + target.x) / 2) + (-((target.y - source.y) / 2) * pythagoreanConstant) / multiplier;
+                    var midX = ((source.x + target.x) / 2) + (-((target.y - source.y) / 2) * pythagoreanConstant) / multiplier,
                         midY = ((source.y + target.y) / 2) + (((target.x - source.x) / 2) * pythagoreanConstant) / multiplier;
 
                     return "translate(" +
@@ -320,47 +320,57 @@ var ForceDirectedGraph = function(selector, width, height) {
         .style(cssStyling.global)
         .attr("text-anchor", "middle");
 
+    var lineStylePicker = d3.select(selector).append("p").append("label").text("Edges:").append("select");
+    d3.keys(lineStyles).forEach(function(style) {
+        lineStylePicker.append("option")
+            .attr("value", style)
+            .text(lineStyles[style]);
+    });
+    lineStylePicker.on("change", function() {
+        chart.lineStyle(lineStylePicker[0][0].value);
+    });
+
+    var search = d3.select(selector).append("form");
+     //Build the form
+    search.append("label").text("Node:").append("input").attr("name", "node");
+    search.append("label").text("Inbound:").append("input").attr({"type": "checkbox", "name": "inbound"});
+    search.append("label").text("Outbound:").append("input").attr({"type": "checkbox", "name": "outbound"});
+    search.append("input").attr({type: "submit", value: "Search"});
+    search.on("submit", function() {
+        d3.event.preventDefault();
+        var value = search[0][0][0].value,
+            isInbound = search[0][0][1].checked,
+            isOutbound = search[0][0][2].checked;
+        chart.search(value, isInbound, isOutbound);
+    });
+
+    // Attach print button
+    attachPrintButton(selector, chart.svg[0][0]);
+
+    //var dataPicker = d3.select(".force-directed-graph-data");
+    var dataPicker = d3.select(selector).append("p").append("label").text("Part:").append("select");
+    dataPicker.append("option").attr("value", "alto").text("Alto");
+    dataPicker.append("option").attr("value", "bass").text("Bass");
+    dataPicker.append("option").attr("value", "soprano").text("Soprano");
+    dataPicker.append("option").attr("value", "tenor").text("Tenor");
+    dataPicker.on("change", function() {
+        var value = dataPicker[0][0].value;
+        var dataUrl = "/data/ave-maria/" + value + "/";
+        d3.json(dataUrl, function(error, data) {
+            if (error) throw error;
+            chart(data);
+        });
+    });
+
+
     return chart;
 };
 
-var selector = ".force-directed-graph";
-var forceDirectedGraph = new ForceDirectedGraph(selector, 1600, 900);
-
-var lineStylePicker = d3.select(".force-directed-graph-lines");
-d3.keys(forceDirectedGraph.lineStyles).forEach(function(style) {
-    lineStylePicker.append("option")
-        .attr("value", style)
-        .text(forceDirectedGraph.lineStyles[style]);
-});
-lineStylePicker.on("change", function() {
-    forceDirectedGraph.lineStyle(lineStylePicker[0][0].value);
-});
-
-var search = d3.select(".force-directed-graph-search");
-search.on("submit", function() {
-    d3.event.preventDefault();
-    console.log(search);
-    var value = search[0][0][0].value,
-        isInbound = search[0][0][1].checked,
-        isOutbound = search[0][0][2].checked;
-    console.log(isInbound, isOutbound);
-    forceDirectedGraph.search(value, isInbound, isOutbound);
-});
-
-var printButton = d3.select(".save-force-directed-graph");
-printButton.on("click", function() {
-    printToSVG(forceDirectedGraph.svg[0][0]);
-});
-
-var dataPicker = d3.select(".force-directed-graph-data");
-dataPicker.on("change", function() {
-    var value = dataPicker[0][0].value;
-    var dataUrl = "/data/ave-maria/" + value + "/";
-    forceDirectedGraphLoad(dataUrl);
-});
-
 
 function forceDirectedGraphLoad(dataSource) {
+    var selector = ".force-directed-graph";
+    var forceDirectedGraph = new ForceDirectedGraph(selector, 1600, 900);
+
     d3.json(dataSource, function(error, data) {
         if (error) throw error;
         forceDirectedGraph(data);

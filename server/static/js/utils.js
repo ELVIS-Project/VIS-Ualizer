@@ -48,6 +48,20 @@ function printToSVG(svg) {
     delete a;
 }
 
+/**
+ * Attach a print button to the visualization.
+ *
+ * @param selector Global selector for the visualization
+ * @param svg The SVG that we print.
+ */
+function attachPrintButton(selector, svg) {
+    d3.select(selector).append("p").append("button")
+        .text("Save SVG")
+        .on("click", function() {
+            printToSVG(svg);
+        });
+}
+
 var cssStyling = {
     global: {
         "font-family": "sans-serif",
