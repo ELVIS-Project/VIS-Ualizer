@@ -87,10 +87,7 @@ var ForceDirectedGraph = function(selector, width, height) {
             .nodes(nodes)
             .links(links)
             .size([width, height])
-            .linkStrength(function(link) {
-                return 1;
-                //return link.relativeValue;
-            })
+            .linkStrength(1)
             //.friction(0.9)
             .linkDistance(function(link) {
                 // Stronger links are closer
@@ -146,15 +143,15 @@ var ForceDirectedGraph = function(selector, width, height) {
                 }
 
                 return "url(#" + arrowName + ")";
-            })
-            .style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
+            });
+            //.style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
 
         var lineLabels = link
             .append("text")
             .style("fill", function(link) { return d3.rgb(color(link.source.name)).darker(2); })
-            //.attr("fill", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
-            .text(function(link) { return link.value })
-            .style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
+            .attr("fill", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
+            .text(function(link) { return link.value });
+            //.style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
 
         /*
         Create Node Graphics
@@ -178,7 +175,6 @@ var ForceDirectedGraph = function(selector, width, height) {
             .attr("fill", function(node) { return d3.rgb(color(node.name)).darker(2); })
             .attr("transform", "translate(0, 3)")
             .text(function(node) { return node.name });
-
         // Invoke force
         node.call(force.drag);
 
@@ -195,9 +191,10 @@ var ForceDirectedGraph = function(selector, width, height) {
                     zoomTransformY(zoom, node.y) + ")";
             });
 
+
             lines.attr("d", function(link) {
-                var source = link["source"],
-                    target = link["target"];
+                var source = link.source,
+                    target = link.target;
 
                 if (source == target) {
                     // Values that affect the loop size
@@ -212,13 +209,22 @@ var ForceDirectedGraph = function(selector, width, height) {
                     return "M" + originX + "," + originY + " C" + loop1X + "," + loopY + " " + loop2X + "," + loopY + " " + originX + "," + originY;
                 } else {
                     if (lineStyle == lineStyles.curved) {
-                        var midX = ((source.x + target.x) / 2) + (-((target.y - source.y) / 2) * pythagoreanConstant),
-                            midY = ((source.y + target.y) / 2) + (((target.x - source.x) / 2) * pythagoreanConstant);
+                        // Cache the math for later
+                        link.midComponents = {
+                            x: {
+                                a: ((source.x + target.x) / 2),
+                                b: (-((target.y - source.y) / 2) * pythagoreanConstant)
+                            },
+                            y: {
+                                a: ((source.y + target.y) / 2),
+                                b: (((target.x - source.x) / 2) * pythagoreanConstant)
+                            }
+                        };
 
                         return "M" + zoomTransformX(zoom, source.x) + " "
                             + zoomTransformY(zoom, source.y) + " Q "
-                            + zoomTransformX(zoom, midX) + " "
-                            + zoomTransformY(zoom, midY) + " "
+                            + zoomTransformX(zoom, link.midComponents.x.a + link.midComponents.x.b) + " "
+                            + zoomTransformY(zoom, link.midComponents.y.a + link.midComponents.y.b) + " "
                             + zoomTransformX(zoom, target.x) + " "
                             + zoomTransformY(zoom, target.y);
                     } else {
@@ -239,20 +245,14 @@ var ForceDirectedGraph = function(selector, width, height) {
                 multiplier = 2;
             }
             lineLabels.attr("transform", function(link) {
-                var source = link["source"],
-                    target = link["target"];
-
-                if (source == target) {
+                if (link.source == link.target) {
                     return "translate(" +
-                        zoomTransformX(zoom, source.x)  + "," +
-                        zoomTransformY(zoom, source.y + ((1 - link.relativeValue) * 2.5 * circleRadius)) + ")";
+                        zoomTransformX(zoom, link.source.x)  + "," +
+                        zoomTransformY(zoom, link.source.y + ((1 - link.relativeValue) * 2.5 * circleRadius)) + ")";
                 } else {
-                    var midX = ((source.x + target.x) / 2) + (-((target.y - source.y) / 2) * pythagoreanConstant) / multiplier,
-                        midY = ((source.y + target.y) / 2) + (((target.x - source.x) / 2) * pythagoreanConstant) / multiplier;
-
                     return "translate(" +
-                        zoomTransformX(zoom, midX) + "," +
-                        zoomTransformY(zoom, midY) + ")";
+                        zoomTransformX(zoom, link.midComponents.x.a + link.midComponents.x.b / multiplier) + "," +
+                        zoomTransformY(zoom, link.midComponents.y.a + link.midComponents.y.b / multiplier) + ")";
                 }
             });
         };
