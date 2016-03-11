@@ -89,7 +89,7 @@ var PianoRoll = function(selector, width, height) {
             .attr("height", chart.pitch.rangeBand())
             .attr("x", margins.left)
             .attr("y", function(pitch) {
-                return chart.pitch(pitch) + chart.pitch.rangeBand() - 2;
+                return chart.pitch(pitch) + chart.pitch.rangeBand() - 1;
             })
             .attr("fill", function(pitch) {
                 if (isKeyBlack(pitch, 72)) {
@@ -158,7 +158,7 @@ var PianoRoll = function(selector, width, height) {
             .attr("height", chart.pitch.rangeBand())
             .attr("x", margins.left + 1)
             .attr("y", function(pitch) {
-                return chart.pitch(pitch) + chart.pitch.rangeBand() - 1;
+                return chart.pitch(pitch) + chart.pitch.rangeBand();
             })
             .attr("fill", function(pitch) {
                 if (isKeyBlack(pitch, 72)) {
