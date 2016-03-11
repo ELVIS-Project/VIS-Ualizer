@@ -147,3 +147,27 @@ function isKeyBlack(tone, cTone) {
     return keyNumber == 1 || keyNumber == 3 || keyNumber == 6
         || keyNumber == 8 || keyNumber == 10;
 }
+
+/**
+ * Draw the x and y axis lines.
+ *
+ * @param parentElement
+ * @param xAxis
+ * @param yAxis
+ * @param svgHeight
+ * @param topMargin
+ * @param leftMargin
+ * @param bottomMargin
+ */
+function drawAxisLines(parentElement, xAxis, yAxis, svgHeight, topMargin, leftMargin, bottomMargin) {
+    parentElement.append("g")
+        .attr("class", "x-axis axis")
+        .attr("transform", "translate(" + leftMargin + "," + (svgHeight - bottomMargin) + ")")
+        .call(xAxis);
+    parentElement.append("g")
+        .attr("class", "y-axis axis")
+        .attr("transform", "translate(" + leftMargin + "," + topMargin + ")")
+        .call(yAxis);
+    // Apply CSS styling
+    parentElement.selectAll([".axis path ", ".axis line"]).style(cssStyling.axis);
+}

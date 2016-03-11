@@ -12,17 +12,8 @@ var BarGraph = function(selector, width, height) {
         // Map y-axis values
         chart.y.domain([0, d3.max(data, function(d) { return d.value; })]);
 
-        var xAxis = chart.g.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + chart.height + ")")
-            .call(chart.xAxis);
-
-        var yAxis = chart.g.append("g")
-            .attr("class", "y axis")
-            .call(chart.yAxis);
-
-        // Apply CSS styling
-        chart.svg.selectAll([".axis path ", ".axis line"]).style(cssStyling.axis);
+        // Draw the axes
+        drawAxisLines(chart.g, chart.xAxis, chart.yAxis, chart.height, 0, 0, 0);
 
         var bars = chart.g.selectAll(".bar")
             .data(data)

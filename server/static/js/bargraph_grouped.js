@@ -36,14 +36,8 @@ var BarGraphGrouped = function(selector, width, height) {
         // Map y-axis values
         chart.y.domain([0, maxValue]);
 
-        chart.g.append("g")
-            .attr("class", "x axis")
-            .attr("transform", "translate(0," + chart.height + ")")
-            .call(chart.xAxis);
-
-        chart.g.append("g")
-            .attr("class", "y axis")
-            .call(chart.yAxis);
+        // Draw the axes
+        drawAxisLines(chart.g, chart.xAxis, chart.yAxis, chart.height, 0, 0, 0);
 
         data.forEach(function(group) {
             console.log("group", group);
@@ -73,10 +67,6 @@ var BarGraphGrouped = function(selector, width, height) {
                 .attr("height", function(d) { return chart.height - chart.y(d.value); })
                 .attr("width", o.rangeBand())
                 .style(cssStyling.bar);
-
-            // Apply CSS styling
-            chart.svg.selectAll([".axis path ", ".axis line"]).style(cssStyling.axis);
-
         });
     }
 
