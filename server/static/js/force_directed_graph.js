@@ -313,64 +313,76 @@ var ForceDirectedGraph = function(selector, width, height) {
         .style(cssStyling.global)
         .attr("text-anchor", "middle");
 
-    var lineStylePicker = d3.select(selector).append("p").append("label").text("Edges:").append("select");
-    d3.keys(lineStyles).forEach(function(style) {
-        lineStylePicker.append("option")
-            .attr("value", style)
-            .text(lineStyles[style]);
-    });
-    lineStylePicker.on("change", function() {
-        chart.lineStyle(lineStylePicker[0][0].value);
-    });
+    var attachLineStylePicker = function() {
+        var lineStylePicker = d3.select(selector).append("p").append("label").text("Edges:").append("select");
+        d3.keys(lineStyles).forEach(function(style) {
+            lineStylePicker.append("option")
+                .attr("value", style)
+                .text(lineStyles[style]);
+        });
+        lineStylePicker.on("change", function() {
+            chart.lineStyle(lineStylePicker[0][0].value);
+        });
+    };
 
-    var search = d3.select(selector).append("form");
-     //Build the form
-    search.append("label").text("Node:").append("input").attr("name", "node");
-    search.append("label").text("Inbound:").append("input").attr({"type": "checkbox", "name": "inbound"});
-    search.append("label").text("Outbound:").append("input").attr({"type": "checkbox", "name": "outbound"});
-    search.append("input").attr({type: "submit", value: "Search"});
-    search.on("submit", function() {
-        d3.event.preventDefault();
-        var value = search[0][0][0].value,
-            isInbound = search[0][0][1].checked,
-            isOutbound = search[0][0][2].checked;
-        chart.search(value, isInbound, isOutbound);
-    });
+    var attachSearchInput = function() {
+        var search = d3.select(selector).append("form");
+        //Build the form
+        search.append("label").text("Node:").append("input").attr("name", "node");
+        search.append("label").text("Inbound:").append("input").attr({"type": "checkbox", "name": "inbound"});
+        search.append("label").text("Outbound:").append("input").attr({"type": "checkbox", "name": "outbound"});
+        search.append("input").attr({type: "submit", value: "Search"});
+        search.on("submit", function() {
+            d3.event.preventDefault();
+            var value = search[0][0][0].value,
+                isInbound = search[0][0][1].checked,
+                isOutbound = search[0][0][2].checked;
+            chart.search(value, isInbound, isOutbound);
+        });
+    };
 
-    // Attach print button
+    var attachDataSourcePicker = function() {
+        var dataPicker = d3.select(selector).append("p").append("label").text("Part:").append("select");
+        dataPicker.append("option").attr("value", "alto").text("Alto");
+        dataPicker.append("option").attr("value", "bass").text("Bass");
+        dataPicker.append("option").attr("value", "soprano").text("Soprano");
+        dataPicker.append("option").attr("value", "tenor").text("Tenor");
+        dataPicker.on("change", function() {
+            var value = dataPicker[0][0].value;
+            var dataUrl = "/data/ave-maria/" + value + "/";
+            d3.json(dataUrl, function(error, data) {
+                if (error) throw error;
+                chart(data);
+            });
+        });
+    };
+
+    var attachOpacityPicker = function () {
+        // Create a selector to choose whether or not to use opacity.
+        d3.select(selector).append("p")
+            .append("label").text("Opacity:")
+            .append("input")
+            .attr("type", "checkbox")
+            .attr("checked", true)
+            .on("change", function() {
+                if (this.checked) {
+                    // Have opacity
+                    lines.style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
+                    lineLabels.style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
+                } else {
+                    // Make everything opaque
+                    lines.style("opacity", null);
+                    lineLabels.style("opacity", null);
+                }
+            });
+    };
+
+    // Attach GUI components
     attachPrintButton(selector, chart.svg[0][0]);
-
-    var dataPicker = d3.select(selector).append("p").append("label").text("Part:").append("select");
-    dataPicker.append("option").attr("value", "alto").text("Alto");
-    dataPicker.append("option").attr("value", "bass").text("Bass");
-    dataPicker.append("option").attr("value", "soprano").text("Soprano");
-    dataPicker.append("option").attr("value", "tenor").text("Tenor");
-    dataPicker.on("change", function() {
-        var value = dataPicker[0][0].value;
-        var dataUrl = "/data/ave-maria/" + value + "/";
-        d3.json(dataUrl, function(error, data) {
-            if (error) throw error;
-            chart(data);
-        });
-    });
-
-    // Create a selector to choose whether or not to use opacity.
-    d3.select(selector).append("p")
-        .append("label").text("Opacity:")
-        .append("input")
-        .attr("type", "checkbox")
-        .attr("checked", true)
-        .on("change", function() {
-            if (this.checked) {
-                // Have opacity
-                lines.style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
-                lineLabels.style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
-            } else {
-                // Make everything opaque
-                lines.style("opacity", null);
-                lineLabels.style("opacity", null);
-            }
-        });
+    attachLineStylePicker();
+    attachSearchInput();
+    attachDataSourcePicker();
+    attachOpacityPicker();
 
     return chart;
 };
