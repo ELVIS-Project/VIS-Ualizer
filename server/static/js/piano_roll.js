@@ -36,10 +36,10 @@ var PianoRoll = function(selector, width, height) {
     function chart(data) {
         // Construct a mapping between midi numbers and pitches
         var midiNumberToPitch = {};
-        data["partdata"].forEach(function(part) {
-            part["notedata"].forEach(function(note) {
-                var pitch = note["pitch"];
-                midiNumberToPitch[pitch["b12"]] = pitch["name"];
+        data.partdata.forEach(function(part) {
+            part.notedata.forEach(function(note) {
+                var pitch = note.pitch;
+                midiNumberToPitch[pitch.b12] = pitch.name;
             });
         });
         // This is the formatting function we will pass to the y-axis
@@ -48,10 +48,10 @@ var PianoRoll = function(selector, width, height) {
         }
 
         // Build scales
-        var minPitch = data["minpitch"]["b12"],
-            maxPitch = data["maxpitch"]["b12"];
+        var minPitch = data.minpitch.b12,
+            maxPitch = data.maxpitch.b12;
         var pitchDomain = d3.range(minPitch, maxPitch).reverse();
-        chart.x = d3.scale.linear().range([0, data["scorelength"][0]]);
+        chart.x = d3.scale.linear().range([0, data.scorelength[0]]);
         chart.pitch = d3.scale.ordinal()
             .domain(pitchDomain)
             .rangeRoundBands([0, height - margins.bottom - margins.top], 0, 0);
@@ -102,15 +102,15 @@ var PianoRoll = function(selector, width, height) {
                 "stroke-width": 1
             });
 
-        chart.scoreLength = data["scorelength"][0];
-        var colours = d3.scale.category20().domain(data["partcount"]);
+        chart.scoreLength = data.scorelength[0];
+        var colours = d3.scale.category20().domain(data.partcount);
 
-        chart.contentArea.selectAll(selector).data(data["barlines"]).enter().append('line')
+        chart.contentArea.selectAll(selector).data(data.barlines).enter().append('line')
             .attr("x1", function(note) {
-                return note["time"][0];
+                return note.time[0];
             })
             .attr("y1", 0)
-            .attr("x2", function(note) {
+            .attr("x2", function() {
                 return this.getAttribute("x1");
             })
             .attr("y2", height)
@@ -120,30 +120,33 @@ var PianoRoll = function(selector, width, height) {
                 "stroke-width": 1
             });
 
-        data["partdata"].forEach(function(part) {
-            var colour = colours(part["partindex"]);
-            var noteData = part["notedata"];
+        data.partdata.forEach(function(part) {
+            var colour = colours(part.partindex);
+            var noteData = part.notedata;
 
             var notes = chart.contentArea.selectAll(selector).data(noteData);
             notes.enter().append('rect')
                 .attr("width", function(note) {
-                    return note["duration"][0];
+                    return note.duration[0];
                 })
                 .attr("height", function(note) {
                     return chart.pitch.rangeBand();
                 })
                 .attr("x", function(note) {
-                    return note["starttime"][0];
+                    return note.starttime[0];
                 })
                 .attr("y", function(note) {
-                    return chart.pitch(note["pitch"]["b12"]);
+                    return chart.pitch(note.pitch.b12);
                 })
                 .attr("class", "note")
                 .style("fill", colour);
         });
 
         // Hover titles
-        chart.g.selectAll(".note").append("title").text(function(note) { return note["pitch"]["name"]; });
+        chart.g.selectAll(".note").append("title")
+            .text(function(note) {
+                return note.pitch.name;
+            });
 
         // Insert the piano background before the content area
         var pianoBackground = chart.g.insert("g", ":first-child").attr("name", "piano-background");
@@ -165,7 +168,12 @@ var PianoRoll = function(selector, width, height) {
             });
 
         // Build the legend
-        buildLegend(chart.g, data["partnames"], colours, margins.right, margins.top, width);
+        buildLegend(chart.g,
+            data.partnames,
+            colours,
+            margins.right,
+            margins.top,
+            width);
     }
 
     function zoomTick() {
@@ -176,9 +184,9 @@ var PianoRoll = function(selector, width, height) {
         chart.g.selectAll(".barline")
             .attr({
                 "x1": function (note) {
-                    return chart.x(note["time"][0]);
+                    return chart.x(note.time[0]);
                 },
-                "x2": function (note) {
+                "x2": function () {
                     return this.getAttribute("x1");
                 }
             });
@@ -187,11 +195,11 @@ var PianoRoll = function(selector, width, height) {
         chart.g.selectAll(".note")
             .attr({
                 "x": function(note){
-                    return chart.x(note["starttime"][0]);
+                    return chart.x(note.starttime[0]);
                 },
                 "width": function(note) {
-                    var startPoint = note["starttime"][0];
-                    return chart.x(startPoint + note["duration"][0]) - this.getAttribute("x");
+                    var startPoint = note.starttime[0];
+                    return chart.x(startPoint + note.duration[0]) - this.getAttribute("x");
                 }
             });
 
