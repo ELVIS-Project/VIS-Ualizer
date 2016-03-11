@@ -33,6 +33,124 @@ var PianoRoll = function(selector, width, height) {
         })
         .style("fill", "none");
 
+
+    /**
+     * Draw the piano in the foreground.
+     *
+     * @param pitches Array of pitch integers.
+     */
+    var drawPianoForeground = function(pitches) {
+        var pianoForeground = chart.g.append("g").attr("name", "piano-foreground");
+        // Draw the piano lines
+        pianoForeground.selectAll("g").data(pitches).enter()
+            .append("rect")
+            .attr("width", 25)
+            .attr("height", chart.pitch.rangeBand())
+            .attr("x", margins.left)
+            .attr("y", function(pitch) {
+                return chart.pitch(pitch) + chart.pitch.rangeBand() - 1;
+            })
+            .attr("fill", function(pitch) {
+                if (isKeyBlack(pitch, 72)) {
+                    return d3.rgb("black");
+                } else {
+                    return d3.rgb("white");
+                }
+            })
+            .style({
+                "stroke": "rgb(0,0,0)",
+                "stroke-width": 1
+            });
+    };
+
+    /**
+     * Draw the horizontal piano lines in the background.
+     *
+      * @param pitches
+     */
+    var drawPianoBackground = function(pitches) {
+        // Insert the piano background before the content area
+        var pianoBackground = chart.g.insert("g", ":first-child").attr("name", "piano-background");
+        // Draw the piano lines
+        pianoBackground.selectAll("g").data(pitches).enter()
+            .append("rect")
+            .attr("width", width - margins.left - margins.right)
+            .attr("height", chart.pitch.rangeBand())
+            .attr("x", margins.left + 1)
+            .attr("y", function(pitch) {
+                return chart.pitch(pitch) + chart.pitch.rangeBand();
+            })
+            .attr("fill", function(pitch) {
+                if (isKeyBlack(pitch, 72)) {
+                    return d3.rgb("#EFEFEF");
+                } else {
+                    return d3.rgb("white");
+                }
+            });
+    };
+
+    /**
+     * Draw the vertical barlines
+     *
+     * @param barlines
+     */
+    var drawBarLines = function(barlines) {
+        chart.contentArea.selectAll(selector).data(barlines).enter().append('line')
+            .attr("x1", function(note) {
+                return note.time[0];
+            })
+            .attr("y1", 0)
+            .attr("x2", function() {
+                return this.getAttribute("x1");
+            })
+            .attr("y2", height)
+            .attr("class", "barline")
+            .style({
+                "stroke": "rgb(192,192,192)",
+                "stroke-width": 1
+            });
+    };
+
+    /**
+     * Draw the hover titles when you hover over a note.
+     */
+    var drawHoverTitles = function() {
+        // Hover titles
+        chart.g.selectAll(".note").append("title")
+            .text(function(note) {
+                return note.pitch.name;
+            });
+    };
+
+    /**
+     * Draw the part notes
+     *
+     * @param parts
+     */
+    var drawParts = function(parts, colours) {
+        parts.forEach(function(part) {
+            var colour = colours(part.partindex);
+            var noteData = part.notedata;
+
+            var notes = chart.contentArea.selectAll(selector).data(noteData);
+            notes.enter().append('rect')
+                .attr("width", function(note) {
+                    return note.duration[0];
+                })
+                .attr("height", function(note) {
+                    return chart.pitch.rangeBand();
+                })
+                .attr("x", function(note) {
+                    return note.starttime[0];
+                })
+                .attr("y", function(note) {
+                    return chart.pitch(note.pitch.b12);
+                })
+                .attr("class", "note")
+                .style("fill", colour);
+        });
+    };
+
     function chart(data) {
         // Construct a mapping between midi numbers and pitches
         var midiNumberToPitch = {};
@@ -81,93 +199,19 @@ var PianoRoll = function(selector, width, height) {
         // Apply CSS styling
         chart.svg.selectAll([".axis path ", ".axis line"]).style(cssStyling.axis);
 
-        var pianoForeground = chart.g.append("g").attr("name", "piano-foreground");
-        // Draw the piano lines
-        pianoForeground.selectAll("g").data(pitchDomain).enter()
-            .append("rect")
-            .attr("width", 25)
-            .attr("height", chart.pitch.rangeBand())
-            .attr("x", margins.left)
-            .attr("y", function(pitch) {
-                return chart.pitch(pitch) + chart.pitch.rangeBand() - 1;
-            })
-            .attr("fill", function(pitch) {
-                if (isKeyBlack(pitch, 72)) {
-                    return d3.rgb("black");
-                } else {
-                    return d3.rgb("white");
-                }
-            })
-            .style({
-                "stroke": "rgb(0,0,0)",
-                "stroke-width": 1
-            });
+        // Draw the piano foreground
+        drawPianoForeground(pitchDomain);
 
-        chart.scoreLength = data.scorelength[0];
         var colours = d3.scale.category20().domain(data.partcount);
 
-        chart.contentArea.selectAll(selector).data(data.barlines).enter().append('line')
-            .attr("x1", function(note) {
-                return note.time[0];
-            })
-            .attr("y1", 0)
-            .attr("x2", function() {
-                return this.getAttribute("x1");
-            })
-            .attr("y2", height)
-            .attr("class", "barline")
-            .style({
-                "stroke": "rgb(192,192,192)",
-                "stroke-width": 1
-            });
-
-        data.partdata.forEach(function(part) {
-            var colour = colours(part.partindex);
-            var noteData = part.notedata;
-
-            var notes = chart.contentArea.selectAll(selector).data(noteData);
-            notes.enter().append('rect')
-                .attr("width", function(note) {
-                    return note.duration[0];
-                })
-                .attr("height", function(note) {
-                    return chart.pitch.rangeBand();
-                })
-                .attr("x", function(note) {
-                    return note.starttime[0];
-                })
-                .attr("y", function(note) {
-                    return chart.pitch(note.pitch.b12);
-                })
-                .attr("class", "note")
-                .style("fill", colour);
-        });
-
-        // Hover titles
-        chart.g.selectAll(".note").append("title")
-            .text(function(note) {
-                return note.pitch.name;
-            });
-
-        // Insert the piano background before the content area
-        var pianoBackground = chart.g.insert("g", ":first-child").attr("name", "piano-background");
-        // Draw the piano lines
-        pianoBackground.selectAll("g").data(pitchDomain).enter()
-            .append("rect")
-            .attr("width", width - margins.left - margins.right)
-            .attr("height", chart.pitch.rangeBand())
-            .attr("x", margins.left + 1)
-            .attr("y", function(pitch) {
-                return chart.pitch(pitch) + chart.pitch.rangeBand();
-            })
-            .attr("fill", function(pitch) {
-                if (isKeyBlack(pitch, 72)) {
-                    return d3.rgb("#EFEFEF");
-                } else {
-                    return d3.rgb("white");
-                }
-            });
-
+        // Draw the barlines
+        drawBarLines(data.barlines);
+        // Draw the parts
+        drawParts(data.partdata, colours);
+        // Draw the hover titles
+        drawHoverTitles();
+        // Draw the piano background
+        drawPianoBackground(pitchDomain);
         // Build the legend
         buildLegend(chart.g,
             data.partnames,
