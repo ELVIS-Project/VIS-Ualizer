@@ -50,7 +50,8 @@ var PianoRoll = function(selector, width, height) {
         // Build scales
         var minPitch = data.minpitch.b12,
             maxPitch = data.maxpitch.b12;
-        var pitchDomain = d3.range(minPitch, maxPitch).reverse();
+        // Always include an extra pitch
+        var pitchDomain = d3.range(minPitch, maxPitch + 1).reverse();
         chart.x = d3.scale.linear().range([0, data.scorelength[0]]);
         chart.pitch = d3.scale.ordinal()
             .domain(pitchDomain)
