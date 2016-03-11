@@ -126,6 +126,7 @@ var PianoRoll = function(selector, width, height) {
      * Draw the part notes
      *
      * @param parts
+     * @param colours
      */
     var drawParts = function(parts, colours) {
         parts.forEach(function(part) {
@@ -151,76 +152,60 @@ var PianoRoll = function(selector, width, height) {
         });
     };
 
-    function chart(data) {
+    /**
+     * Draw the x and y axis lines.
+     *
+     * @param xAxis
+     * @param yAxis
+     */
+    var drawAxisLines = function(xAxis, yAxis) {
+        chart.g.append("g")
+            .attr("class", "x-axis axis")
+            .attr("transform", "translate(" + margins.left + "," + (height - margins.bottom) + ")")
+            .call(xAxis);
+        chart.g.append("g")
+            .attr("class", "y-axis axis")
+            .attr("transform", "translate(" + margins.left + "," + margins.top + ")")
+            .call(yAxis);
+        // Apply CSS styling
+        chart.svg.selectAll([".axis path ", ".axis line"]).style(cssStyling.axis);
+    };
+
+    /**
+     * Build an array of pitches from minimum to maximum.
+     *
+     * @param minPitch
+     * @param maxPitch
+     * @returns {*|Array.<int>}
+     */
+    var buildPitchArray = function(minPitch, maxPitch) {
+        return d3.range(parseInt(minPitch), parseInt(maxPitch) + 1).reverse();
+    };
+
+    /**
+     * Given parts, construct a function that maps midi numbers onto labels.
+     *
+     * @param parts
+     * @returns {Function} midiNumber -> label
+     */
+    var buildMidiPitchLabeller = function(parts) {
         // Construct a mapping between midi numbers and pitches
         var midiNumberToPitch = {};
-        data.partdata.forEach(function(part) {
+        parts.forEach(function(part) {
             part.notedata.forEach(function(note) {
                 var pitch = note.pitch;
                 midiNumberToPitch[pitch.b12] = pitch.name;
             });
         });
         // This is the formatting function we will pass to the y-axis
-        function formatMidiPitch(midiNumber) {
+        return function(midiNumber) {
             return midiNumberToPitch[midiNumber];
         }
+    };
 
-        // Build scales
-        var minPitch = data.minpitch.b12,
-            maxPitch = data.maxpitch.b12;
-        // Always include an extra pitch
-        var pitchDomain = d3.range(minPitch, maxPitch + 1).reverse();
-        chart.x = d3.scale.linear().range([0, data.scorelength[0]]);
-        chart.pitch = d3.scale.ordinal()
-            .domain(pitchDomain)
-            .rangeRoundBands([0, height - margins.bottom - margins.top], 0, 0);
-
-        // X and Pitch axes will be zoomed on
-        zoom.x(chart.x);
-        //zoom.y(chart.pitch);
-
-        // Build the axes
-        chart.xAxis = d3.svg.axis()
-            .scale(chart.x)
-            .orient("bottom");
-        chart.yAxis = d3.svg.axis()
-            .scale(chart.pitch)
-            .tickFormat(formatMidiPitch)
-            .orient("left");
-
-        var xAxis = chart.g.append("g")
-            .attr("class", "x-axis axis")
-            .attr("transform", "translate(" + margins.left + "," + (height - margins.bottom) + ")")
-            .call(chart.xAxis);
-        var yAxis = chart.g.append("g")
-            .attr("class", "y-axis axis")
-            .attr("transform", "translate(" + margins.left + "," + margins.top + ")")
-            .call(chart.yAxis);
-        // Apply CSS styling
-        chart.svg.selectAll([".axis path ", ".axis line"]).style(cssStyling.axis);
-
-        // Draw the piano foreground
-        drawPianoForeground(pitchDomain);
-
-        var colours = d3.scale.category20().domain(data.partcount);
-
-        // Draw the barlines
-        drawBarLines(data.barlines);
-        // Draw the parts
-        drawParts(data.partdata, colours);
-        // Draw the hover titles
-        drawHoverTitles();
-        // Draw the piano background
-        drawPianoBackground(pitchDomain);
-        // Build the legend
-        buildLegend(chart.g,
-            data.partnames,
-            colours,
-            margins.right,
-            margins.top,
-            width);
-    }
-
+    /**
+     * The callback that is executed when zooming happens.
+     */
     function zoomTick() {
         // Scale the axes
         chart.svg.select(".x-axis").call(chart.xAxis);
@@ -251,50 +236,97 @@ var PianoRoll = function(selector, width, height) {
         // Set the sliders to the updated values
     }
 
-    /*
-    Zoom Controls
+    /**
+     * Attach the zoom and location pickers and rig them up.
      */
+    var attachZoomAndLocationPicker = function() {
+        var xZoomPicker = d3.select(selector).append("p")
+            .append("label")
+            .text("X-Zoom")
+            .append("input")
+            .attr({
+                name: "x_zoom",
+                type: "range",
+                min: 1,
+                max: 10,
+                value: 1
+            }).on("input", onPickerChange);
+        var xLocationPicker = d3.select(selector).append("p")
+            .append("label")
+            .text("X-Location")
+            .append("input")
+            .attr({
+                name: "x_location",
+                type: "range",
+                min: 0,
+                max: 99,
+                value: 0
+            }).on("input", onPickerChange);
 
-    var xZoomPicker = d3.select(selector).append("p")
-        .append("label")
-        .text("X-Zoom")
-        .append("input")
-        .attr({
-            name: "x_zoom",
-            type: "range",
-            min: 1,
-            max: 10,
-            value: 1
-        }).on("input", onPickerChange);
-    var xLocationPicker = d3.select(selector).append("p")
-        .append("label")
-        .text("X-Location")
-        .append("input")
-        .attr({
-            name: "x_location",
-            type: "range",
-            min: 0,
-            max: 99,
-            value: 0
-        }).on("input", onPickerChange);
+        /**
+         * Handle the zoom and location picker input.
+         */
+        function onPickerChange() {
+            var xZoom = xZoomPicker[0][0].value;
+            var xLocation = xLocationPicker[0][0].value;
+            zoomTick(xZoom, 1, xLocation);
+        }
+    };
 
     /**
-     * Handle the zoom and location picker input.
+     * Given data, construct the chart.
+     *
+      * @param data
      */
-    function onPickerChange() {
-        var xZoom = xZoomPicker[0][0].value;
-        var xLocation = xLocationPicker[0][0].value;
-        zoomTick(xZoom, 1, xLocation);
+    function chart(data) {
+        // The function that labels the midi pitches
+        var midiPitchLabeller = buildMidiPitchLabeller(data.partdata);
+
+        // Build scales
+        var pitchDomain = buildPitchArray(data.minpitch.b12, data.maxpitch.b12);
+        chart.x = d3.scale.linear().range([0, data.scorelength[0]]);
+        chart.pitch = d3.scale.ordinal()
+            .domain(pitchDomain)
+            .rangeRoundBands([0, height - margins.bottom - margins.top], 0, 0);
+
+        // X and Pitch axes will be zoomed on
+        zoom.x(chart.x);
+        //zoom.y(chart.pitch);
+
+        // Build the axes
+        chart.xAxis = d3.svg.axis()
+            .scale(chart.x)
+            .orient("bottom");
+        chart.yAxis = d3.svg.axis()
+            .scale(chart.pitch)
+            .tickFormat(midiPitchLabeller)
+            .orient("left");
+
+        // Draw the axis lines
+        drawAxisLines(chart.xAxis, chart.yAxis);
+        // Draw the piano foreground
+        drawPianoForeground(pitchDomain);
+        var colours = d3.scale.category20().domain(data.partcount);
+        // Draw the barlines
+        drawBarLines(data.barlines);
+        // Draw the parts
+        drawParts(data.partdata, colours);
+        // Draw the hover titles
+        drawHoverTitles();
+        // Draw the piano background
+        drawPianoBackground(pitchDomain);
+        // Build the legend
+        buildLegend(chart.g,
+            data.partnames,
+            colours,
+            margins.right,
+            margins.top,
+            width);
     }
 
-    /*
-     Print Button
-     */
-    var printButton = d3.select(selector).append("p").append("button")
-        .text("Save SVG")
-        .on("click", function() {
-            printToSVG(d3.select(selector).select("svg")[0][0]);
-        });
+    // GUI components
+    attachZoomAndLocationPicker();
+    attachPrintButton(selector, d3.select(selector).select("svg")[0][0]);
 
     return chart;
 };
