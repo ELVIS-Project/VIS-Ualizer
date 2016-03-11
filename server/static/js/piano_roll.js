@@ -23,6 +23,7 @@ var PianoRoll = function(selector, width, height) {
         .attr("shape-rendering", "crispEdges");
 
     chart.contentArea = chart.g.append("g")
+        .attr("name", "content-area")
         .attr("transform", "translate(" + margins.left + "," + margins.top + ")")
         .append("svg")
         .attr({
@@ -47,9 +48,12 @@ var PianoRoll = function(selector, width, height) {
         }
 
         // Build scales
+        var minPitch = data["minpitch"]["b12"],
+            maxPitch = data["maxpitch"]["b12"];
+        var pitchDomain = d3.range(minPitch, maxPitch).reverse();
         chart.x = d3.scale.linear().range([0, data["scorelength"][0]]);
         chart.pitch = d3.scale.ordinal()
-            .domain(d3.range(data["minpitch"]["b12"], data["maxpitch"]["b12"]).reverse())
+            .domain(pitchDomain)
             .rangeRoundBands([0, height - margins.bottom - margins.top], 0, 0);
 
         // X and Pitch axes will be zoomed on
@@ -76,6 +80,27 @@ var PianoRoll = function(selector, width, height) {
         // Apply CSS styling
         chart.svg.selectAll([".axis path ", ".axis line"]).style(cssStyling.axis);
 
+        var pianoForeground = chart.g.append("g").attr("name", "piano-foreground");
+        // Draw the piano lines
+        pianoForeground.selectAll("g").data(pitchDomain).enter()
+            .append("rect")
+            .attr("width", 25)
+            .attr("height", chart.pitch.rangeBand())
+            .attr("x", margins.left + 1)
+            .attr("y", function(pitch) {
+                return chart.pitch(pitch) + chart.pitch.rangeBand();
+            })
+            .attr("fill", function(pitch) {
+                if (isKeyBlack(pitch, 72)) {
+                    return d3.rgb("black");
+                } else {
+                    return d3.rgb("white");
+                }
+            })
+            .style({
+                "stroke": "rgb(192,192,192)",
+                "stroke-width": 1
+            });
 
         chart.scoreLength = data["scorelength"][0];
         var colours = d3.scale.category20().domain(data["partcount"]);
@@ -86,7 +111,7 @@ var PianoRoll = function(selector, width, height) {
             })
             .attr("y1", 0)
             .attr("x2", function(note) {
-                return note["time"][0];
+                return this.getAttribute("x1");
             })
             .attr("y2", height)
             .attr("class", "barline")
@@ -120,6 +145,25 @@ var PianoRoll = function(selector, width, height) {
         // Hover titles
         chart.g.selectAll(".note").append("title").text(function(note) { return note["pitch"]["name"]; });
 
+        // Insert the piano background before the content area
+        var pianoBackground = chart.g.insert("g", ":first-child").attr("name", "piano-background");
+        // Draw the piano lines
+        pianoBackground.selectAll("g").data(pitchDomain).enter()
+            .append("rect")
+            .attr("width", width - margins.left - margins.right)
+            .attr("height", chart.pitch.rangeBand())
+            .attr("x", margins.left + 1)
+            .attr("y", function(pitch) {
+                return chart.pitch(pitch) + chart.pitch.rangeBand();
+            })
+            .attr("fill", function(pitch) {
+                if (isKeyBlack(pitch, 72)) {
+                    return d3.rgb("#EFEFEF");
+                } else {
+                    return d3.rgb("white");
+                }
+            });
+
         // Build the legend
         buildLegend(chart.g, data["partnames"], colours, margins.right, margins.top, width);
     }
@@ -127,33 +171,31 @@ var PianoRoll = function(selector, width, height) {
     function zoomTick() {
         // Scale the axes
         chart.svg.select(".x-axis").call(chart.xAxis);
-        chart.svg.select(".y-axis").call(chart.yAxis);
 
+        // Move the bar lines
         chart.g.selectAll(".barline")
             .attr({
                 "x1": function (note) {
                     return chart.x(note["time"][0]);
                 },
                 "x2": function (note) {
-                    return chart.x(note["time"][0]);
+                    return this.getAttribute("x1");
                 }
             });
+
+        // Move and scale the notes
         chart.g.selectAll(".note")
             .attr({
-                "width": function(note) {
-                    var startPoint = note["starttime"][0];
-                    return chart.x(startPoint + note["duration"][0]) - chart.x(startPoint);
-                },
                 "x": function(note){
                     return chart.x(note["starttime"][0]);
+                },
+                "width": function(note) {
+                    var startPoint = note["starttime"][0];
+                    return chart.x(startPoint + note["duration"][0]) - this.getAttribute("x");
                 }
             });
-            //.attr("height", function(note) {
-            //    return chart.pitch.rangeBand();
-            //})
-            //.attr("y", function(note) {
-            //    return chart.pitch(note["pitch"]["b12"]);
-            //});
+
+        // Set the sliders to the updated values
     }
 
     /*

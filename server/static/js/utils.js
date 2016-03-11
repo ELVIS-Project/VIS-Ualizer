@@ -132,3 +132,18 @@ function sumArray(array) {
         return a + b;
     });
 }
+
+/**
+ * Test if a key is black.
+ *
+ * @param tone
+ * @param cTone
+ * @returns {boolean}
+ */
+function isKeyBlack(tone, cTone) {
+    // Map the keynumber onto the 12 note scale
+    var keyNumber = (tone % 12) - (cTone % 12);
+    // Return true if the keyNumber is one of the black keys
+    return keyNumber == 1 || keyNumber == 3 || keyNumber == 6
+        || keyNumber == 8 || keyNumber == 10;
+}
