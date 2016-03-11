@@ -4,6 +4,12 @@ var ForceDirectedGraph = function(selector, width, height) {
     var maxLinkDistance = 200;
 
     /*
+    Private fields
+     */
+    var lines = {};
+    var lineLabels = {};
+
+    /*
      Code handling Line Styling
      */
     var lineStyles = {
@@ -23,16 +29,12 @@ var ForceDirectedGraph = function(selector, width, height) {
     };
 
     function chart(data) {
-        console.log("data", data);
-
         // Make sure the SVG is clean
         chart.svg.selectAll("*").remove();
 
         // Marker definitions
         var defs = chart.svg.append("defs");
-
         var color = d3.scale.category20();
-
         var zoom = d3.behavior.zoom()
             .scaleExtent([1, 10])
             .size(width, height)
@@ -40,12 +42,9 @@ var ForceDirectedGraph = function(selector, width, height) {
 
         // Get all keys
         var keys = extractKeysFromMatrix(data);
-
         var keyNodeMapping = {};
-
         var nodes = [],
             links = [];
-
         keys.forEach(function(key) {
             var node = {
                 name: key
@@ -80,9 +79,6 @@ var ForceDirectedGraph = function(selector, width, height) {
             link["relativeValue"] = (link.value - minLinkValue) / (maxLinkValue - minLinkValue);
         });
 
-
-        console.log("keys:", keys, "nodes:", nodes, "links:", links);
-
         var force = d3.layout.force()
             .nodes(nodes)
             .links(links)
@@ -106,12 +102,10 @@ var ForceDirectedGraph = function(selector, width, height) {
 
         // The set of names for the line arrowheads
         var arrowNames = d3.set();
-        var lines = link.append("path")
+        lines = link.append("path")
             .attr("class", "link")
             .attr("fill", "none")
             .attr("stroke", function(link) { return d3.rgb(color(link.source.name)).darker(1); })
-            //.attr("stroke", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
-            //.attr("stroke-width", function(link) { return (0.75 + (0.25 * link.relativeValue)); })
             .attr("stroke-width", function(link) {
                 return 1 + link.relativeValue;
             })
@@ -143,15 +137,15 @@ var ForceDirectedGraph = function(selector, width, height) {
                 }
 
                 return "url(#" + arrowName + ")";
-            });
-            //.style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
+            })
+            .style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
 
-        var lineLabels = link
+        lineLabels = link
             .append("text")
             .style("fill", function(link) { return d3.rgb(color(link.source.name)).darker(2); })
             .attr("fill", function(link) { var n = parseInt(192 - link.relativeValue * 128); return "rgb(" + n + "," + n + "," + n + ")" })
-            .text(function(link) { return link.value });
-            //.style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
+            .text(function(link) { return link.value })
+            .style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
 
         /*
         Create Node Graphics
@@ -346,7 +340,6 @@ var ForceDirectedGraph = function(selector, width, height) {
     // Attach print button
     attachPrintButton(selector, chart.svg[0][0]);
 
-    //var dataPicker = d3.select(".force-directed-graph-data");
     var dataPicker = d3.select(selector).append("p").append("label").text("Part:").append("select");
     dataPicker.append("option").attr("value", "alto").text("Alto");
     dataPicker.append("option").attr("value", "bass").text("Bass");
@@ -361,6 +354,23 @@ var ForceDirectedGraph = function(selector, width, height) {
         });
     });
 
+    // Create a selector to choose whether or not to use opacity.
+    d3.select(selector).append("p")
+        .append("label").text("Opacity:")
+        .append("input")
+        .attr("type", "checkbox")
+        .attr("checked", true)
+        .on("change", function() {
+            if (this.checked) {
+                // Have opacity
+                lines.style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
+                lineLabels.style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
+            } else {
+                // Make everything opaque
+                lines.style("opacity", null);
+                lineLabels.style("opacity", null);
+            }
+        });
 
     return chart;
 };
