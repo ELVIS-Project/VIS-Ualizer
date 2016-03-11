@@ -54,14 +54,8 @@ var BarGraph = function(selector, width, height) {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    /*
-     Print Button
-     */
-    var printButton = d3.select(selector).append("p").append("button")
-        .text("Save SVG")
-        .on("click", function() {
-            printToSVG(d3.select(selector).select("svg")[0][0]);
-        });
+    // GUI components
+    attachPrintButton(selector, d3.select(selector).select("svg")[0][0]);
 
     return chart;
 };
