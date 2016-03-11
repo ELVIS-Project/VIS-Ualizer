@@ -153,25 +153,6 @@ var PianoRoll = function(selector, width, height) {
     };
 
     /**
-     * Draw the x and y axis lines.
-     *
-     * @param xAxis
-     * @param yAxis
-     */
-    var drawAxisLines = function(xAxis, yAxis) {
-        chart.g.append("g")
-            .attr("class", "x-axis axis")
-            .attr("transform", "translate(" + margins.left + "," + (height - margins.bottom) + ")")
-            .call(xAxis);
-        chart.g.append("g")
-            .attr("class", "y-axis axis")
-            .attr("transform", "translate(" + margins.left + "," + margins.top + ")")
-            .call(yAxis);
-        // Apply CSS styling
-        chart.svg.selectAll([".axis path ", ".axis line"]).style(cssStyling.axis);
-    };
-
-    /**
      * Build an array of pitches from minimum to maximum.
      *
      * @param minPitch
@@ -303,7 +284,7 @@ var PianoRoll = function(selector, width, height) {
             .orient("left");
 
         // Draw the axis lines
-        drawAxisLines(chart.xAxis, chart.yAxis);
+        drawAxisLines(chart.g, chart.xAxis, chart.yAxis, height, margins.top, margins.left, margins.bottom);
         // Draw the piano foreground
         drawPianoForeground(pitchDomain);
         var colours = d3.scale.category20().domain(data.partcount);
