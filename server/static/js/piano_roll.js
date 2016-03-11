@@ -86,9 +86,9 @@ var PianoRoll = function(selector, width, height) {
             .append("rect")
             .attr("width", 25)
             .attr("height", chart.pitch.rangeBand())
-            .attr("x", margins.left + 1)
+            .attr("x", margins.left)
             .attr("y", function(pitch) {
-                return chart.pitch(pitch) + chart.pitch.rangeBand();
+                return chart.pitch(pitch) + chart.pitch.rangeBand() - 2;
             })
             .attr("fill", function(pitch) {
                 if (isKeyBlack(pitch, 72)) {
@@ -98,7 +98,7 @@ var PianoRoll = function(selector, width, height) {
                 }
             })
             .style({
-                "stroke": "rgb(192,192,192)",
+                "stroke": "rgb(0,0,0)",
                 "stroke-width": 1
             });
 
@@ -154,7 +154,7 @@ var PianoRoll = function(selector, width, height) {
             .attr("height", chart.pitch.rangeBand())
             .attr("x", margins.left + 1)
             .attr("y", function(pitch) {
-                return chart.pitch(pitch) + chart.pitch.rangeBand();
+                return chart.pitch(pitch) + chart.pitch.rangeBand() - 1;
             })
             .attr("fill", function(pitch) {
                 if (isKeyBlack(pitch, 72)) {
