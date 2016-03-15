@@ -24,11 +24,11 @@ var PieChart = function(selector, width, height) {
         .append("svg")
         .attr("width", width)
         .attr("height", height)
-        .style(cssStyling.global);
+        .style(cssStyling.global)
+        .call(zoom);
 
     chart.g = chart.svg.append("g")
-        .attr("transform", "translate(" + centre.x + "," + centre.y + ")")
-        .call(zoom);
+        .attr("transform", "translate(" + centre.x + "," + centre.y + ")");
 
     function zoomCallback() {
         var newTranslation = d3.event.translate;
