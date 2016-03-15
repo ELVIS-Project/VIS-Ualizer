@@ -131,9 +131,8 @@ var PianoRoll = function(selector, width, height) {
     var drawParts = function(parts, colours) {
         parts.forEach(function(part) {
             var colour = colours(part.partindex);
-            var noteData = part.notedata;
 
-            var notes = chart.contentArea.selectAll(selector).data(noteData);
+            var notes = chart.contentArea.selectAll(selector).data(part.notedata);
             notes.enter().append('rect')
                 .attr("width", function(note) {
                     return note.duration[0];
@@ -148,7 +147,11 @@ var PianoRoll = function(selector, width, height) {
                     return chart.pitch(note.pitch.b12);
                 })
                 .attr("class", "note")
-                .style("fill", colour);
+                .style({
+                    "fill": colour,
+                    "stroke": d3.rgb(colour).darker(),
+                    "stroke-width": 1
+                });
         });
     };
 
