@@ -3,6 +3,7 @@
 var PieChart = function(selector, width, height) {
     var margin = 120;
     var centre = {x: width/2, y: height/2};
+    var radius = parseInt(Math.min(width, height) / 2 - margin);
 
     var minZoom = 1,
         maxZoom = 4;
@@ -51,16 +52,11 @@ var PieChart = function(selector, width, height) {
             }
         });
 
-        var radius = Math.min(width, height) / 2 - margin;
         var colours = d3.scale.category20();
 
         chart.arc = d3.svg.arc()
             .outerRadius(radius - 10)
             .innerRadius(0);
-
-        var labelArc = d3.svg.arc()
-            .outerRadius(radius - 40)
-            .innerRadius(radius - 40);
 
         chart.pie = d3.layout.pie()
             .sort(null)
@@ -75,10 +71,12 @@ var PieChart = function(selector, width, height) {
             .attr("d", chart.arc)
             .style("fill", function(d) { return colours(d.data["label"]); });
 
-        g.append("text")
-            .attr("transform", function(d) { return "translate(" + labelArc.centroid(d) + ")"; })
+        chart.labels = g.append("text")
             .attr("dy", ".35em")
             .text(function(d) { return d.data["label"]; });
+
+        // Set labels to default position
+        positionLabels(chart.labels, radius);
 
         // Build the legend
         var names = data.map(function(datum) {
@@ -93,6 +91,17 @@ var PieChart = function(selector, width, height) {
         }
 
         buildLegend(chart.svg, names, colours, margin, margin, width);
+    }
+
+    function positionLabels(labels, radius) {
+        var labelArc = d3.svg.arc()
+            .outerRadius(radius - 40)
+            .innerRadius(radius - 40);
+
+        labels
+            .attr("transform", function(d) {
+                return "translate(" + labelArc.centroid(d) + ")";
+            });
     }
 
     /**
@@ -166,9 +175,7 @@ var PieChart = function(selector, width, height) {
         sortChooser.append("option").attr("value", "value").text("Value");
 
         sortChooser.on("input", function() {
-            console.log(this.value);
             if (this.value === "label") {
-                console.log("It's label");
                 sort = sortEnum.label;
             } else {
                 sort = sortEnum.value;
@@ -177,12 +184,28 @@ var PieChart = function(selector, width, height) {
         });
     }
 
+    function attachLabelLocationSlider(selector) {
+        d3.select(selector).append("p").append("label")
+            .text("Label Position: ")
+            .append("input")
+            .attr({
+                type: "range",
+                min: 0,
+                max: 80,
+                value: 0
+            })
+            .on("input", function() {
+                positionLabels(chart.labels, radius + parseInt(this.value));
+            });
+    }
+
 
     // Attach GUI elements
     attachPrintButton(selector, chart.svg[0][0]);
     attachExplodeButton(selector);
     attachZoomSlider(selector, maxZoom);
     attachSortChooser(selector, sortEnum);
+    attachLabelLocationSlider(selector);
 
     return chart;
 };
