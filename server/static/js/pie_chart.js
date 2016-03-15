@@ -8,6 +8,15 @@ var PieChart = function(selector, width, height) {
         maxZoom = 4;
     var zoom = d3.behavior.zoom().scaleExtent([minZoom, maxZoom]).on("zoom", zoomCallback);
 
+    // Keep track of whether or not the pie is exploding
+    var isNotExploded = true;
+
+    var sortEnum = Object.freeze({
+        label: 0,
+        value: 1
+    });
+    var sort = sortEnum.label;
+
     chart.svg = d3.select(selector)
         .append("svg")
         .attr("width", width)
@@ -26,6 +35,22 @@ var PieChart = function(selector, width, height) {
     }
 
     function chart(data) {
+        // Make sure the SVG is clean
+        chart.g.selectAll("*").remove();
+        chart.svg.selectAll('g[name="legend"]').remove();
+
+        // Backup the data
+        chart.data = data;
+
+        data = data.sort(function(a, b) {
+            switch (sort) {
+                case sortEnum.label:
+                    return a.label > b.label;
+                default:
+                    return a.value > b.value;
+            }
+        });
+
         var radius = Math.min(width, height) / 2 - margin;
         var colours = d3.scale.category20();
 
@@ -60,6 +85,13 @@ var PieChart = function(selector, width, height) {
             return datum["label"];
         });
 
+        // Make sure that we're in the right explosion state
+        if (isNotExploded) {
+            implode();
+        } else {
+            explode();
+        }
+
         buildLegend(chart.svg, names, colours, margin, margin, width);
     }
 
@@ -81,46 +113,76 @@ var PieChart = function(selector, width, height) {
         d3.selectAll(".arc").attr("transform", "translate(0,0)");
     };
 
-    /*
-     Print Button
+    /**
+     * Attach an "explode" button to the visualization.
+     *
+     * @param selector
      */
-    attachPrintButton(selector, chart.svg[0][0]);
+    function attachExplodeButton(selector) {
+        d3.select(selector).append("p").append("button")
+            .text("Explode")
+            .on("click", function() {
+                // Flip explode/implode
+                isNotExploded = !isNotExploded;
+                if (isNotExploded) {
+                    implode();
+                    this.innerHTML = "Explode";
+                } else {
+                    explode();
+                    this.innerHTML = "Implode";
+                }
+            });
+    }
 
-    /*
-     Explode Button
+    /**
+     * Attach a zoom slider to the visualization.
+     *
+     * @param selector
+     * @param maxZoom
      */
-    var isExploding = true;
-    var explodeButton = d3.select(selector).append("p").append("button")
-        .text("Explode")
-        .on("click", function() {
-            // Flip explode/implode
-            isExploding = !isExploding;
-            if (isExploding) {
-                implode();
-                explodeButton.text("Explode");
+    function attachZoomSlider(selector, maxZoom) {
+        var numberOfZoomNotches = 20;
+        d3.select(selector).append("p").append("label")
+            .text("Zoom")
+            .append("input")
+            .attr("name", "zoom")
+            .attr("type", "range")
+            .attr("min", "1")
+            .attr("max", numberOfZoomNotches)
+            .attr("value", "1")
+            .on("input", function() {
+                var value = this.value;
+                zoom.scale((value / numberOfZoomNotches) * maxZoom);
+                zoom.event(d3.select(selector));
+            });
+    }
+
+    function attachSortChooser(selector, sortEnum) {
+        var sortChooser = d3.select(selector).append("p").append("label")
+            .text("Sort: ")
+            .append("select");
+
+        sortChooser.append("option").attr("value", "label").text("Label");
+        sortChooser.append("option").attr("value", "value").text("Value");
+
+        sortChooser.on("input", function() {
+            console.log(this.value);
+            if (this.value === "label") {
+                console.log("It's label");
+                sort = sortEnum.label;
             } else {
-                explode();
-                explodeButton.text("Implode");
+                sort = sortEnum.value;
             }
+            chart(chart.data);
         });
+    }
 
-    /*
-     Zoom Slider
-     */
-    var numberOfZoomNotches = 20;
-    var zoomSlider = d3.select(selector).append("p").append("label")
-        .text("Zoom")
-        .append("input")
-        .attr("name", "zoom")
-        .attr("type", "range")
-        .attr("min", "1")
-        .attr("max", numberOfZoomNotches)
-        .attr("value", "1")
-        .on("input", function() {
-            var value = zoomSlider[0][0].value;
-            zoom.scale((value / numberOfZoomNotches) * maxZoom);
-            zoom.event(d3.select(selector));
-        });
+
+    // Attach GUI elements
+    attachPrintButton(selector, chart.svg[0][0]);
+    attachExplodeButton(selector);
+    attachZoomSlider(selector, maxZoom);
+    attachSortChooser(selector, sortEnum);
 
     return chart;
 };
