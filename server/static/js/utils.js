@@ -90,7 +90,8 @@ var cssStyling = {
 function buildLegend(element, names, colourScale, rightMargin, topMargin, width) {
     // Construct the legend
     var legend = element.append("g")
-        .attr("transform", "translate(" + (width - rightMargin + 10) + "," + topMargin + ")");
+        .attr("transform", "translate(" + (width - rightMargin + 10) + "," + topMargin + ")")
+        .attr("name", "legend");
 
     var cubeSize = 10;
     for(var i = 0; i < names.length; i++) {
