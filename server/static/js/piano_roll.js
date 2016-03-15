@@ -4,19 +4,15 @@ var PianoRoll = function(selector, width, height) {
         top: 10,
         left: 40,
         right: 120,
-        bottom: 30
+        bottom: 30,
+        piano: 25
     };
-
-    var minZoom = 0.001,
-        maxZoom = 0.01;
-    var zoom = d3.behavior.zoom().scaleExtent([minZoom, maxZoom]).on("zoom", zoomTick);
 
     chart.svg = d3.select(selector)
         .append("svg")
         .attr("width", width)
         .attr("height", height)
-        .style(cssStyling.global)
-        .call(zoom);
+        .style(cssStyling.global);
 
     chart.g = chart.svg
         .append("g")
@@ -44,7 +40,7 @@ var PianoRoll = function(selector, width, height) {
         // Draw the piano lines
         pianoForeground.selectAll("g").data(pitches).enter()
             .append("rect")
-            .attr("width", 25)
+            .attr("width", margins.piano)
             .attr("height", chart.pitch.rangeBand())
             .attr("x", margins.left)
             .attr("y", function(pitch) {
@@ -140,9 +136,9 @@ var PianoRoll = function(selector, width, height) {
                 .attr("height", function(note) {
                     return chart.pitch.rangeBand();
                 })
-                .attr("x", function(note) {
-                    return note.starttime[0];
-                })
+                //.attr("x", function(note) {
+                //    return note.starttime[0];
+                //})
                 .attr("y", function(note) {
                     return chart.pitch(note.pitch.b12);
                 })
@@ -273,9 +269,18 @@ var PianoRoll = function(selector, width, height) {
             .domain(pitchDomain)
             .rangeRoundBands([0, height - margins.bottom - margins.top], 0, 0);
 
-        // X and Pitch axes will be zoomed on
-        zoom.x(chart.x);
-        //zoom.y(chart.pitch);
+        var minZoom = 0.001,
+            maxZoom = 0.01;
+        var zoom = d3.behavior.zoom()
+            .x(chart.x)
+            .translate([margins.piano, 0])
+            //.xExtent()
+            .scaleExtent([minZoom, maxZoom])
+            .scale(minZoom)
+            .on("zoom", zoomTick);
+
+        // Invoke zoom on the svg
+        chart.svg.call(zoom);
 
         // Build the axes
         chart.xAxis = d3.svg.axis()
@@ -306,6 +311,9 @@ var PianoRoll = function(selector, width, height) {
             margins.right,
             margins.top,
             width);
+
+        // Invoke zoomtick so that the initial note positions are set
+        zoomTick();
     }
 
     // GUI components
