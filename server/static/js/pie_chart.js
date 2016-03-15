@@ -5,9 +5,11 @@ var PieChart = function(selector, width, height) {
     var centre = {x: width/2, y: height/2};
     var radius = parseInt(Math.min(width, height) / 2 - margin);
 
-    var minZoom = 1,
+    var minZoom = 0.5,
         maxZoom = 4;
-    var zoom = d3.behavior.zoom().scaleExtent([minZoom, maxZoom]).on("zoom", zoomCallback);
+    var zoom = d3.behavior.zoom()
+        .scaleExtent([minZoom, maxZoom])
+        .on("zoom", zoomCallback);
 
     // Keep track of whether or not the pie is exploding
     var isNotExploded = true;
