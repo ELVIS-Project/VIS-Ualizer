@@ -152,7 +152,8 @@ def example(example_id):
     ]
     if example_types.has_key(example_id):
         example_item = example_types[example_id]
-        js_files.append(url_for("static", filename=example_item["js"]))
+        for js_file in example_item["js"]:
+            js_files.append(url_for("static", filename=js_file))
         return render_template(example_item["template"], js_files=js_files)
     else:
         # Invalid ID

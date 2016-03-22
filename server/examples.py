@@ -1,22 +1,22 @@
 example_types = {
     "bar-graph": {
         "name": "Bar Graph",
-        "js": "js/bargraph.js",
+        "js": ["js/bargraph.js"],
         "template": "example/bar-graph.html"
     },
     "bar-graph-clustered": {
         "name": "Bar Graph - Clustered",
-        "js": "js/bargraph_grouped.js",
+        "js": ["js/bargraph_grouped.js"],
         "template": "example/bar-graph-grouped.html"
     },
     "force-directed-graph": {
         "name": "Force-Directed Graph",
-        "js": "js/force_directed_graph.js",
+        "js": ["js/force_directed_graph.js"],
         "template": "example/force-directed-graph.html"
     },
     "heat-map": {
         "name": "Heat Map",
-        "js": "js/heat_map.js",
+        "js": ["js/heat_map.js"],
         "template": "example/heat-map.html"
     },
     # "co-occurrence-matrix": {
@@ -26,12 +26,12 @@ example_types = {
     # },
     "piano-roll": {
         "name": "Piano Roll",
-        "js": "js/piano_roll.js",
+        "js": ["js/libs/MIDI/shim/Base64binary.js", "js/libs/MIDI/MIDI.js", "js/piano_roll.js"],
         "template": "example/piano-roll.html"
     },
     "pie-chart": {
         "name": "Pie Chart",
-        "js": "js/pie_chart.js",
+        "js": ["js/pie_chart.js"],
         "template": "example/pie-chart.html"
     }
 }

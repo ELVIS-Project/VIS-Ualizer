@@ -11,7 +11,8 @@
 {% endblock %}
 {% block body %}{% endblock %}
 {% block foot %}
-    {% for file in js_files %}<script src="{{ file }}"></script>{% endfor %}
+    {% for file in js_files %}<script src="{{ file }}" type="text/javascript"></script>
+    {% endfor %}
     </body>
     </html>
 {% endblock %}

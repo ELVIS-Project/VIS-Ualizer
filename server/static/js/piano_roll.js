@@ -1,3 +1,74 @@
+var AudioController = function() {
+    this.bpm = 360;
+
+    this.isPlaying = false;
+    this.currentBeat = 0;
+    this.notesIndex = 0;
+    this.notes = [];
+
+    // Initialize the MIDI system
+    MIDI.loadPlugin({
+        soundfontUrl: "/static/soundfont/",
+        instrument: "acoustic_grand_piano",
+        onprogress: function(state, progress) {
+            console.log(state, progress);
+        },
+        onsuccess: function() {
+            //var delay = 0; // play one note every quarter second
+            //var note = 50; // the MIDI note
+            //var velocity = 127; // how hard the note hits
+            //// play the note
+            MIDI.setVolume(0, 127);
+        }
+    });
+
+    this.beatsToSeconds = function(numBeats) {
+        var bps = 60 / this.bpm;
+        return bps * numBeats;
+    };
+
+    this.playNote = function(pitch, velocity, duration) {
+        var delay = 0;
+        MIDI.noteOn(0, pitch, velocity, delay);
+        MIDI.noteOff(0, pitch, delay + duration);
+    };
+
+    this.loadPiece = function(notes) {
+        this.notes = notes;
+    };
+
+    this.playPiece = function() {
+        var milisecondsPerBeat = this.beatsToSeconds(1) * 1000;
+        this.isPlaying = true;
+        var that = this;
+        var playNoteIfReady = function(noteIndex) {
+            if (that.isPlaying && noteIndex < that.notes.length) {
+                // Play all the notes that are currently playable
+                while (that.notes[noteIndex].starttime[0] < that.currentBeat) {
+                    var pitch = that.notes[noteIndex].pitch.b12;
+                    var velocity = 127;
+                    var duration = that.beatsToSeconds(that.notes[noteIndex].duration[0]);
+                    console.log(pitch, velocity, duration);
+                    that.playNote(pitch, velocity, duration);
+                    noteIndex++;
+                }
+
+                // Move onto the next beat
+                that.currentBeat++;
+                window.setTimeout(playNoteIfReady, milisecondsPerBeat, noteIndex);
+            }
+        };
+
+        playNoteIfReady(this.notesIndex);
+    };
+
+    this.resetPiece = function() {
+        this.isPlaying = false;
+        this.currentBeat = 0;
+        this.notesIndex = 0;
+    }
+};
+
 
 var PianoRoll = function(selector, width, height) {
     var margins = {
@@ -7,6 +78,9 @@ var PianoRoll = function(selector, width, height) {
         bottom: 30,
         piano: 25
     };
+
+    // Construct the audio controller
+    var audioController = new AudioController();
 
     chart.svg = d3.select(selector)
         .append("svg")
@@ -56,6 +130,11 @@ var PianoRoll = function(selector, width, height) {
             .style({
                 "stroke": "rgb(0,0,0)",
                 "stroke-width": 1
+            })
+            .on("click", function(pitch) {
+                var duration = 1;
+                var velocity = 127;
+                audioController.playNote(pitch, velocity, duration);
             });
     };
 
@@ -157,6 +236,12 @@ var PianoRoll = function(selector, width, height) {
                     "fill": colour,
                     "stroke": d3.rgb(colour).darker(),
                     "stroke-width": 1
+                })
+                .on("click", function(note) {
+                    var duration = audioController.beatsToSeconds(note.duration[0]);
+                    var pitch = note.pitch.b12;
+                    var velocity = 127;
+                    audioController.playNote(pitch, velocity, duration);
                 });
         });
     };
@@ -263,6 +348,19 @@ var PianoRoll = function(selector, width, height) {
         }
     };
 
+    var attachPlayAndStopButtons = function(parentSelector, audioController) {
+        var parent = d3.select(selector).append("p");
+        parent.append("button").text("Play")
+            .on("click", function() {
+                audioController.playPiece();
+            });
+        parent.append("button").text("Stop")
+            .on("click", function() {
+                audioController.resetPiece();
+            });
+
+    };
+
     var renderSelectedParts = function(isPartEnabled) {
         var parts = d3.select(selector).selectAll(".part")[0];
         for (var i = 0; i < parts.length; i++) {
@@ -362,6 +460,17 @@ var PianoRoll = function(selector, width, height) {
             margins.top,
             width);
 
+        // Get every note in the piece ordered by start time
+        var allNotes = [].concat.apply([],
+            data.partdata.map(function(part) {
+                return part.notedata;
+            }))
+            .sort(function(a, b) {
+                return a.starttime[0] - b.starttime[0];
+            });
+        //// Load the notes into the audio player
+        audioController.loadPiece(allNotes);
+
         // Draw part selector
         attachPartSelector(selector, data.partnames);
 
@@ -371,6 +480,7 @@ var PianoRoll = function(selector, width, height) {
 
     // GUI components
     //attachZoomAndLocationPicker();
+    attachPlayAndStopButtons(selector, audioController);
     attachPrintButton(selector, d3.select(selector).select("svg")[0][0]);
 
     return chart;
