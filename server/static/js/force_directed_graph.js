@@ -422,10 +422,11 @@ var ForceDirectedGraph = function(selector, width, height) {
 
     var attachDataSourcePicker = function() {
         var dataPicker = d3.select(selector).append("p").append("label").text("Part:").append("select");
-        dataPicker.append("option").attr("value", "alto").text("Alto");
-        dataPicker.append("option").attr("value", "bass").text("Bass");
+        dataPicker.append("option").attr("value", "all").text("All Parts");
         dataPicker.append("option").attr("value", "soprano").text("Soprano");
+        dataPicker.append("option").attr("value", "alto").text("Alto");
         dataPicker.append("option").attr("value", "tenor").text("Tenor");
+        dataPicker.append("option").attr("value", "bass").text("Bass");
         dataPicker.on("change", function() {
             var value = dataPicker[0][0].value;
             var dataUrl = "/data/ave-maria/" + value + "/";
