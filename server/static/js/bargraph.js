@@ -3,46 +3,69 @@
 var BarGraph = function(selector, width, height) {
     var margin = {top: 20, right: 30, bottom: 30, left: 40};
 
+    // Which sortt we're using
+    var sort = sortEnum.label;
+
+    var computedWidth = width - margin.left - margin.right,
+        computedHeight = height - margin.left - margin.right;
+
+    var xScale = d3.scale.ordinal()
+        .rangeRoundBands([0, computedWidth], .1);
+
+    var yScale = d3.scale.linear()
+        .range([computedHeight, 0]);
+
+    var xAxis = d3.svg.axis()
+        .scale(xScale)
+        .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+        .scale(yScale)
+        .orient("left");
+
     function chart(data) {
+        // Back up the data
+        chart.data = data;
+        // Make sure the SVG is clean
+        chart.g.selectAll("*").remove();
+
+        // Sort the data
+        data = data.sort(function(a,b) {
+            if (sort === sortEnum.value) {
+                return a.value - b.value;
+            } else {
+                return a.label.toLowerCase() > b.label.toLowerCase();
+            }
+        });
+
+
         var labels = d3.map(data, function(d) { return d.label }).keys();
         var colours = d3.scale.category20().domain(labels);
 
         // Map x-axis labels
-        chart.x.domain(data.map(function(d) { return d.label; }));
+        xScale.domain(
+            data.map(function(d) {
+                return d.label;
+            })
+        );
         // Map y-axis values
-        chart.y.domain([0, d3.max(data, function(d) { return d.value; })]);
+        yScale.domain([0, d3.max(data, function(d) { return d.value; })]);
 
         // Draw the axes
-        drawAxisLines(chart.g, chart.xAxis, chart.yAxis, chart.height, 0, 0, 0);
+        drawAxisLines(chart.g, xAxis, yAxis, computedHeight, 0, 0, 0);
 
-        var bars = chart.g.selectAll(".bar")
+        var bars = chart.g.append("g")
+            .attr("class", "bars")
+            .selectAll(".bar")
             .data(data)
             .enter().append("rect")
-            .attr("x", function(d) { return chart.x(d.label); })
-            .attr("y", function(d) { return chart.y(d.value); })
+            .attr("x", function(d) { return xScale(d.label); })
+            .attr("y", function(d) { return yScale(d.value); })
             .attr("fill", function(d) { return colours(d.label) })
-            .attr("height", function(d) { return chart.height - chart.y(d.value); })
-            .attr("width", chart.x.rangeBand())
+            .attr("height", function(d) { return computedHeight - yScale(d.value); })
+            .attr("width", xScale.rangeBand())
             .style(cssStyling.bar);
-
     }
-
-    chart.width = width - margin.left - margin.right;
-    chart.height = height - margin.left - margin.right;
-
-    chart.x = d3.scale.ordinal()
-        .rangeRoundBands([0, chart.width], .1);
-
-    chart.y = d3.scale.linear()
-        .range([chart.height, 0]);
-
-    chart.xAxis = d3.svg.axis()
-        .scale(chart.x)
-        .orient("bottom");
-
-    chart.yAxis = d3.svg.axis()
-        .scale(chart.y)
-        .orient("left");
 
     chart.svg = d3.select(selector)
         .append("svg")
@@ -54,8 +77,27 @@ var BarGraph = function(selector, width, height) {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    function attachSortChooser(selector, sortEnum) {
+        var sortChooser = d3.select(selector).append("p").append("label")
+            .text("Sort: ")
+            .append("select");
+
+        sortChooser.append("option").attr("value", "label").text("Label");
+        sortChooser.append("option").attr("value", "value").text("Value");
+
+        sortChooser.on("input", function() {
+            if (this.value === "label") {
+                sort = sortEnum.label;
+            } else {
+                sort = sortEnum.value;
+            }
+            chart(chart.data);
+        });
+    }
+
     // GUI components
     attachPrintButton(selector, d3.select(selector).select("svg")[0][0]);
+    attachSortChooser(selector, sortEnum);
 
     return chart;
 };

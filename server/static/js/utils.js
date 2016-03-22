@@ -188,3 +188,12 @@ function attachEmptyControlPanel(parentSelector) {
             "position": "fixed"
         });
 }
+
+/**
+ * An enum to handle possible sorting.
+ * @type {Object}
+ */
+var sortEnum = Object.freeze({
+    label: 0,
+    value: 1
+});
