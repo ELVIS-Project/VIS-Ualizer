@@ -91,7 +91,10 @@ var PianoRoll = function(selector, width, height) {
      * @param barlines
      */
     var drawBarLines = function(barlines) {
-        chart.contentArea.selectAll(selector).data(barlines).enter().append('line')
+        chart.contentArea
+            .append("g")
+            .attr("name", "barlines")
+            .selectAll(selector).data(barlines).enter().append('line')
             .attr("x1", function(note) {
                 return note.time[0];
             })
@@ -122,14 +125,21 @@ var PianoRoll = function(selector, width, height) {
      * Draw the part notes
      *
      * @param parts
+     * @param partNames
      * @param colours
      */
-    var drawParts = function(parts, colours) {
+    var drawParts = function(parts, partNames, colours) {
         parts.forEach(function(part) {
             var colour = colours(part.partindex);
-
-            var notes = chart.contentArea.selectAll(selector).data(part.notedata);
-            notes.enter().append('rect')
+            var partContainer =  chart.contentArea
+                .append("g")
+                .attr({
+                    name: partNames[part.partindex],
+                    class: "part"
+                })
+                .selectAll(selector);
+            partContainer.data(part.notedata)
+                .enter().append('rect')
                 .attr("width", function(note) {
                     return note.duration[0];
                 })
@@ -253,6 +263,46 @@ var PianoRoll = function(selector, width, height) {
         }
     };
 
+    var renderSelectedParts = function(isPartEnabled) {
+        var parts = d3.select(selector).selectAll(".part")[0];
+        for (var i = 0; i < parts.length; i++) {
+            var part = parts[i];
+            var name = part.getAttribute("name");
+            if (isPartEnabled[name]) {
+                part.setAttribute("visibility", null)
+            } else {
+                part.setAttribute("visibility", "hidden");
+            }
+        }
+    };
+
+    var attachPartSelector = function(parentSelector, partNames) {
+        var form = d3.select(parentSelector).append("p")
+            .text("Parts:")
+            .append("ul");
+
+        var isPartEnabled = {};
+        // Construct part booleans and checkboxes
+        for (var i = 0; i < partNames.length; i++) {
+            isPartEnabled[partNames[i]] = true;
+
+            form.append("li")
+                .text(partNames[i])
+                .append("input")
+                .attr({
+                    "name": partNames[i],
+                    "type": "checkbox",
+                    "checked": true
+                })
+                .on("change", function() {
+                    // Record the change
+                    isPartEnabled[this.name] = this.checked;
+                    // Do a render update
+                    renderSelectedParts(isPartEnabled);
+                });
+        }
+    };
+
     /**
      * Given data, construct the chart.
      *
@@ -299,7 +349,7 @@ var PianoRoll = function(selector, width, height) {
         // Draw the barlines
         drawBarLines(data.barlines);
         // Draw the parts
-        drawParts(data.partdata, colours);
+        drawParts(data.partdata, data.partnames, colours);
         // Draw the hover titles
         drawHoverTitles();
         // Draw the piano background
@@ -312,12 +362,15 @@ var PianoRoll = function(selector, width, height) {
             margins.top,
             width);
 
+        // Draw part selector
+        attachPartSelector(selector, data.partnames);
+
         // Invoke zoomtick so that the initial note positions are set
         zoomTick();
     }
 
     // GUI components
-    attachZoomAndLocationPicker();
+    //attachZoomAndLocationPicker();
     attachPrintButton(selector, d3.select(selector).select("svg")[0][0]);
 
     return chart;
