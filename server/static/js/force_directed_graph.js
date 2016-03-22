@@ -28,6 +28,15 @@ var ForceDirectedGraph = function(selector, width, height) {
         chart.tick();
     };
 
+    // Add a control panel div
+    d3.select(selector)
+        .append("div")
+        .attr("class", "control-panel")
+        .style(cssStyling.global)
+        .style({
+            "position": "fixed"
+        });
+
     chart.svg = d3.select(selector)
         .append("svg")
         .attr("width", width)
@@ -393,8 +402,8 @@ var ForceDirectedGraph = function(selector, width, height) {
         };
     }
 
-    var attachLineStylePicker = function() {
-        var lineStylePicker = d3.select(selector).append("p").append("label").text("Edges:").append("select");
+    var attachLineStylePicker = function(parentSelector) {
+        var lineStylePicker = d3.select(parentSelector).append("p").append("label").text("Edges:").append("select");
         d3.keys(lineStyles).forEach(function(style) {
             lineStylePicker.append("option")
                 .attr("value", style)
@@ -405,8 +414,8 @@ var ForceDirectedGraph = function(selector, width, height) {
         });
     };
 
-    var attachSearchInput = function() {
-        var search = d3.select(selector).append("form");
+    var attachSearchInput = function(parentSelector) {
+        var search = d3.select(parentSelector).append("form");
         //Build the form
         search.append("label").text("Node:").append("input").attr("name", "node");
         search.append("label").text("Inbound:").append("input").attr({"type": "checkbox", "name": "inbound"});
@@ -421,8 +430,8 @@ var ForceDirectedGraph = function(selector, width, height) {
         });
     };
 
-    var attachDataSourcePicker = function() {
-        var dataPicker = d3.select(selector).append("p").append("label").text("Part:").append("select");
+    var attachDataSourcePicker = function(parentSelector) {
+        var dataPicker = d3.select(parentSelector).append("p").append("label").text("Part:").append("select");
         dataPicker.append("option").attr("value", "all").text("All Parts");
         dataPicker.append("option").attr("value", "soprano").text("Soprano");
         dataPicker.append("option").attr("value", "alto").text("Alto");
@@ -438,9 +447,9 @@ var ForceDirectedGraph = function(selector, width, height) {
         });
     };
 
-    var attachOpacityPicker = function () {
+    var attachOpacityPicker = function (parentSelector) {
         // Create a selector to choose whether or not to use opacity.
-        d3.select(selector).append("p")
+        d3.select(parentSelector).append("p")
             .append("label").text("Opacity:")
             .append("input")
             .attr("type", "checkbox")
@@ -457,11 +466,11 @@ var ForceDirectedGraph = function(selector, width, height) {
     };
 
     // Attach GUI components
-    attachPrintButton(selector, chart.svg[0][0]);
-    attachLineStylePicker();
-    attachSearchInput();
-    attachDataSourcePicker();
-    attachOpacityPicker();
+    attachPrintButton(".control-panel", chart.svg[0][0]);
+    attachLineStylePicker(".control-panel");
+    attachSearchInput(".control-panel");
+    attachDataSourcePicker(".control-panel");
+    attachOpacityPicker(".control-panel");
 
     return chart;
 };
