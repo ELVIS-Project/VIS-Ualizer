@@ -14,10 +14,6 @@ var AudioController = function() {
             console.log(state, progress);
         },
         onsuccess: function() {
-            //var delay = 0; // play one note every quarter second
-            //var note = 50; // the MIDI note
-            //var velocity = 127; // how hard the note hits
-            //// play the note
             MIDI.setVolume(0, 127);
         }
     });
@@ -48,7 +44,6 @@ var AudioController = function() {
                     var pitch = that.notes[noteIndex].pitch.b12;
                     var velocity = 127;
                     var duration = that.beatsToSeconds(that.notes[noteIndex].duration[0]);
-                    console.log(pitch, velocity, duration);
                     that.playNote(pitch, velocity, duration);
                     noteIndex++;
                 }
@@ -60,6 +55,10 @@ var AudioController = function() {
         };
 
         playNoteIfReady(this.notesIndex);
+    };
+
+    this.pausePiece = function() {
+        this.isPlaying = false;
     };
 
     this.resetPiece = function() {
@@ -353,6 +352,10 @@ var PianoRoll = function(selector, width, height) {
         parent.append("button").text("Play")
             .on("click", function() {
                 audioController.playPiece();
+            });
+        parent.append("button").text("Pause")
+            .on("click", function() {
+                audioController.pausePiece();
             });
         parent.append("button").text("Stop")
             .on("click", function() {
