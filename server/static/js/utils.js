@@ -99,7 +99,7 @@ function buildLegend(element, names, colourScale, rightMargin, topMargin, width)
             .attr("width", cubeSize)
             .attr("height", cubeSize)
             .attr("y", i * (cubeSize + 2))
-            .style("fill", colourScale(i));
+            .style("fill", colourScale(names[i]));
 
         legend.append("text")
             .text(names[i])
