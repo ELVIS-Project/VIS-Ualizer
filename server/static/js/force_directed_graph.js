@@ -28,15 +28,6 @@ var ForceDirectedGraph = function(selector, width, height) {
         chart.tick();
     };
 
-    // Add a control panel div
-    d3.select(selector)
-        .append("div")
-        .attr("class", "control-panel")
-        .style(cssStyling.global)
-        .style({
-            "position": "fixed"
-        });
-
     chart.svg = d3.select(selector)
         .append("svg")
         .attr("width", width)
@@ -466,6 +457,7 @@ var ForceDirectedGraph = function(selector, width, height) {
     };
 
     // Attach GUI components
+    attachEmptyControlPanel(selector);
     attachPrintButton(".control-panel", chart.svg[0][0]);
     attachLineStylePicker(".control-panel");
     attachSearchInput(".control-panel");

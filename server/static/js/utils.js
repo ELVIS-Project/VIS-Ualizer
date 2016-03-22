@@ -172,3 +172,19 @@ function drawAxisLines(parentElement, xAxis, yAxis, svgHeight, topMargin, leftMa
     // Apply CSS styling
     parentElement.selectAll([".axis path ", ".axis line"]).style(cssStyling.axis);
 }
+
+/**
+ * Attach an empty control panel div to the parent.
+ *
+ * @param parentSelector
+ * @returns {*}
+ */
+function attachEmptyControlPanel(parentSelector) {
+    return d3.select(parentSelector)
+        .insert("div", ":last-child")
+        .attr("class", "control-panel")
+        .style(cssStyling.global)
+        .style({
+            "position": "fixed"
+        });
+}
