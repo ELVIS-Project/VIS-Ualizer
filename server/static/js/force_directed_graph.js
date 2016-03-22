@@ -361,8 +361,8 @@ var ForceDirectedGraph = function(selector, width, height) {
 
             // Handle non-search case
             if (searchTerm == "") {
-                linkVectors.attr("opacity", 1);
-                node.attr("opacity", 1);
+                linkVectors.attr("opacity", null);
+                node.attr("opacity", null);
                 return;
             }
 
