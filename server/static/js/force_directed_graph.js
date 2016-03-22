@@ -244,7 +244,8 @@ var ForceDirectedGraph = function(selector, width, height) {
         var linkVectors = chart.svg.append("g").attr("name", "links")
             .selectAll(".link")
             .data(links)
-            .enter();
+            .enter()
+            .append("g");
 
         // Draw the arrows
         lines = drawArrows(linkVectors, defs, colour);
