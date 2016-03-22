@@ -10,6 +10,9 @@ var PieChart = function(selector, width, height) {
     var zoom = d3.behavior.zoom()
         .scaleExtent([minZoom, maxZoom])
         .on("zoom", zoomCallback);
+    var zoomScale = d3.scale.linear()
+        .domain([1, 20])
+        .range([minZoom, maxZoom]);
 
     // Keep track of whether or not the pie is exploding
     var isNotExploded = true;
@@ -34,6 +37,10 @@ var PieChart = function(selector, width, height) {
         var newTranslation = d3.event.translate;
         newTranslation[0] += centre.x;
         newTranslation[1] += centre.y;
+        // Update the slider
+        if (zoomSlider[0][0]) {
+            zoomSlider[0][0].value = zoomScale.invert(d3.event.scale);
+        }
         chart.g.attr("transform", "translate(" + newTranslation + ")scale(" + d3.event.scale + ")");
     }
 
@@ -145,6 +152,8 @@ var PieChart = function(selector, width, height) {
             });
     }
 
+    var zoomSlider = undefined;
+    var numberOfZoomNotches = 20;
     /**
      * Attach a zoom slider to the visualization.
      *
@@ -152,8 +161,7 @@ var PieChart = function(selector, width, height) {
      * @param maxZoom
      */
     function attachZoomSlider(selector, maxZoom) {
-        var numberOfZoomNotches = 20;
-        d3.select(selector).append("p").append("label")
+        zoomSlider = d3.select(selector).append("p").append("label")
             .text("Zoom")
             .append("input")
             .attr("name", "zoom")
@@ -163,7 +171,7 @@ var PieChart = function(selector, width, height) {
             .attr("value", "1")
             .on("input", function() {
                 var value = this.value;
-                zoom.scale((value / numberOfZoomNotches) * maxZoom);
+                zoom.scale(zoomScale(value));
                 zoom.event(d3.select(selector));
             });
     }
@@ -203,11 +211,12 @@ var PieChart = function(selector, width, height) {
 
 
     // Attach GUI elements
-    attachPrintButton(selector, chart.svg[0][0]);
-    attachExplodeButton(selector);
-    attachZoomSlider(selector, maxZoom);
-    attachSortChooser(selector, sortEnum);
-    attachLabelLocationSlider(selector);
+    attachEmptyControlPanel(selector);
+    attachPrintButton(".control-panel", chart.svg[0][0]);
+    attachExplodeButton(".control-panel");
+    attachZoomSlider(".control-panel", maxZoom);
+    attachSortChooser(".control-panel", sortEnum);
+    attachLabelLocationSlider(".control-panel");
 
     return chart;
 };
