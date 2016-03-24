@@ -1,5 +1,6 @@
 import random
 import sys
+import uuid
 
 from flask import render_template, url_for, abort
 from flask.ext.api import FlaskAPI
@@ -123,23 +124,14 @@ def data_grouped_bar_graph():
     ]
 
 
-@app.route("/graph/")
-def data_bar_graph():
-    data_min = 0.0
-    data_max = 100.0
-    output = []
-    for i in range(32):
-        output.append(dict(label=i, value=random.uniform(data_min, data_max)))
-    return output
-
-
 @app.route("/graph/<num>/")
-def data_bar_graph_num(num):
+@app.route("/graph/")
+def data_bar_graph(num=32):
     data_min = 0.0
     data_max = 100.0
     output = []
     for i in range(int(num)):
-        output.append(dict(label=i, value=random.uniform(data_min, data_max)))
+        output.append(dict(label=str(uuid.uuid4())[:2], value=random.uniform(data_min, data_max)))
     return output
 
 
