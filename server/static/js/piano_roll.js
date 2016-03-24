@@ -258,7 +258,7 @@ var PianoRoll = function(selector, width, height) {
         });
     };
 
-    var drawNoteHead = function(audioController, xScale) {
+    var drawNoteHead = function(audioController, xScale, zoom) {
         var noteHead = chart.contentArea
             .append("line")
             .attr("name", "noteHead")
@@ -283,6 +283,14 @@ var PianoRoll = function(selector, width, height) {
                     "x2": xScale(beat)
                 });
         });
+
+        zoom.on("zoom.nh", function() {
+            var x = xScale(audioController.currentBeat);
+            noteHead.attr({
+                    "x1": x,
+                    "x2": x
+                });
+        })
     };
 
     /**
@@ -504,7 +512,7 @@ var PianoRoll = function(selector, width, height) {
             margins.top,
             width);
         // Attach the notehead
-        drawNoteHead(audioController, chart.x);
+        drawNoteHead(audioController, chart.x, zoom);
 
         // Get every note in the piece ordered by start time
         var allNotes = [].concat.apply([],
@@ -532,7 +540,7 @@ var PianoRoll = function(selector, width, height) {
     return chart;
 };
 
-d3.json("/data/piano-roll/qui-habitat/", function(error, data) {
+d3.json("/data/piano-roll/", function(error, data) {
     if (error) throw error;
     var pianoRoll = new PianoRoll(".piano-roll", 1024, 400);
     pianoRoll(data);
