@@ -6,6 +6,9 @@ var AudioController = function() {
     this.notesIndex = 0;
     this.notes = [];
 
+    // A D3 dispatch that
+    this.beatEventDispatch = d3.dispatch("beat");
+
     // Initialize the MIDI system
     MIDI.loadPlugin({
         soundfontUrl: "/static/soundfont/",
@@ -34,15 +37,22 @@ var AudioController = function() {
     };
 
     this.playPiece = function() {
+        // Don't do anything if already playing
+        if (this.isPlaying)
+            return;
+
         var milisecondsPerBeat = this.beatsToSeconds(1) * 1000;
         this.isPlaying = true;
+        var velocity = 87;
         var that = this;
         var playNoteIfReady = function(noteIndex) {
             if (that.isPlaying && noteIndex < that.notes.length) {
                 // Play all the notes that are currently playable
-                while (that.notes[noteIndex].starttime[0] < that.currentBeat) {
+                while (
+                    noteIndex < that.notes.length
+                    && that.notes[noteIndex].starttime[0] < that.currentBeat
+                ) {
                     var pitch = that.notes[noteIndex].pitch.b12;
-                    var velocity = 127;
                     var duration = that.beatsToSeconds(that.notes[noteIndex].duration[0]);
                     that.playNote(pitch, velocity, duration);
                     noteIndex++;
@@ -50,6 +60,8 @@ var AudioController = function() {
 
                 // Move onto the next beat
                 that.currentBeat++;
+                // Broadcast an event
+                that.beatEventDispatch.beat(that.currentBeat);
                 window.setTimeout(playNoteIfReady, milisecondsPerBeat, noteIndex);
             }
         };
@@ -65,6 +77,7 @@ var AudioController = function() {
         this.isPlaying = false;
         this.currentBeat = 0;
         this.notesIndex = 0;
+        this.beatEventDispatch.beat(this.currentBeat);
     }
 };
 
@@ -245,6 +258,33 @@ var PianoRoll = function(selector, width, height) {
         });
     };
 
+    var drawNoteHead = function(audioController, xScale) {
+        var noteHead = chart.contentArea
+            .append("line")
+            .attr("name", "noteHead")
+            .attr("x1", function(note) {
+                return 0;
+            })
+            .attr("y1", 0)
+            .attr("x2", function() {
+                return this.getAttribute("x1");
+            })
+            .attr("y2", height)
+            .attr("class", "noteHead")
+            .style({
+                "stroke": "rgb(255,0,0)",
+                "stroke-width": 1
+            });
+
+        audioController.beatEventDispatch.on("beat", function(beat) {
+            noteHead.transition()
+                .attr({
+                    "x1": xScale(beat),
+                    "x2": xScale(beat)
+                });
+        });
+    };
+
     /**
      * Build an array of pitches from minimum to maximum.
      *
@@ -420,14 +460,15 @@ var PianoRoll = function(selector, width, height) {
             .domain(pitchDomain)
             .rangeRoundBands([0, height - margins.bottom - margins.top], 0, 0);
 
-        var minZoom = 0.001,
+        var minZoom = 0.0001,
+            defaultZoom = 0.001,
             maxZoom = 0.01;
         var zoom = d3.behavior.zoom()
             .x(chart.x)
             .translate([margins.piano, 0])
             //.xExtent()
             .scaleExtent([minZoom, maxZoom])
-            .scale(minZoom)
+            .scale(defaultZoom)
             .on("zoom", zoomTick);
 
         // Invoke zoom on the svg
@@ -462,6 +503,8 @@ var PianoRoll = function(selector, width, height) {
             margins.right,
             margins.top,
             width);
+        // Attach the notehead
+        drawNoteHead(audioController, chart.x);
 
         // Get every note in the piece ordered by start time
         var allNotes = [].concat.apply([],
@@ -489,8 +532,8 @@ var PianoRoll = function(selector, width, height) {
     return chart;
 };
 
-d3.json("/data/piano-roll/", function(error, data) {
+d3.json("/data/piano-roll/qui-habitat/", function(error, data) {
     if (error) throw error;
-    var pianoRoll = new PianoRoll(".piano-roll", 1280, 420);
+    var pianoRoll = new PianoRoll(".piano-roll", 1024, 400);
     pianoRoll(data);
 });
