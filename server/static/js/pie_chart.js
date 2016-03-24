@@ -17,11 +17,8 @@ var PieChart = function(selector, width, height) {
     // Keep track of whether or not the pie is exploding
     var isNotExploded = true;
 
-    var sortEnum = Object.freeze({
-        label: 0,
-        value: 1
-    });
-    var sort = sortEnum.label;
+    // Which sortt we're using
+    var sort = SortEnum.label;
 
     chart.svg = d3.select(selector)
         .append("svg")
@@ -54,7 +51,7 @@ var PieChart = function(selector, width, height) {
 
         data = data.sort(function(a, b) {
             switch (sort) {
-                case sortEnum.label:
+                case SortEnum.label:
                     return a.label > b.label;
                 default:
                     return a.value > b.value;
@@ -215,7 +212,7 @@ var PieChart = function(selector, width, height) {
     attachPrintButton(".control-panel", chart.svg[0][0]);
     attachExplodeButton(".control-panel");
     attachZoomSlider(".control-panel", maxZoom);
-    attachSortChooser(".control-panel", sortEnum);
+    attachSortChooser(".control-panel", SortEnum);
     attachLabelLocationSlider(".control-panel");
 
     return chart;
