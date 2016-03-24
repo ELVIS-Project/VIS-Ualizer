@@ -193,7 +193,17 @@ function attachEmptyControlPanel(parentSelector) {
  * An enum to handle possible sorting.
  * @type {Object}
  */
-var sortEnum = Object.freeze({
+var SortEnum = Object.freeze({
     label: 0,
     value: 1
+});
+
+/**
+ * An enum to handle ascending and descending sorting.
+ *
+ * @type {Object}
+ */
+var SortDirectionEnum = Object.freeze({
+    ascending: 0,
+    descending: 1
 });

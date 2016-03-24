@@ -4,7 +4,10 @@ var BarGraph = function(selector, width, height) {
     var margin = {top: 20, right: 30, bottom: 30, left: 40};
 
     // Which sortt we're using
-    var sort = sortEnum.label;
+    var sort = {
+        value: SortEnum.label,
+        direction: SortDirectionEnum.ascending
+    };
 
     var computedWidth = width - margin.left - margin.right,
         computedHeight = height - margin.left - margin.right;
@@ -23,24 +26,40 @@ var BarGraph = function(selector, width, height) {
         .scale(yScale)
         .orient("left");
 
+    var sortComparator = function(a,b) {
+        var aValue,
+            bValue;
+
+        if (sort.value === SortEnum.value) {
+            aValue = a.value;
+            bValue = b.value;
+        } else {
+            aValue = a.label;
+            bValue = b.label;
+        }
+
+        if (sort.direction === SortDirectionEnum.ascending) {
+            return d3.ascending(aValue, bValue);
+        } else {
+            return d3.descending(aValue, bValue);
+        }
+    };
+    var colours = undefined;
+
     function chart(data) {
         // Back up the data
         chart.data = data;
         // Make sure the SVG is clean
         chart.g.selectAll("*").remove();
 
-        // Sort the data
-        data = data.sort(function(a,b) {
-            if (sort === sortEnum.value) {
-                return a.value - b.value;
-            } else {
-                return a.label.toLowerCase() > b.label.toLowerCase();
-            }
-        });
-
-
         var labels = d3.map(data, function(d) { return d.label }).keys();
-        var colours = d3.scale.category20().domain(labels);
+        // We only set colours the once
+        if (!colours) {
+            colours = d3.scale.category20().domain(labels);
+        }
+
+        // Sort the data
+        data = data.sort(sortComparator);
 
         // Map x-axis labels
         xScale.domain(
@@ -77,27 +96,39 @@ var BarGraph = function(selector, width, height) {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    function attachSortChooser(selector, sortEnum) {
-        var sortChooser = d3.select(selector).append("p").append("label")
-            .text("Sort: ")
-            .append("select");
+    function attachSortChooser(selector) {
+        var parent = d3.select(selector).append("p").append("label")
+            .text("Sort: ");
 
+        var sortChooser = parent.append("select");
         sortChooser.append("option").attr("value", "label").text("Label");
         sortChooser.append("option").attr("value", "value").text("Value");
-
         sortChooser.on("input", function() {
             if (this.value === "label") {
-                sort = sortEnum.label;
+                sort.value = SortEnum.label;
             } else {
-                sort = sortEnum.value;
+                sort.value = SortEnum.value;
             }
             chart(chart.data);
         });
+
+        var directionChooser = parent.append("select");
+        directionChooser.append("option").attr("value", "asc").text("Asc");
+        directionChooser.append("option").attr("value", "desc").text("Desc");
+        directionChooser.on("input", function() {
+            if (this.value === "asc") {
+                sort.direction = SortDirectionEnum.ascending;
+            } else {
+                sort.direction = SortDirectionEnum.descending;
+            }
+            chart(chart.data);
+        });
+
     }
 
     // GUI components
     attachPrintButton(selector, d3.select(selector).select("svg")[0][0]);
-    attachSortChooser(selector, sortEnum);
+    attachSortChooser(selector);
 
     return chart;
 };
