@@ -221,7 +221,7 @@ var PianoRoll = function(selector, width, height) {
      */
     var drawParts = function(parts, partNames, colours) {
         parts.forEach(function(part) {
-            var colour = colours(part.partindex);
+            var colour = colours(partNames[part.partindex]);
             var partContainer =  chart.contentArea
                 .append("g")
                 .attr({
@@ -495,7 +495,7 @@ var PianoRoll = function(selector, width, height) {
         drawAxisLines(chart.g, chart.xAxis, chart.yAxis, height, margins.top, margins.left, margins.bottom);
         // Draw the piano foreground
         drawPianoForeground(pitchDomain);
-        var colours = d3.scale.category20().domain(data.partcount);
+        var colours = d3.scale.category20().domain(data.partnames);
         // Draw the barlines
         drawBarLines(data.barlines);
         // Draw the parts
