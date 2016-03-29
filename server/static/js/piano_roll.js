@@ -1,4 +1,5 @@
-var PianoRoll = function(selector, width, height) {
+var PianoRoll = function(selector, width, height)
+{
     var margins = {
         top: 10,
         left: 40,
@@ -37,7 +38,8 @@ var PianoRoll = function(selector, width, height) {
      *
      * @param pitches Array of pitch integers.
      */
-    var drawPianoForeground = function(pitches) {
+    var drawPianoForeground = function(pitches)
+    {
         var pianoForeground = chart.g.append("g").attr("name", "piano-foreground");
         // Draw the piano lines
         pianoForeground.selectAll("g").data(pitches).enter()
@@ -45,13 +47,18 @@ var PianoRoll = function(selector, width, height) {
             .attr("width", margins.piano)
             .attr("height", chart.pitch.rangeBand())
             .attr("x", margins.left)
-            .attr("y", function(pitch) {
+            .attr("y", function(pitch)
+            {
                 return chart.pitch(pitch) + chart.pitch.rangeBand() - 1;
             })
-            .attr("fill", function(pitch) {
-                if (isKeyBlack(pitch, 72)) {
+            .attr("fill", function(pitch)
+            {
+                if (isKeyBlack(pitch, 72))
+                {
                     return d3.rgb("black");
-                } else {
+                }
+                else
+                {
                     return d3.rgb("white");
                 }
             })
@@ -59,7 +66,8 @@ var PianoRoll = function(selector, width, height) {
                 "stroke": "rgb(0,0,0)",
                 "stroke-width": 1
             })
-            .on("click", function(pitch) {
+            .on("click", function(pitch)
+            {
                 var duration = 1;
                 var velocity = 127;
                 audioController.playNote(pitch, velocity, duration);
@@ -71,7 +79,8 @@ var PianoRoll = function(selector, width, height) {
      *
       * @param pitches
      */
-    var drawPianoBackground = function(pitches) {
+    var drawPianoBackground = function(pitches)
+    {
         // Insert the piano background before the content area
         var pianoBackground = chart.g.insert("g", ":first-child").attr("name", "piano-background");
         // Draw the piano lines
@@ -80,13 +89,18 @@ var PianoRoll = function(selector, width, height) {
             .attr("width", width - margins.left - margins.right)
             .attr("height", chart.pitch.rangeBand())
             .attr("x", margins.left + 1)
-            .attr("y", function(pitch) {
+            .attr("y", function(pitch)
+            {
                 return chart.pitch(pitch) + chart.pitch.rangeBand();
             })
-            .attr("fill", function(pitch) {
-                if (isKeyBlack(pitch, 72)) {
+            .attr("fill", function(pitch)
+            {
+                if (isKeyBlack(pitch, 72))
+                {
                     return d3.rgb("#EFEFEF");
-                } else {
+                }
+                else
+                {
                     return d3.rgb("white");
                 }
             });
@@ -97,16 +111,19 @@ var PianoRoll = function(selector, width, height) {
      *
      * @param barlines
      */
-    var drawBarLines = function(barlines) {
+    var drawBarLines = function(barlines)
+    {
         chart.contentArea
             .append("g")
             .attr("name", "barlines")
             .selectAll(selector).data(barlines).enter().append('line')
-            .attr("x1", function(note) {
+            .attr("x1", function(note)
+            {
                 return note.time[0];
             })
             .attr("y1", 0)
-            .attr("x2", function() {
+            .attr("x2", function()
+            {
                 return this.getAttribute("x1");
             })
             .attr("y2", height)
@@ -120,10 +137,12 @@ var PianoRoll = function(selector, width, height) {
     /**
      * Draw the hover titles when you hover over a note.
      */
-    var drawHoverTitles = function() {
+    var drawHoverTitles = function()
+    {
         // Hover titles
         chart.g.selectAll(".note").append("title")
-            .text(function(note) {
+            .text(function(note)
+            {
                 return note.pitch.name;
             });
     };
@@ -135,8 +154,10 @@ var PianoRoll = function(selector, width, height) {
      * @param partNames
      * @param colours
      */
-    var drawParts = function(parts, partNames, colours) {
-        parts.forEach(function(part) {
+    var drawParts = function(parts, partNames, colours)
+    {
+        parts.forEach(function(part)
+        {
             var colour = colours(partNames[part.partindex]);
             var partContainer =  chart.contentArea
                 .append("g")
@@ -147,13 +168,16 @@ var PianoRoll = function(selector, width, height) {
                 .selectAll(selector);
             partContainer.data(part.notedata)
                 .enter().append('rect')
-                .attr("width", function(note) {
+                .attr("width", function(note)
+                {
                     return note.duration[0];
                 })
-                .attr("height", function(note) {
+                .attr("height", function(note)
+                {
                     return chart.pitch.rangeBand();
                 })
-                .attr("y", function(note) {
+                .attr("y", function(note)
+                {
                     return chart.pitch(note.pitch.b12);
                 })
                 .attr("class", "note")
@@ -162,7 +186,8 @@ var PianoRoll = function(selector, width, height) {
                     "stroke": d3.rgb(colour).darker(),
                     "stroke-width": 1
                 })
-                .on("click", function(note) {
+                .on("click", function(note)
+                {
                     var duration = audioController.beatsToSeconds(note.duration[0]);
                     var pitch = note.pitch.b12;
                     var velocity = 127;
@@ -171,17 +196,14 @@ var PianoRoll = function(selector, width, height) {
         });
     };
 
-    var drawNoteHead = function(audioController, xScale, zoom) {
+    var drawNoteHead = function(audioController, xScale, zoom)
+    {
         var noteHead = chart.contentArea
             .append("line")
             .attr("name", "noteHead")
-            .attr("x1", function(note) {
-                return 0;
-            })
+            .attr("x1", 0)
             .attr("y1", 0)
-            .attr("x2", function() {
-                return this.getAttribute("x1");
-            })
+            .attr("x2", 0)
             .attr("y2", height)
             .attr("class", "noteHead")
             .style({
@@ -189,7 +211,8 @@ var PianoRoll = function(selector, width, height) {
                 "stroke-width": 1
             });
 
-        audioController.beatEventDispatch.on("beat", function(beat) {
+        audioController.beatEventDispatch.on("beat", function(beat)
+        {
             noteHead.transition()
                 .attr({
                     "x1": xScale(beat),
@@ -197,7 +220,8 @@ var PianoRoll = function(selector, width, height) {
                 });
         });
 
-        zoom.on("zoom.nh", function() {
+        zoom.on("zoom.nh", function()
+        {
             var x = xScale(audioController.currentBeat);
             noteHead.attr({
                     "x1": x,
@@ -213,7 +237,8 @@ var PianoRoll = function(selector, width, height) {
      * @param maxPitch
      * @returns {*|Array.<int>}
      */
-    var buildPitchArray = function(minPitch, maxPitch) {
+    var buildPitchArray = function(minPitch, maxPitch)
+    {
         return d3.range(parseInt(minPitch), parseInt(maxPitch) + 1).reverse();
     };
 
@@ -223,17 +248,21 @@ var PianoRoll = function(selector, width, height) {
      * @param parts
      * @returns {Function} midiNumber -> label
      */
-    var buildMidiPitchLabeller = function(parts) {
+    var buildMidiPitchLabeller = function(parts)
+    {
         // Construct a mapping between midi numbers and pitches
         var midiNumberToPitch = {};
-        parts.forEach(function(part) {
-            part.notedata.forEach(function(note) {
+        parts.forEach(function(part)
+        {
+            part.notedata.forEach(function(note)
+            {
                 var pitch = note.pitch;
                 midiNumberToPitch[pitch.b12] = pitch.name;
             });
         });
         // This is the formatting function we will pass to the y-axis
-        return function(midiNumber) {
+        return function(midiNumber)
+        {
             return midiNumberToPitch[midiNumber];
         }
     };
@@ -241,17 +270,20 @@ var PianoRoll = function(selector, width, height) {
     /**
      * The callback that is executed when zooming happens.
      */
-    function zoomTick() {
+    function zoomTick()
+    {
         // Scale the axes
         chart.svg.select(".x-axis").call(chart.xAxis);
 
         // Move the bar lines
         chart.g.selectAll(".barline")
             .attr({
-                "x1": function (note) {
+                "x1": function (note)
+                {
                     return chart.x(note.time[0]);
                 },
-                "x2": function () {
+                "x2": function ()
+                {
                     return this.getAttribute("x1");
                 }
             });
@@ -259,10 +291,12 @@ var PianoRoll = function(selector, width, height) {
         // Move and scale the notes
         chart.g.selectAll(".note")
             .attr({
-                "x": function(note){
+                "x": function(note)
+                {
                     return chart.x(note.starttime[0]);
                 },
-                "width": function(note) {
+                "width": function(note)
+                {
                     var startPoint = note.starttime[0];
                     return chart.x(startPoint + note.duration[0]) - this.getAttribute("x");
                 }
@@ -274,7 +308,8 @@ var PianoRoll = function(selector, width, height) {
     /**
      * Attach the zoom and location pickers and rig them up.
      */
-    var attachZoomAndLocationPicker = function() {
+    var attachZoomAndLocationPicker = function()
+    {
         var xZoomPicker = d3.select(selector).append("p")
             .append("label")
             .text("X-Zoom")
@@ -301,51 +336,63 @@ var PianoRoll = function(selector, width, height) {
         /**
          * Handle the zoom and location picker input.
          */
-        function onPickerChange() {
+        function onPickerChange()
+        {
             var xZoom = xZoomPicker[0][0].value;
             var xLocation = xLocationPicker[0][0].value;
             zoomTick(xZoom, 1, xLocation);
         }
     };
 
-    var attachPlayAndStopButtons = function(parentSelector, audioController) {
+    var attachPlayAndStopButtons = function(parentSelector, audioController)
+    {
         var parent = d3.select(selector).append("p");
         parent.append("button").text("Play")
-            .on("click", function() {
+            .on("click", function()
+            {
                 audioController.playPiece();
             });
         parent.append("button").text("Pause")
-            .on("click", function() {
+            .on("click", function()
+            {
                 audioController.pausePiece();
             });
         parent.append("button").text("Stop")
-            .on("click", function() {
+            .on("click", function()
+            {
                 audioController.resetPiece();
             });
 
     };
 
-    var renderSelectedParts = function(isPartEnabled) {
+    var renderSelectedParts = function(isPartEnabled)
+    {
         var parts = d3.select(selector).selectAll(".part")[0];
-        for (var i = 0; i < parts.length; i++) {
+        for (var i = 0; i < parts.length; i++)
+        {
             var part = parts[i];
             var name = part.getAttribute("name");
-            if (isPartEnabled[name]) {
+            if (isPartEnabled[name])
+            {
                 part.setAttribute("visibility", null)
-            } else {
+            }
+            else
+            {
                 part.setAttribute("visibility", "hidden");
             }
         }
     };
 
-    var attachPartSelector = function(parentSelector, partNames) {
+    var attachPartSelector = function(parentSelector, partNames)
+    {
         var form = d3.select(parentSelector).append("p")
             .text("Parts:")
             .append("ul");
 
         var isPartEnabled = {};
         // Construct part booleans and checkboxes
-        for (var i = 0; i < partNames.length; i++) {
+        for (var i = 0; i < partNames.length; i++)
+        {
             isPartEnabled[partNames[i]] = true;
 
             form.append("li")
@@ -356,14 +403,18 @@ var PianoRoll = function(selector, width, height) {
                     "type": "checkbox",
                     "checked": true
                 })
-                .on("change", function() {
+                .on("change", function()
+                {
                     // Record the change
                     isPartEnabled[this.name] = this.checked;
 
                     // Update the audiocontroller
-                    if (this.checked) {
+                    if (this.checked)
+                    {
                         audioController.activatePart(this.name);
-                    } else {
+                    }
+                    else
+                    {
                         audioController.deactivatePart(this.name);
                     }
 
@@ -378,7 +429,8 @@ var PianoRoll = function(selector, width, height) {
      *
       * @param data
      */
-    function chart(data) {
+    function chart(data)
+    {
         // The function that labels the midi pitches
         var midiPitchLabeller = buildMidiPitchLabeller(data.partdata);
 
@@ -437,15 +489,18 @@ var PianoRoll = function(selector, width, height) {
 
         // Get every note in the piece ordered by start time
         var allNotes = [].concat.apply([],
-            data.partdata.map(function(part) {
+            data.partdata.map(function(part)
+            {
                 // Add the part index to the notes
-                return part.notedata.map(function (note) {
+                return part.notedata.map(function (note)
+                {
                     note.partindex = part.partindex;
                     note.partname = data.partnames[part.partindex];
                     return note;
                 });
             }))
-            .sort(function(a, b) {
+            .sort(function(a, b)
+            {
                 return a.starttime[0] - b.starttime[0];
             });
         //// Load the notes into the audio player
@@ -466,7 +521,8 @@ var PianoRoll = function(selector, width, height) {
     return chart;
 };
 
-d3.json("/data/piano-roll/", function(error, data) {
+d3.json("/data/piano-roll/", function(error, data)
+{
     if (error) throw error;
     var pianoRoll = new PianoRoll(".piano-roll", 1024, 400);
     pianoRoll(data);
