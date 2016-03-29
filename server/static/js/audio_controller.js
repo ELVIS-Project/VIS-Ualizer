@@ -115,33 +115,33 @@ var AudioController = function()
         this.isPlaying = true;
         var velocity = 87;
         var that = this;
-        var playNoteIfReady = function(noteIndex)
+        var playNoteIfReady = function()
         {
-            if (that.isPlaying && noteIndex < that.notes.length)
+            if (that.isPlaying && that.notesIndex < that.notes.length)
             {
                 // Play all the notes that are currently playable
-                while (noteIndex < that.notes.length && that.notes[noteIndex].starttime[0] < that.currentBeat)
+                while (that.notesIndex < that.notes.length && that.notes[that.notesIndex].starttime[0] < that.currentBeat)
                 {
                     // Play the note if it's part is activated
-                    if (that.isPartActivated(that.notes[noteIndex].partname))
+                    if (that.isPartActivated(that.notes[that.notesIndex].partname))
                     {
-                        var pitch = that.notes[noteIndex].pitch.b12;
-                        var duration = that.beatsToSeconds(that.notes[noteIndex].duration[0]);
+                        var pitch = that.notes[that.notesIndex].pitch.b12;
+                        var duration = that.beatsToSeconds(that.notes[that.notesIndex].duration[0]);
                         that.playNote(pitch, velocity, duration);
                     }
                     // Increment the noteindex whether or not we actually play the note
-                    noteIndex++;
+                    that.notesIndex++;
                 }
 
                 // Move onto the next beat
                 that.currentBeat++;
                 // Broadcast an event
                 that.beatEventDispatch.beat(that.currentBeat);
-                window.setTimeout(playNoteIfReady, milisecondsPerBeat, noteIndex);
+                window.setTimeout(playNoteIfReady, milisecondsPerBeat, that.notesIndex);
             }
         };
 
-        playNoteIfReady(this.notesIndex);
+        playNoteIfReady();
     };
 
     this.pausePiece = function()
