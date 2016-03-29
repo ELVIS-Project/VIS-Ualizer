@@ -213,11 +213,17 @@ var PianoRoll = function(selector, width, height)
 
         audioController.beatEventDispatch.on("beat", function(beat)
         {
+            var x = xScale(beat);
             noteHead.transition()
                 .attr({
-                    "x1": xScale(beat),
-                    "x2": xScale(beat)
+                    "x1": x,
+                    "x2": x
                 });
+            // Advance the zoom if necessary
+            // console.log(beat + zoom.translate()[0]);
+            // if ((beat + zoom.translate()[0] > 300)) {
+            //     zoom.translate([x,0]);
+            // }
         });
 
         zoom.on("zoom.nh", function()
