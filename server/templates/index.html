@@ -1,18 +1,18 @@
-{% block head %}
-    <!DOCTYPE html>
-    <html>
-    <head lang="en">
-        <meta charset="UTF-8">
-        <title>VIS-Ualizer</title>
-        <link rel="stylesheet" type="text/css" href="/static/css/app.css">
-    </head>
-    <body>
-    <h1><a href="/">VIS-Ualizer</a></h1>
+{% block head %}<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>VIS-Ualizer</title>
+    <link rel="stylesheet" type="text/css" href="/static/css/app.css">
+</head>
+<body>
+<h1><a href="/">VIS-Ualizer</a></h1>
 {% endblock %}
-{% block body %}{% endblock %}
+{% block body %}
+{% endblock %}
 {% block foot %}
-    {% for file in js_files %}<script src="{{ file }}" type="text/javascript"></script>
-    {% endfor %}
-    </body>
-    </html>
+{% for file in js_files %}<script src="{{ file }}" type="text/javascript"></script>
+{% endfor %}
+</body>
+</html>
 {% endblock %}
