@@ -18,7 +18,7 @@ var AudioController = function()
         instrument: "acoustic_grand_piano",
         onprogress: function(state, progress)
         {
-            console.log(state, progress);
+            //console.log(state, progress);
         },
         onsuccess: function()
         {
@@ -122,9 +122,14 @@ var AudioController = function()
                 // Play all the notes that are currently playable
                 while (noteIndex < that.notes.length && that.notes[noteIndex].starttime[0] < that.currentBeat)
                 {
-                    var pitch = that.notes[noteIndex].pitch.b12;
-                    var duration = that.beatsToSeconds(that.notes[noteIndex].duration[0]);
-                    that.playNote(pitch, velocity, duration);
+                    // Play the note if it's part is activated
+                    if (that.isPartActivated(that.notes[noteIndex].partname))
+                    {
+                        var pitch = that.notes[noteIndex].pitch.b12;
+                        var duration = that.beatsToSeconds(that.notes[noteIndex].duration[0]);
+                        that.playNote(pitch, velocity, duration);
+                    }
+                    // Increment the noteindex whether or not we actually play the note
                     noteIndex++;
                 }
 

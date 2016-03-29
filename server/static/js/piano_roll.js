@@ -359,6 +359,14 @@ var PianoRoll = function(selector, width, height) {
                 .on("change", function() {
                     // Record the change
                     isPartEnabled[this.name] = this.checked;
+
+                    // Update the audiocontroller
+                    if (this.checked) {
+                        audioController.activatePart(this.name);
+                    } else {
+                        audioController.deactivatePart(this.name);
+                    }
+
                     // Do a render update
                     renderSelectedParts(isPartEnabled);
                 });
@@ -430,13 +438,18 @@ var PianoRoll = function(selector, width, height) {
         // Get every note in the piece ordered by start time
         var allNotes = [].concat.apply([],
             data.partdata.map(function(part) {
-                return part.notedata;
+                // Add the part index to the notes
+                return part.notedata.map(function (note) {
+                    note.partindex = part.partindex;
+                    note.partname = data.partnames[part.partindex];
+                    return note;
+                });
             }))
             .sort(function(a, b) {
                 return a.starttime[0] - b.starttime[0];
             });
         //// Load the notes into the audio player
-        audioController.loadPiece(allNotes);
+        audioController.loadPiece(allNotes, data.partnames);
 
         // Draw part selector
         attachPartSelector(selector, data.partnames);
