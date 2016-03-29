@@ -26,7 +26,7 @@ example_types = {
     # },
     "piano-roll": {
         "name": "Piano Roll",
-        "js": ["js/libs/MIDI/shim/Base64binary.js", "js/libs/MIDI/MIDI.js", "js/piano_roll.js"],
+        "js": ["js/libs/MIDI/shim/Base64binary.js", "js/libs/MIDI/MIDI.js", "js/audio_controller.js", "js/piano_roll.js"],
         "template": "example/piano-roll.html"
     },
     "pie-chart": {
