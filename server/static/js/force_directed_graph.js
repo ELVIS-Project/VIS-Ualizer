@@ -273,6 +273,18 @@ var ForceDirectedGraph = function(selector, width, height) {
                 var source = link.source,
                     target = link.target;
 
+                // Cache the math for later
+                link.midComponents = {
+                    x: {
+                        a: ((source.x + target.x) / 2),
+                        b: (-((target.y - source.y) / 2) * pythagoreanConstant)
+                    },
+                    y: {
+                        a: ((source.y + target.y) / 2),
+                        b: (((target.x - source.x) / 2) * pythagoreanConstant)
+                    }
+                };
+
                 if (source == target) {
                     // Values that affect the loop size
                     var relativeMultiplier = link.relativeValue * 2 * circleRadius;
@@ -285,18 +297,6 @@ var ForceDirectedGraph = function(selector, width, height) {
 
                     return "M" + originX + "," + originY + " C" + loop1X + "," + loopY + " " + loop2X + "," + loopY + " " + originX + "," + originY;
                 } else {
-                        // Cache the math for later
-                        link.midComponents = {
-                            x: {
-                                a: ((source.x + target.x) / 2),
-                                b: (-((target.y - source.y) / 2) * pythagoreanConstant)
-                            },
-                            y: {
-                                a: ((source.y + target.y) / 2),
-                                b: (((target.x - source.x) / 2) * pythagoreanConstant)
-                            }
-                        };
-
                     if (lineStyle == LineStylesEnum.curved) {
                         return "M" + zoomTransformX(zoom, source.x) + " "
                             + zoomTransformY(zoom, source.y) + " Q "
@@ -316,8 +316,8 @@ var ForceDirectedGraph = function(selector, width, height) {
 
             // Multiply determines how far from the line to draw the label.
             var multiplier;
-                multiplier = 4
             if (lineStyle == LineStylesEnum.straight) {
+                multiplier = 5
             } else {
                 multiplier = 2;
             }
