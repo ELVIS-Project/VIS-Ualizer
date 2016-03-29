@@ -12,18 +12,14 @@ var ForceDirectedGraph = function(selector, width, height) {
     /*
      Code handling Line Styling
      */
-    var lineStyles = {
-        curved: "Curved",
-        straight: "Straight"
-    };
-    var lineStyle = lineStyles.curved;
+    var lineStyle = LineStylesEnum.curved;
     chart.lineStyle = function(style) {
         if (style == undefined) {
             // Get
             return lineStyle;
         } else {
             // Set
-            lineStyle = lineStyles[style];
+            lineStyle = LineStylesEnum[style];
         }
         chart.tick();
     };
@@ -289,7 +285,6 @@ var ForceDirectedGraph = function(selector, width, height) {
 
                     return "M" + originX + "," + originY + " C" + loop1X + "," + loopY + " " + loop2X + "," + loopY + " " + originX + "," + originY;
                 } else {
-                    if (lineStyle == lineStyles.curved) {
                         // Cache the math for later
                         link.midComponents = {
                             x: {
@@ -302,6 +297,7 @@ var ForceDirectedGraph = function(selector, width, height) {
                             }
                         };
 
+                    if (lineStyle == LineStylesEnum.curved) {
                         return "M" + zoomTransformX(zoom, source.x) + " "
                             + zoomTransformY(zoom, source.y) + " Q "
                             + zoomTransformX(zoom, link.midComponents.x.a + link.midComponents.x.b) + " "
@@ -320,8 +316,8 @@ var ForceDirectedGraph = function(selector, width, height) {
 
             // Multiply determines how far from the line to draw the label.
             var multiplier;
-            if (lineStyle == lineStyles.straight) {
                 multiplier = 4
+            if (lineStyle == LineStylesEnum.straight) {
             } else {
                 multiplier = 2;
             }
@@ -395,10 +391,10 @@ var ForceDirectedGraph = function(selector, width, height) {
 
     var attachLineStylePicker = function(parentSelector) {
         var lineStylePicker = d3.select(parentSelector).append("p").append("label").text("Edges:").append("select");
-        d3.keys(lineStyles).forEach(function(style) {
+        d3.keys(LineStylesEnum).forEach(function(style) {
             lineStylePicker.append("option")
                 .attr("value", style)
-                .text(lineStyles[style]);
+                .text(LineStylesEnum[style]);
         });
         lineStylePicker.on("change", function() {
             chart.lineStyle(lineStylePicker[0][0].value);

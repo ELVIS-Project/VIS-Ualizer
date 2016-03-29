@@ -207,3 +207,13 @@ var SortDirectionEnum = Object.freeze({
     ascending: 0,
     descending: 1
 });
+
+/**
+ * An enum to handle curved or straight lines.
+ *
+ * @type {Object}
+ */
+var LineStylesEnum = Object.freeze({
+    curved: "Curved",
+    straight: "Straight"
+});
