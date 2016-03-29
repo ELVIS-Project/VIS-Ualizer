@@ -1,4 +1,5 @@
-var AudioController = function() {
+var AudioController = function()
+{
     this.bpm = 360;
 
     this.isPlaying = false;
@@ -15,10 +16,12 @@ var AudioController = function() {
     MIDI.loadPlugin({
         soundfontUrl: "/static/soundfont/",
         instrument: "acoustic_grand_piano",
-        onprogress: function(state, progress) {
+        onprogress: function(state, progress)
+        {
             console.log(state, progress);
         },
-        onsuccess: function() {
+        onsuccess: function()
+        {
             MIDI.setVolume(0, 127);
         }
     });
