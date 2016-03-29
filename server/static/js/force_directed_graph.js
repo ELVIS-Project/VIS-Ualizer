@@ -1,5 +1,6 @@
 
-var ForceDirectedGraph = function(selector, width, height) {
+var ForceDirectedGraph = function(selector, width, height)
+{
     var circleRadius = 12;
     var maxLinkDistance = 200;
 
@@ -13,11 +14,15 @@ var ForceDirectedGraph = function(selector, width, height) {
      Code handling Line Styling
      */
     var lineStyle = LineStylesEnum.curved;
-    chart.lineStyle = function(style) {
-        if (style == undefined) {
+    chart.lineStyle = function(style)
+    {
+        if (style == undefined)
+        {
             // Get
             return lineStyle;
-        } else {
+        }
+        else
+        {
             // Set
             lineStyle = LineStylesEnum[style];
         }
@@ -37,25 +42,35 @@ var ForceDirectedGraph = function(selector, width, height) {
      * @type {{disable: opacityController.disable, enable: opacityController.enable}}
      */
     var opacityController = {
-        disable: function() {
+        disable: function()
+        {
             // Make everything opaque
             lines.style("opacity", null);
             lineLabels.style("opacity", null);
         },
-        enable: function () {
-            lines.style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
-            lineLabels.style("opacity", function(link) { return 0.5 + 0.5 * link.relativeValue; });
+        enable: function ()
+        {
+            lines.style("opacity", function(link)
+            {
+                return 0.5 + 0.5 * link.relativeValue;
+            });
+            lineLabels.style("opacity", function(link)
+            {
+                return 0.5 + 0.5 * link.relativeValue;
+            });
         }
     };
 
-    var constructForceController = function(nodes, links) {
+    var constructForceController = function(nodes, links)
+    {
         return d3.layout.force()
             .nodes(nodes)
             .links(links)
             .size([width, height])
             .linkStrength(1)
             //.friction(0.9)
-            .linkDistance(function(link) {
+            .linkDistance(function(link)
+            {
                 // Stronger links are closer
                 return maxLinkDistance - (link.relativeValue * maxLinkDistance) + 2.5 * circleRadius;
             })
@@ -71,12 +86,17 @@ var ForceDirectedGraph = function(selector, width, height) {
      *
      * @param links
      */
-    var calculateNormalizedLinkValues = function(links) {
+    var calculateNormalizedLinkValues = function(links)
+    {
         // Calculate the normalized values (that we will use to colour the lines
-        var linkValues = links.map(function(link) { return link.value }),
-            minLinkValue = d3.min(linkValues),
-            maxLinkValue = d3.max(linkValues);
-        links.forEach(function(link) {
+        var linkValues = links.map(function(link)
+        {
+            return link.value
+        }),
+        minLinkValue = d3.min(linkValues),
+        maxLinkValue = d3.max(linkValues);
+        links.forEach(function(link)
+        {
             link["relativeValue"] = (link.value - minLinkValue) / (maxLinkValue - minLinkValue);
         });
     };
@@ -89,19 +109,28 @@ var ForceDirectedGraph = function(selector, width, height) {
      * @param data
      * @param keyNodeMapping
      */
-    var buildLinks = function(keys, links, data, keyNodeMapping) {
+    var buildLinks = function(keys, links, data, keyNodeMapping)
+    {
         // Build the links
-        keys.forEach(function(sourceKey) {
-            keys.forEach(function(targetKey) {
+        keys.forEach(function(sourceKey)
+        {
+            keys.forEach(function(targetKey)
+            {
                 // It could theoretically be undefined
-                if (data[sourceKey]) {
+                if (data[sourceKey])
+                {
                     var value = parseFloat(data[sourceKey][targetKey]);
-                    if (value > 0) {
+                    if (value > 0)
+                    {
                         var i = {},
                             source = keyNodeMapping[sourceKey],
                             target = keyNodeMapping[targetKey];
 
-                        links.push({source: source, target: target, value: value});
+                        links.push({
+                            source: source,
+                            target: target,
+                            value: value
+                        });
                     }
                 }
             });
@@ -114,17 +143,21 @@ var ForceDirectedGraph = function(selector, width, height) {
      * @param parent
      * @param colours
      */
-    var drawLineLabels = function(parent, colours) {
+    var drawLineLabels = function(parent, colours)
+    {
         lineLabels = parent
             .append("text")
-            .style("fill", function(link) {
+            .style("fill", function(link)
+            {
                 return d3.rgb(colours(link.source.name)).darker(2);
             })
-            .attr("fill", function(link) {
+            .attr("fill", function(link)
+            {
                 var n = parseInt(192 - link.relativeValue * 128);
                 return "rgb(" + n + "," + n + "," + n + ")";
             })
-            .text(function(link) {
+            .text(function(link)
+            {
                 return link.value;
             });
     };
@@ -137,26 +170,32 @@ var ForceDirectedGraph = function(selector, width, height) {
      * @param colours
      * @returns {*}
      */
-    var drawArrows = function(parent, defs, colours) {
+    var drawArrows = function(parent, defs, colours)
+    {
         var arrowNames = d3.set();
         return parent.append("path")
             .attr("class", "link")
             .attr("fill", "none")
-            .attr("stroke", function(link) {
+            .attr("stroke", function(link)
+            {
                 return d3.rgb(colours(link.source.name)).darker(1);
             })
-            .attr("stroke-width", function(link) {
+            .attr("stroke-width", function(link)
+            {
                 return 1 + link.relativeValue;
             })
-            .attr("marker-fill", function(link) {
+            .attr("marker-fill", function(link)
+            {
                 var n = parseInt(192 - link.relativeValue * 128);
                 return "rgb(" + n + "," + n + "," + n + ")"
             })
-            .attr("marker-end", function(link) {
+            .attr("marker-end", function(link)
+            {
                 var colour = d3.rgb(colours(link.source.name)).darker(1);
                 var arrowName = "arrow" + colour.toString().substring(1);
 
-                if (!arrowNames.has(arrowName)) {
+                if (!arrowNames.has(arrowName))
+                {
                     // Create an arrowhead of the specified colour
                     arrowNames.add(arrowName);
 
@@ -182,7 +221,8 @@ var ForceDirectedGraph = function(selector, width, height) {
             });
     };
 
-    var drawNodes = function(parent, nodes, colours) {
+    var drawNodes = function(parent, nodes, colours)
+    {
         var node = parent.append("g").attr("name", "nodes")
             .selectAll(".node")
             .data(nodes)
@@ -191,20 +231,36 @@ var ForceDirectedGraph = function(selector, width, height) {
         // Create the circles
         node.append("circle")
             .attr("class", "node")
-            .attr("alt", function(d) { return d.name })
+            .attr("alt", function(d)
+            {
+                return d.name
+            })
             .attr("r", circleRadius)
             .attr("stroke-width", "1px")
-            .style("stroke", function(node) { return d3.rgb(colours(node.name)).darker(2); })
-            .style("fill", function(d) { return d3.rgb(colours(d.name)).brighter(0.5); });
+            .style("stroke", function(node)
+            {
+                return d3.rgb(colours(node.name)).darker(2);
+            })
+            .style("fill", function(d)
+            {
+                return d3.rgb(colours(d.name)).brighter(0.5);
+            });
         // Create the circle labels
         node.append("text")
-            .attr("fill", function(node) { return d3.rgb(colours(node.name)).darker(2); })
+            .attr("fill", function(node)
+            {
+                return d3.rgb(colours(node.name)).darker(2);
+            })
             .attr("transform", "translate(0, 3)")
-            .text(function(node) { return node.name });
+            .text(function(node)
+            {
+                return node.name ;
+            });
         return node;
     };
 
-    function chart(data) {
+    function chart(data)
+    {
         // Make sure the SVG is clean
         chart.svg.selectAll("*").remove();
 
@@ -221,7 +277,8 @@ var ForceDirectedGraph = function(selector, width, height) {
         var keyNodeMapping = {};
         var nodes = [],
             links = [];
-        keys.forEach(function(key) {
+        keys.forEach(function(key)
+        {
             var node = {
                 name: key
             };
@@ -262,14 +319,17 @@ var ForceDirectedGraph = function(selector, width, height) {
         /**
          * Advance the force-based simulation by one "tick".
          */
-        chart.tick = function() {
-            node.attr("transform", function(node) {
+        chart.tick = function()
+        {
+            node.attr("transform", function(node)
+            {
                 return "translate(" +
                     zoomTransformX(zoom, node.x) + "," +
                     zoomTransformY(zoom, node.y) + ")";
             });
 
-            lines.attr("d", function(link) {
+            lines.attr("d", function(link)
+            {
                 var source = link.source,
                     target = link.target;
 
@@ -285,7 +345,8 @@ var ForceDirectedGraph = function(selector, width, height) {
                     }
                 };
 
-                if (source == target) {
+                if (source == target)
+                {
                     // Values that affect the loop size
                     var relativeMultiplier = link.relativeValue * 2 * circleRadius;
                     // It's a self-link.  So, we make a little loop.
@@ -296,15 +357,20 @@ var ForceDirectedGraph = function(selector, width, height) {
                         loop2X = zoomTransformX(zoom, source.x - radiusMultiplier + relativeMultiplier);
 
                     return "M" + originX + "," + originY + " C" + loop1X + "," + loopY + " " + loop2X + "," + loopY + " " + originX + "," + originY;
-                } else {
-                    if (lineStyle == LineStylesEnum.curved) {
+                }
+                else
+                {
+                    if (lineStyle == LineStylesEnum.curved)
+                    {
                         return "M" + zoomTransformX(zoom, source.x) + " "
                             + zoomTransformY(zoom, source.y) + " Q "
                             + zoomTransformX(zoom, link.midComponents.x.a + link.midComponents.x.b) + " "
                             + zoomTransformY(zoom, link.midComponents.y.a + link.midComponents.y.b) + " "
                             + zoomTransformX(zoom, target.x) + " "
                             + zoomTransformY(zoom, target.y);
-                    } else {
+                    }
+                    else
+                    {
                         return "M" +
                             zoomTransformX(zoom, source.x) + "," +
                             zoomTransformY(zoom, source.y) + " L" +
@@ -316,17 +382,24 @@ var ForceDirectedGraph = function(selector, width, height) {
 
             // Multiply determines how far from the line to draw the label.
             var multiplier;
-            if (lineStyle == LineStylesEnum.straight) {
+            if (lineStyle == LineStylesEnum.straight)
+            {
                 multiplier = 5
-            } else {
+            }
+            else
+            {
                 multiplier = 2;
             }
-            lineLabels.attr("transform", function(link) {
-                if (link.source == link.target) {
+            lineLabels.attr("transform", function(link)
+            {
+                if (link.source == link.target)
+                {
                     return "translate(" +
                         zoomTransformX(zoom, link.source.x)  + "," +
                         zoomTransformY(zoom, link.source.y + ((1 - link.relativeValue) * 2.5 * circleRadius)) + ")";
-                } else {
+                }
+                else
+                {
                     return "translate(" +
                         zoomTransformX(zoom, link.midComponents.x.a + link.midComponents.x.b / multiplier) + "," +
                         zoomTransformY(zoom, link.midComponents.y.a + link.midComponents.y.b / multiplier) + ")";
@@ -351,12 +424,14 @@ var ForceDirectedGraph = function(selector, width, height) {
          * @param isInbound
          * @param isOutbound
          */
-        chart.search = function(searchTerm, isInbound, isOutbound) {
+        chart.search = function(searchTerm, isInbound, isOutbound)
+        {
             // Trim whitespace
             searchTerm = searchTerm.trim();
 
             // Handle non-search case
-            if (searchTerm == "") {
+            if (searchTerm == "")
+            {
                 linkVectors.attr("opacity", null);
                 node.attr("opacity", null);
                 return;
@@ -364,14 +439,17 @@ var ForceDirectedGraph = function(selector, width, height) {
 
             var highLightedNodes = d3.set([searchTerm]);
             // Select the nodes and those it is connected to
-            linkVectors.attr("opacity", function(link) {
+            linkVectors.attr("opacity", function(link)
+            {
                 var highLight = 0.1;
 
-                if (isOutbound && link.source.name == searchTerm) {
+                if (isOutbound && link.source.name == searchTerm)
+                {
                     highLightedNodes.add(link.target.name);
                     highLight = 1;
                 }
-                if (isInbound && link.target.name == searchTerm) {
+                if (isInbound && link.target.name == searchTerm)
+                {
                     highLightedNodes.add(link.source.name);
                     highLight = 1;
                 }
@@ -379,36 +457,64 @@ var ForceDirectedGraph = function(selector, width, height) {
                 return highLight;
             });
             // We have the set of nodes to highlight.  Now, we highlight them.
-            node.attr("opacity", function(node) {
-                if (highLightedNodes.has(node.name)) {
+            node.attr("opacity", function(node)
+            {
+                if (highLightedNodes.has(node.name))
+                {
                     return 1;
-                } else {
+                }
+                else
+                {
                     return 0.1;
                 }
             });
         };
     }
 
-    var attachLineStylePicker = function(parentSelector) {
+    var attachLineStylePicker = function(parentSelector)
+    {
         var lineStylePicker = d3.select(parentSelector).append("p").append("label").text("Edges:").append("select");
-        d3.keys(LineStylesEnum).forEach(function(style) {
+        d3.keys(LineStylesEnum).forEach(function(style)
+        {
             lineStylePicker.append("option")
                 .attr("value", style)
                 .text(LineStylesEnum[style]);
         });
-        lineStylePicker.on("change", function() {
+        lineStylePicker.on("change", function()
+        {
             chart.lineStyle(lineStylePicker[0][0].value);
         });
     };
 
-    var attachSearchInput = function(parentSelector) {
+    var attachSearchInput = function(parentSelector)
+    {
         var search = d3.select(parentSelector).append("form");
         //Build the form
-        search.append("label").text("Node:").append("input").attr("name", "node");
-        search.append("label").text("Inbound:").append("input").attr({"type": "checkbox", "name": "inbound"});
-        search.append("label").text("Outbound:").append("input").attr({"type": "checkbox", "name": "outbound"});
-        search.append("input").attr({type: "submit", value: "Search"});
-        search.on("submit", function() {
+        search.append("label")
+            .text("Node:")
+            .append("input")
+            .attr("name", "node");
+        search.append("label")
+            .text("Inbound:")
+            .append("input")
+            .attr({
+                type: "checkbox",
+                name: "inbound"
+            });
+        search.append("label")
+            .text("Outbound:")
+            .append("input")
+            .attr({
+                type: "checkbox",
+                name: "outbound"
+            });
+        search.append("input")
+            .attr({
+                type: "submit",
+                value: "Search"
+            });
+        search.on("submit", function()
+        {
             d3.event.preventDefault();
             var value = search[0][0][0].value,
                 isInbound = search[0][0][1].checked,
@@ -417,35 +523,43 @@ var ForceDirectedGraph = function(selector, width, height) {
         });
     };
 
-    var attachDataSourcePicker = function(parentSelector) {
+    var attachDataSourcePicker = function(parentSelector)
+    {
         var dataPicker = d3.select(parentSelector).append("p").append("label").text("Part:").append("select");
         dataPicker.append("option").attr("value", "all").text("All Parts");
         dataPicker.append("option").attr("value", "soprano").text("Soprano");
         dataPicker.append("option").attr("value", "alto").text("Alto");
         dataPicker.append("option").attr("value", "tenor").text("Tenor");
         dataPicker.append("option").attr("value", "bass").text("Bass");
-        dataPicker.on("change", function() {
+        dataPicker.on("change", function()
+        {
             var value = dataPicker[0][0].value;
             var dataUrl = "/data/ave-maria/" + value + "/";
-            d3.json(dataUrl, function(error, data) {
+            d3.json(dataUrl, function(error, data)
+            {
                 if (error) throw error;
                 chart(data);
             });
         });
     };
 
-    var attachOpacityPicker = function (parentSelector) {
+    var attachOpacityPicker = function (parentSelector)
+    {
         // Create a selector to choose whether or not to use opacity.
         d3.select(parentSelector).append("p")
             .append("label").text("Opacity:")
             .append("input")
             .attr("type", "checkbox")
             .attr("checked", true)
-            .on("change", function() {
-                if (this.checked) {
+            .on("change", function()
+            {
+                if (this.checked)
+                {
                     // Have opacity
                     opacityController.enable();
-                } else {
+                }
+                else
+                {
                     // Make everything opaque
                     opacityController.disable();
                 }
@@ -464,11 +578,13 @@ var ForceDirectedGraph = function(selector, width, height) {
 };
 
 
-function forceDirectedGraphLoad(dataSource) {
+function forceDirectedGraphLoad(dataSource)
+{
     var selector = ".force-directed-graph";
     var forceDirectedGraph = new ForceDirectedGraph(selector, 1600, 900);
 
-    d3.json(dataSource, function(error, data) {
+    d3.json(dataSource, function(error, data)
+    {
         if (error) throw error;
         forceDirectedGraph(data);
     });
