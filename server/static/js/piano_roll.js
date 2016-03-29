@@ -153,9 +153,6 @@ var PianoRoll = function(selector, width, height) {
                 .attr("height", function(note) {
                     return chart.pitch.rangeBand();
                 })
-                //.attr("x", function(note) {
-                //    return note.starttime[0];
-                //})
                 .attr("y", function(note) {
                     return chart.pitch(note.pitch.b12);
                 })
