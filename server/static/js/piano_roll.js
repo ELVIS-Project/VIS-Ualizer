@@ -211,6 +211,56 @@ var PianoRoll = function(selector, width, height)
                 "stroke-width": 1
             });
 
+        var scrobbler = chart.svg
+            .append("rect")
+            .attr({
+                name: "scrobbler",
+                x: xScale(0) + margins.left,
+                y: height - margins.bottom,
+                width: 10,
+                height: 10
+            })
+            .style({
+                "fill": "red",
+                "cursor": "move"
+            });
+
+        var wasPlaying = false;
+        var scrobblerDrag = d3.behavior.drag()
+            .on("dragstart", function()
+            {
+                d3.event.sourceEvent.stopPropagation(); // silence other listeners
+                console.log(audioController);
+                wasPlaying = audioController.isPlaying();
+                audioController.pausePiece();
+            })
+            .on("drag", function()
+            {
+                var newX = d3.event.x;
+
+                scrobbler.attr({
+                    x: newX
+                });
+                noteHead.attr({
+                    x1: newX - margins.left,
+                    x2: newX - margins.left
+                });
+
+                var beat = xScale.invert(newX - margins.left);
+                console.log(beat);
+                audioController.setBeat(beat);
+            })
+            .on("dragend", function()
+            {
+                // If the piece was playing before the drag, start playing again
+                if (wasPlaying)
+                {
+                    audioController.playPiece();
+                }
+            });
+
+        scrobbler.call(scrobblerDrag);
+
         audioController.beatEventDispatch.on("beat", function(beat)
         {
             var x = xScale(beat);
@@ -218,6 +268,10 @@ var PianoRoll = function(selector, width, height)
                 .attr({
                     "x1": x,
                     "x2": x
+                });
+            scrobbler.transition()
+                .attr({
+                    x: x + margins.left
                 });
             // Advance the zoom if necessary
             // console.log(beat + zoom.translate()[0]);
@@ -233,6 +287,9 @@ var PianoRoll = function(selector, width, height)
                     "x1": x,
                     "x2": x
                 });
+            scrobbler.attr({
+                "x": x + margins.left
+            })
         })
     };
 
