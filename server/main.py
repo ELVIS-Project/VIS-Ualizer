@@ -105,7 +105,7 @@ def data_grouped_bar_graph():
     data_max = 100.0
     data = [list(), list(), list()]
     for i in range(3):
-        print i
+        print(i)
         for j in range(64):
             data[i].append(dict(label=j, value=random.uniform(data_min, data_max)))
     return [
@@ -142,7 +142,7 @@ def example(example_id):
         url_for("static", filename="js/libs/d3.js"),
         url_for("static", filename="js/utils.js")
     ]
-    if example_types.has_key(example_id):
+    if example_id in example_types:
         example_item = example_types[example_id]
         for js_file in example_item["js"]:
             js_files.append(url_for("static", filename=js_file))
@@ -156,7 +156,7 @@ def example(example_id):
 @set_renderers(HTMLRenderer)
 def hello():
     example_links = []
-    for example_id in example_types.keys():
+    for example_id in list(example_types.keys()):
         example_links.append({
             "name": example_types[example_id]["name"],
             "url": "/example/{0}/".format(example_id)
@@ -169,3 +169,4 @@ def hello():
 if __name__ == "__main__":
     app.debug = True
     app.run(host=sys.argv[1], port=int(sys.argv[2]))
+    # app.run(host='127.0.0.1', port=5000)
