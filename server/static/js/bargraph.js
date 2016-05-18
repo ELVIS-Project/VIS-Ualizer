@@ -187,14 +187,13 @@ var BarGraph = function(selector, width, height)
                 sort.direction = SortDirectionEnum.descending;
             }
             chart(chart.data);
-        } );
+        });
 
     }
 
     // GUI components
     attachPrintButton(selector, d3.select(selector).select("svg")[0][0]);
     attachSortChooser(selector);
-
 
     return chart;
 };
