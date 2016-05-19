@@ -1,5 +1,7 @@
+blinker==1.4
 Flask==0.10.1
 Flask-API==0.6.4
+Flask-Testing==0.4.2
 itsdangerous==0.24
 Jinja2==2.8
 Markdown==2.6.5
