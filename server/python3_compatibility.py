@@ -20,7 +20,7 @@ class CompatibilityTestCase(TestCase):
         return app
 
     def test_cooccurence_parser(self):
-        pyver3 = CoOccurrenceMatrixParser("../data/truncated/Josquin-Des-Prez_Ave-Maria...-virgo-serena.csv").parse();
+        pyver3 = CoOccurrenceMatrixParser("./data/truncated/Josquin-Des-Prez_Ave-Maria...-virgo-serena.csv").parse();
 
         self.assertIsInstance(pyver3, dict)
 

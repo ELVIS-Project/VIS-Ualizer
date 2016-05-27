@@ -3,11 +3,9 @@ python:
   - "2.7"
   - "3.5"
 
-install:
-  - pip install .
-  - pip install -r requirements.txt
+install: pip install -r requirements.txt
 
-script: nosetests python3_compatibility.py
+script: python server/python3_compatibility.py
 
 
 
