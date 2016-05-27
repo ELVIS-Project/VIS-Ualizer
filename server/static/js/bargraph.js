@@ -7,6 +7,7 @@ var BarGraph = function(selector, width, height)
         left: 40
     };
 
+
     // Which sort we're using
     var sort = {
         value: SortEnum.label,
@@ -32,8 +33,7 @@ var BarGraph = function(selector, width, height)
 
     var sortComparator = function(a,b)
     {
-        var aValue,
-            bValue;
+        var aValue, bValue;
 
         if (sort.value === SortEnum.value)
         {
@@ -48,7 +48,7 @@ var BarGraph = function(selector, width, height)
 
         if (sort.direction === SortDirectionEnum.ascending)
         {
-            return d3.ascending(aValue, bValue);
+            return d3.ascending(aValue, bValue) ;
         }
         else
         {
@@ -78,6 +78,7 @@ var BarGraph = function(selector, width, height)
         // Sort the data
         data = data.sort(sortComparator);
 
+
         // Map x-axis labels
         xScale.domain(
             data.map(function(d)
@@ -93,14 +94,20 @@ var BarGraph = function(selector, width, height)
             }
         )]);
 
+        var label =  function(d)
+        {
+            return d.label;
+        };
+
         // Draw the axes
         drawAxisLines(chart.g, xAxis, yAxis, computedHeight, 0, 0, 0);
 
         var bars = chart.g.append("g")
             .attr("class", "bars")
             .selectAll(".bar")
-            .data(data)
-            .enter().append("rect")
+            .data(data, label)
+            .enter()
+            .append("rect")
             .attr("x",
                 function(d)
                 {
@@ -153,9 +160,9 @@ var BarGraph = function(selector, width, height)
         sortChooser.append("option")
             .attr("value", "value")
             .text("Value");
-        sortChooser.on("input", function()
+        sortChooser.on("change", function()
         {
-            if (this.value === "label")
+            if (this.value == "label")
             {
                 sort.value = SortEnum.label;
             }
@@ -163,6 +170,7 @@ var BarGraph = function(selector, width, height)
             {
                 sort.value = SortEnum.value;
             }
+
             chart(chart.data);
         });
 
@@ -173,9 +181,9 @@ var BarGraph = function(selector, width, height)
         directionChooser.append("option")
             .attr("value", "desc")
             .text("Desc");
-        directionChooser.on("input", function()
+        directionChooser.on("change", function()
         {
-            if (this.value === "asc")
+            if (this.value == "asc")
             {
                 sort.direction = SortDirectionEnum.ascending;
             }
