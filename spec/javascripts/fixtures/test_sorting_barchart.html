@@ -107,7 +107,8 @@
                         }
                 )]);
 
-                var label =  function(d) {
+                var label =  function(d)
+                {
                     return d.label;
                 };
 
@@ -220,8 +221,10 @@
 
         };
 
-        function guid() {
-            function s4() {
+        function guid()
+        {
+            function s4()
+            {
                 return Math.floor((1 + Math.random()) * 0x10000)
                         .toString(16)
                         .substring(1);
@@ -231,7 +234,8 @@
         }
 
 
-        function data_bar_graph(num=32) {
+        function data_bar_graph(num=32)
+        {
             var data_min = 0.0;
             var data_max = 100.0;
             var output = [];
@@ -240,10 +244,7 @@
                 var newentry =  {label:String(guid()).slice(0,2),value:Math.random()*(data_max-data_min)+data_min};
                 output.push(newentry);
                 //var label = String(guid()).slice(0,2),
-                //   value = Math.random()*(data_max-data_min)+data_min;
-
-
-
+                //value = Math.random()*(data_max-data_min)+data_min;
             }
             return output;
         }

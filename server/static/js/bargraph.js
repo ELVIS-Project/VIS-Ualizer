@@ -48,7 +48,6 @@ var BarGraph = function(selector, width, height)
 
         if (sort.direction === SortDirectionEnum.ascending)
         {
-
             return d3.ascending(aValue, bValue) ;
         }
         else
@@ -95,7 +94,8 @@ var BarGraph = function(selector, width, height)
             }
         )]);
 
-        var label =  function(d) {
+        var label =  function(d)
+        {
             return d.label;
         };
 
