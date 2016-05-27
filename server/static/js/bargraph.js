@@ -48,7 +48,8 @@ var BarGraph = function(selector, width, height)
 
         if (sort.direction === SortDirectionEnum.ascending)
         {
-            return d3.ascending(aValue, bValue);
+
+            return d3.ascending(aValue, bValue) ;
         }
         else
         {
@@ -94,13 +95,17 @@ var BarGraph = function(selector, width, height)
             }
         )]);
 
+        var label =  function(d) {
+            return d.label;
+        };
+
         // Draw the axes
         drawAxisLines(chart.g, xAxis, yAxis, computedHeight, 0, 0, 0);
 
         var bars = chart.g.append("g")
             .attr("class", "bars")
             .selectAll(".bar")
-            .data(data)
+            .data(data, label)
             .enter()
             .append("rect")
             .attr("x",
