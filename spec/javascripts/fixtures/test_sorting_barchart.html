@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>VIS-Ualizer</title>
+</head>
+<body>
+    <h2>Sample Bar Graph</h2>
+    <div class="bar-graph"></div>
+    <script>
+        var BarGraph = function(selector, width, height)
+        {
+            var margin = {
+                top: 20,
+                right: 30,
+                bottom: 30,
+                left: 40
+            };
+
+
+            // Which sort we're using
+            var sort = {
+                value: 0,
+                direction: 0
+            };
+
+            var computedWidth = width - margin.left - margin.right,
+                    computedHeight = height - margin.left - margin.right;
+
+            var xScale = d3.scale.ordinal()
+                    .rangeRoundBands([0, computedWidth], .1);
+
+            var yScale = d3.scale.linear()
+                    .range([computedHeight, 0]);
+
+            var xAxis = d3.svg.axis()
+                    .scale(xScale)
+                    .orient("bottom");
+
+            var yAxis = d3.svg.axis()
+                    .scale(yScale)
+                    .orient("left");
+
+            var sortComparator = function(a,b)
+            {
+                var aValue, bValue;
+
+                if (sort.value === 1)
+                {
+                    aValue = a.value;
+                    bValue = b.value;
+                }
+                else
+                {
+                    aValue = a.label;
+                    bValue = b.label;
+                }
+
+                if (sort.direction === 0)
+                {
+
+                    return d3.ascending(aValue, bValue) ;
+                }
+                else
+                {
+                    return d3.descending(aValue, bValue);
+                }
+            };
+            var colours = undefined;
+
+            function chart(data)
+            {
+
+                // Back up the data
+                chart.data = data;
+
+                // Make sure the SVG is clean
+                chart.g.selectAll("*").remove();
+
+                var labels = d3.map(data,
+                        function(d)
+                        {
+                            return d.label
+                        }).keys();
+                // We only set colours the once
+                if (!colours)
+                {
+                    colours = d3.scale.category20().domain(labels);
+                }
+
+                // Sort the data
+                data = data.sort(sortComparator);
+
+
+                // Map x-axis labels
+                xScale.domain(
+                        data.map(function(d)
+                                {
+                                    return d.label;
+                                }
+                        ));
+                // Map y-axis values
+                yScale.domain([0, d3.max(data,
+                        function(d)
+                        {
+                            return d.value;
+                        }
+                )]);
+
+                var label =  function(d) {
+                    return d.label;
+                };
+
+                // Draw the axes
+                drawAxisLines(chart.g, xAxis, yAxis, computedHeight, 0, 0, 0);
+
+                var bars = chart.g.append("g")
+                        .attr("class", "bars")
+                        .selectAll(".bar")
+                        .data(data, label)
+                        .enter()
+                        .append("rect")
+                        .attr("x",
+                                function(d)
+                                {
+                                    return xScale(d.label);
+                                }
+                        )
+                        .attr("y",
+                                function(d)
+                                {
+                                    return yScale(d.value);
+                                }
+                        )
+                        .attr("fill",
+                                function(d)
+                                {
+                                    return colours(d.label);
+                                }
+                        )
+                        .attr("height",
+                                function(d)
+                                {
+                                    return computedHeight - yScale(d.value);
+                                }
+                        )
+                        .attr("width", xScale.rangeBand())
+                        .style(cssStyling.bar);
+
+
+            }
+
+            chart.svg = d3.select(selector)
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .style(cssStyling.global);
+
+            chart.g = chart.svg
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+            function attachSortChooser(selector)
+            {
+                var parent = d3.select(selector)
+                        .append("p")
+                        .append("label")
+                        .text("Sort: ");
+
+                var sortChooser = parent.append("select").attr("id", 'sort-type');
+                sortChooser.append("option")
+                        .attr("value", "label")
+                        .text("Label");
+                sortChooser.append("option")
+                        .attr("value", "value")
+                        .text("Value");
+                sortChooser.on("change", function()
+                {
+                    if (this.value == "label")
+                    {
+                        sort.value = 0;
+                    }
+                    else
+                    {
+                        sort.value = 1;
+
+                    }
+
+                    chart(chart.data);
+                });
+
+                var directionChooser = parent.append("select").attr("id", 'direction-type');
+                directionChooser.append("option")
+                        .attr("value", "asc")
+                        .text("Asc");
+                directionChooser.append("option")
+                        .attr("value", "desc")
+                        .text("Desc");
+                directionChooser.on("change", function()
+                {
+                    if (this.value == "asc")
+                    {
+                        sort.direction = 0;
+                    }
+                    else
+                    {
+                        sort.direction = 1;
+                    }
+                    chart(chart.data);
+                });
+
+            }
+
+            // GUI components
+            attachPrintButton(selector, d3.select(selector).select("svg")[0][0]);
+            attachSortChooser(selector);
+
+
+            return chart;
+
+        };
+
+        function guid() {
+            function s4() {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                        .toString(16)
+                        .substring(1);
+            }
+            return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+                    s4() + '-' + s4() + s4() + s4();
+        }
+
+
+        function data_bar_graph(num=32) {
+            var data_min = 0.0;
+            var data_max = 100.0;
+            var output = [];
+            for (i=0;i<num;i++) {
+                //output.push(label=String(guid()).slice(0,2), value=Math.random()*(data_max-data_min)+data_min);
+                var newentry =  {label:String(guid()).slice(0,2),value:Math.random()*(data_max-data_min)+data_min};
+                output.push(newentry);
+                //var label = String(guid()).slice(0,2),
+                //   value = Math.random()*(data_max-data_min)+data_min;
+
+
+
+            }
+            return output;
+        }
+
+
+
+
+        var barGraph = new BarGraph('body', 640, 320);
+
+        display = barGraph(data_bar_graph());
+
+    </script>
+
+</body>
+</html>
