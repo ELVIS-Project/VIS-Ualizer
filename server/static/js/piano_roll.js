@@ -430,6 +430,53 @@ var PianoRoll = function(selector, width, height)
         }
     };
 
+    var attachSectionSelector = function(parentSelector)
+    {
+        var selection = d3.select(parentSelector)
+            .append("p")
+            .append("label")
+            .text("Selection: ");
+
+
+        var selectBegin = d3.select(parentSelector).append("p").append("label")
+            .text("From: ")
+            .append("input")
+            .attr({
+                "name": "from",
+                "id":"from",
+                "type":"number"
+            });
+        var selectEnd = d3.select(parentSelector).append("p").append("label")
+            .text("Until: ")
+            .append("input")
+            .attr({
+                "name": "until",
+                "id":"until",
+                "type":"number"
+            });
+        /*for (var i=0; i<100; i+=1)
+        {
+            selectBegin.append("option").attr("value", String(i)).text(String(i));
+            selectEnd.append("option").attr("value", String(i)).text(String(i));
+        }*/
+        var selectButton = d3.select(parentSelector).append("p").append("label").append("input")
+            .attr({
+                "name": "selection",
+                "id":"selection",
+                "type": "button",
+                "value": "Select"
+            })
+        selectButton.on("click", function()
+            {
+                fromValue = document.getElementById("from").value;
+                untilValue = document.getElementById("until").value;
+                if (fromValue <= audioController.getStopIndex() && untilValue >= audioController.getNotesIndex() && fromValue >= 0){
+                    audioController.setNotesIndex(fromValue);
+                    audioController.setStopIndex(untilValue);
+                }
+            });
+    }
+
     /**
      * Given data, construct the chart.
      *
@@ -523,6 +570,7 @@ var PianoRoll = function(selector, width, height)
     //attachZoomAndLocationPicker();
     attachPlayAndStopButtons(selector, audioController);
     attachPrintButton(selector, d3.select(selector).select("svg")[0][0]);
+    attachSectionSelector(selector);
 
     return chart;
 };

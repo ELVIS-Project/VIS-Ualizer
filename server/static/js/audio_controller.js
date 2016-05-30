@@ -5,6 +5,7 @@ var AudioController = function()
     this.isPlaying = false;
     this.currentBeat = 0;
     this.notesIndex = 0;
+    this.stopIndex = 0;
     this.notes = [];
     this.parts = [];
     this.activatedParts = {};
@@ -61,6 +62,8 @@ var AudioController = function()
     this.loadPiece = function(notes, parts)
     {
         this.notes = notes;
+        this.stopIndex = notes.length;
+        console.log(this.stopIndex);
         this.parts = parts;
         // Create the "part activated" array
         this.activatedParts = {};
@@ -103,6 +106,28 @@ var AudioController = function()
         return this.activatedParts[String(partName)] === true;
     };
 
+    this.getNotesIndex = function ()
+    {
+        return this.notesIndex;
+    }
+
+    this.setNotesIndex = function (index)
+    {
+            this.notesIndex = index;
+    }
+
+    this.getStopIndex = function ()
+    {
+        return this.stopIndex;
+    }
+
+    this.setStopIndex = function (index)
+    {
+        this.stopIndex = index;
+    }
+
+
+
     this.playPiece = function()
     {
         // Don't do anything if already playing
@@ -110,17 +135,21 @@ var AudioController = function()
         {
             return;
         }
-
         var milisecondsPerBeat = this.beatsToSeconds(1) * 1000;
         this.isPlaying = true;
         var velocity = 87;
         var that = this;
         var playNoteIfReady = function()
         {
-            if (that.isPlaying && that.notesIndex < that.notes.length)
+            console.log(that.notesIndex);
+            console.log(that.stopIndex);
+            console.log(that.isPlaying);
+            if (that.isPlaying && that.notesIndex < that.stopIndex)
             {
+                console.log("passed the if");
                 // Play all the notes that are currently playable
-                while (that.notesIndex < that.notes.length && that.notes[that.notesIndex].starttime[0] < that.currentBeat)
+
+                while (that.notesIndex < that.stopIndex && that.notes[that.notesIndex].starttime[0] < that.currentBeat)
                 {
                     // Play the note if it's part is activated
                     if (that.isPartActivated(that.notes[that.notesIndex].partname))
@@ -154,6 +183,7 @@ var AudioController = function()
         this.isPlaying = false;
         this.currentBeat = 0;
         this.notesIndex = 0;
+        this.stopIndex = this.notes.length;
         this.beatEventDispatch.beat(this.currentBeat);
     }
 };
