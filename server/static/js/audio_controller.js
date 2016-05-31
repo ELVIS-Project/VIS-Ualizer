@@ -63,7 +63,6 @@ var AudioController = function()
     {
         this.notes = notes;
         this.stopIndex = notes.length;
-        console.log(this.stopIndex);
         this.parts = parts;
         // Create the "part activated" array
         this.activatedParts = {};
@@ -106,25 +105,66 @@ var AudioController = function()
         return this.activatedParts[String(partName)] === true;
     };
 
+    /**
+     * Get the notes index (cursor).
+     *
+     * @returns {int}
+     */
     this.getNotesIndex = function ()
     {
         return this.notesIndex;
-    }
+    };
 
+    /**
+     * Set the notes index (cursor).
+     *
+     * @param index
+     *
+     */
     this.setNotesIndex = function (index)
     {
             this.notesIndex = index;
-    }
+    };
 
+    /**
+     * Gets the stop index (where to stop playing).
+     *
+     * @returns {int}
+     */
     this.getStopIndex = function ()
     {
         return this.stopIndex;
-    }
+    };
 
+    /**
+     * Sets the stop index (when to stop playing).
+     *
+     * @param index
+     */
     this.setStopIndex = function (index)
     {
         this.stopIndex = index;
+    };
+
+    /**
+     * Gets the BPM.
+     *
+     * @returns {int}
+     */
+    this.getBPM = function ()
+    {
+        return this.bpm;
     }
+
+    /**
+     * Sets the BPM.
+     *
+     * @param bpm
+     */
+    this.setBPM = function (bpm)
+    {
+       this.bpm = bpm;
+    };
 
 
 
@@ -141,14 +181,9 @@ var AudioController = function()
         var that = this;
         var playNoteIfReady = function()
         {
-            console.log(that.notesIndex);
-            console.log(that.stopIndex);
-            console.log(that.isPlaying);
             if (that.isPlaying && that.notesIndex < that.stopIndex)
             {
-                console.log("passed the if");
                 // Play all the notes that are currently playable
-
                 while (that.notesIndex < that.stopIndex && that.notes[that.notesIndex].starttime[0] < that.currentBeat)
                 {
                     // Play the note if it's part is activated

@@ -430,52 +430,94 @@ var PianoRoll = function(selector, width, height)
         }
     };
 
-    var attachSectionSelector = function(parentSelector)
+    var attachSectionSelector = function(parentSelector, audioController)
     {
-        var selection = d3.select(parentSelector)
-            .append("p")
-            .append("label")
-            .text("Selection: ");
+        var selection = d3.select(parentSelector).append("form");
 
+        selection.append("label")
+            .text("Select:  ");
 
-        var selectBegin = d3.select(parentSelector).append("p").append("label")
-            .text("From: ")
+        selection.append("label")
+            .text("From ")
             .append("input")
             .attr({
                 "name": "from",
                 "id":"from",
-                "type":"number"
+                "type":"number",
+                "min":"0",
+                "step":"1",
+                "value":"0"
             });
-        var selectEnd = d3.select(parentSelector).append("p").append("label")
-            .text("Until: ")
+        selection.append("label")
+            .text("Until ")
             .append("input")
             .attr({
                 "name": "until",
                 "id":"until",
-                "type":"number"
+                "type":"number",
+                "min":"0",
+                "step":"1",
+                "value":"1"
             });
-        /*for (var i=0; i<100; i+=1)
-        {
-            selectBegin.append("option").attr("value", String(i)).text(String(i));
-            selectEnd.append("option").attr("value", String(i)).text(String(i));
-        }*/
-        var selectButton = d3.select(parentSelector).append("p").append("label").append("input")
+        selection.append("input")
             .attr({
-                "name": "selection",
-                "id":"selection",
-                "type": "button",
+                "name": "selectbtn",
+                "id":"selectbtn",
+                "type": "submit",
                 "value": "Select"
-            })
-        selectButton.on("click", function()
+            });
+
+        selection.on("submit", function()
             {
-                fromValue = document.getElementById("from").value;
-                untilValue = document.getElementById("until").value;
-                if (fromValue <= audioController.getStopIndex() && untilValue >= audioController.getNotesIndex() && fromValue >= 0){
+                d3.event.preventDefault();
+
+                var fromValue = document.getElementById("from").value;
+                var untilValue = document.getElementById("until").value;
+                if (fromValue < untilValue && fromValue >= 0){
                     audioController.setNotesIndex(fromValue);
                     audioController.setStopIndex(untilValue);
+                    }
+                else {
+                    window.alert("Please select appropriate values (starting point must be smaller than ending point).");
                 }
             });
-    }
+    };
+
+    var attachBPMSelector = function(parentSelector, audioController)
+    {
+        var bpmSelect = d3.select(parentSelector)
+            .append("p")
+            .append("form");
+
+        bpmSelect.append("label")
+            .text("BPM:  ");
+
+        bpmSelect.append("label")
+            .append("input")
+            .attr({
+                "name":"bpm",
+                "id":"bpm",
+                "type":"number",
+                "min":"1",
+                "step":"1",
+                "value":audioController.getBPM()
+            });
+
+        bpmSelect.append("label")
+            .append("input")
+            .attr({
+                "name":"bpmbutton",
+                "id":"bpmbutton",
+                "type":"submit",
+                "value":"Change BPM"
+            });
+
+        bpmSelect.on("submit", function(){
+            d3.event.preventDefault();
+            var newBPM = document.getElementById("bpm").value;
+            audioController.setBPM(newBPM);
+        });
+    };
 
     /**
      * Given data, construct the chart.
@@ -570,7 +612,8 @@ var PianoRoll = function(selector, width, height)
     //attachZoomAndLocationPicker();
     attachPlayAndStopButtons(selector, audioController);
     attachPrintButton(selector, d3.select(selector).select("svg")[0][0]);
-    attachSectionSelector(selector);
+    attachSectionSelector(selector, audioController);
+    attachBPMSelector(selector, audioController);
 
     return chart;
 };
