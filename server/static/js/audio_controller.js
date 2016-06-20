@@ -1,6 +1,6 @@
 var AudioController = function()
 {
-    this.bpm = 360;
+    this.bpm = 300;
 
     this.isPlaying = false;
     this.currentBeat = 0;
