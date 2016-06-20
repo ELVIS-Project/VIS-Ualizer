@@ -7,7 +7,7 @@ var PianoRoll = function(selector, width, height)
         bottom: 30,
         piano: 25
     };
-
+    
     // Construct the audio controller
     var audioController = new AudioController();
 
@@ -459,6 +459,18 @@ var PianoRoll = function(selector, width, height)
                 "step":"1",
                 "value":"1"
             });
+        //can select by beats or by notes
+        var beatNoteChooser = selection.append("select")
+            .attr("id", "beatnotechooser")
+
+        beatNoteChooser.append("option")
+            .attr("value", "beat")
+            .text("beat")
+
+        beatNoteChooser.append("option")
+            .attr("value","note")
+            .text("note")
+        
         selection.append("input")
             .attr({
                 "name": "selectbtn",
@@ -470,14 +482,40 @@ var PianoRoll = function(selector, width, height)
         selection.on("submit", function()
             {
                 d3.event.preventDefault();
-
-                var fromValue = document.getElementById("from").value;
-                var untilValue = document.getElementById("until").value;
-                if (fromValue < untilValue && fromValue >= 0){
-                    audioController.setNotesIndex(fromValue);
-                    audioController.setStopIndex(untilValue);
+                var fromValue = parseInt(document.getElementById("from").value, 10)
+                var untilValue = parseInt(document.getElementById("until").value, 10)+1;
+                var beatOrNote = document.getElementById("beatnotechooser").options;
+                if (fromValue < untilValue){
+                    if(beatOrNote[0].selected){
+                        //if selecting by beat, the start note is teh first one with the start beat inside it,
+                        // and the stop note is the one with the stop beat inside it
+                        audioController.currentBeat = fromValue;
+                        var index=0
+                        while(audioController.currentBeat>=audioController.notes[index].starttime[0]+audioController.notes[index].duration[0])
+                        {
+                            index++
+                        }
+                        audioController.notesIndex = (index);
+                        while(untilValue>=audioController.notes[index].starttime[0])
+                        {
+                            index++
+                        }
+                        audioController.stopIndex = index;
+                    }
+                    else{
+                        //if selecting by note number, set the corresponding start and stop notes
+                        audioController.notesIndex = fromValue;
+                        audioController.stopIndex = untilValue;
+                        audioController.currentBeat = audioController.notes[audioController.notesIndex].starttime[0];
+                    }
+                    //reposition the cursor in the correct spot
+                    var xNew = chart.x(audioController.currentBeat);
+                    var cursor = d3.select(".noteHead");
+                    cursor.attr("x1", xNew);
+                    cursor.attr("x2", xNew);
                     }
                 else {
+                    //if the selection doesn't make sense
                     window.alert("Please select appropriate values (starting point must be smaller than ending point).");
                 }
             });
@@ -500,7 +538,7 @@ var PianoRoll = function(selector, width, height)
                 "type":"number",
                 "min":"1",
                 "step":"1",
-                "value":audioController.getBPM()
+                "value":audioController.bpm
             });
 
         bpmSelect.append("label")
@@ -514,8 +552,8 @@ var PianoRoll = function(selector, width, height)
 
         bpmSelect.on("submit", function(){
             d3.event.preventDefault();
-            var newBPM = document.getElementById("bpm").value;
-            audioController.setBPM(newBPM);
+            var newBPM = parseInt(document.getElementById("bpm").value, 10);
+            audioController.bpm = newBPM;
         });
     };
 
@@ -527,6 +565,7 @@ var PianoRoll = function(selector, width, height)
     function chart(data)
     {
         // The function that labels the midi pitches
+
         var midiPitchLabeller = buildMidiPitchLabeller(data.partdata);
 
         // Build scales

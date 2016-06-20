@@ -6,6 +6,7 @@ var AudioController = function()
     this.currentBeat = 0;
     this.notesIndex = 0;
     this.stopIndex = 0;
+    //this.stopBeat = 0;
     this.notes = [];
     this.parts = [];
     this.activatedParts = {};
@@ -63,6 +64,7 @@ var AudioController = function()
     {
         this.notes = notes;
         this.stopIndex = notes.length;
+        //this.stopBeat = notes[notes.length-1].starttime[0]+notes[notes.length-1].duration[0]
         this.parts = parts;
         // Create the "part activated" array
         this.activatedParts = {};
@@ -105,69 +107,6 @@ var AudioController = function()
         return this.activatedParts[String(partName)] === true;
     };
 
-    /**
-     * Get the notes index (cursor).
-     *
-     * @returns {int}
-     */
-    this.getNotesIndex = function ()
-    {
-        return this.notesIndex;
-    };
-
-    /**
-     * Set the notes index (cursor).
-     *
-     * @param index
-     *
-     */
-    this.setNotesIndex = function (index)
-    {
-            this.notesIndex = index;
-    };
-
-    /**
-     * Gets the stop index (where to stop playing).
-     *
-     * @returns {int}
-     */
-    this.getStopIndex = function ()
-    {
-        return this.stopIndex;
-    };
-
-    /**
-     * Sets the stop index (when to stop playing).
-     *
-     * @param index
-     */
-    this.setStopIndex = function (index)
-    {
-        this.stopIndex = index;
-    };
-
-    /**
-     * Gets the BPM.
-     *
-     * @returns {int}
-     */
-    this.getBPM = function ()
-    {
-        return this.bpm;
-    }
-
-    /**
-     * Sets the BPM.
-     *
-     * @param bpm
-     */
-    this.setBPM = function (bpm)
-    {
-       this.bpm = bpm;
-    };
-
-
-
     this.playPiece = function()
     {
         // Don't do anything if already playing
@@ -175,6 +114,7 @@ var AudioController = function()
         {
             return;
         }
+
         var milisecondsPerBeat = this.beatsToSeconds(1) * 1000;
         this.isPlaying = true;
         var velocity = 87;
@@ -189,9 +129,12 @@ var AudioController = function()
                     // Play the note if it's part is activated
                     if (that.isPartActivated(that.notes[that.notesIndex].partname))
                     {
+
                         var pitch = that.notes[that.notesIndex].pitch.b12;
                         var duration = that.beatsToSeconds(that.notes[that.notesIndex].duration[0]);
+
                         that.playNote(pitch, velocity, duration);
+
                     }
                     // Increment the noteindex whether or not we actually play the note
                     that.notesIndex++;
