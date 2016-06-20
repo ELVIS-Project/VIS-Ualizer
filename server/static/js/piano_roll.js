@@ -536,8 +536,8 @@ var PianoRoll = function(selector, width, height)
                 "name":"bpm",
                 "id":"bpm",
                 "type":"number",
-                "max":"300",
-                "min":"1",
+                "max":"360",
+                "min":"30",
                 "step":"1",
                 "value":audioController.bpm
             });
