@@ -1,10 +1,12 @@
 var AudioController = function()
 {
-    this.bpm = 360;
+    this.bpm = 120;
 
     this.isPlaying = false;
     this.currentBeat = 0;
     this.notesIndex = 0;
+    this.stopIndex = 0;
+    //this.stopBeat = 0;
     this.notes = [];
     this.parts = [];
     this.activatedParts = {};
@@ -61,6 +63,8 @@ var AudioController = function()
     this.loadPiece = function(notes, parts)
     {
         this.notes = notes;
+        this.stopIndex = notes.length;
+        //this.stopBeat = notes[notes.length-1].starttime[0]+notes[notes.length-1].duration[0]
         this.parts = parts;
         // Create the "part activated" array
         this.activatedParts = {};
@@ -117,17 +121,20 @@ var AudioController = function()
         var that = this;
         var playNoteIfReady = function()
         {
-            if (that.isPlaying && that.notesIndex < that.notes.length)
+            if (that.isPlaying && that.notesIndex < that.stopIndex)
             {
                 // Play all the notes that are currently playable
-                while (that.notesIndex < that.notes.length && that.notes[that.notesIndex].starttime[0] < that.currentBeat)
+                while (that.notesIndex < that.stopIndex && that.notes[that.notesIndex].starttime[0] < that.currentBeat)
                 {
                     // Play the note if it's part is activated
                     if (that.isPartActivated(that.notes[that.notesIndex].partname))
                     {
+
                         var pitch = that.notes[that.notesIndex].pitch.b12;
                         var duration = that.beatsToSeconds(that.notes[that.notesIndex].duration[0]);
+
                         that.playNote(pitch, velocity, duration);
+
                     }
                     // Increment the noteindex whether or not we actually play the note
                     that.notesIndex++;
@@ -154,6 +161,7 @@ var AudioController = function()
         this.isPlaying = false;
         this.currentBeat = 0;
         this.notesIndex = 0;
+        this.stopIndex = this.notes.length;
         this.beatEventDispatch.beat(this.currentBeat);
     }
 };
