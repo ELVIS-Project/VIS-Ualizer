@@ -289,12 +289,11 @@ var startAudio = function(currentTime, fromCache, onsuccess) {
 	///
 	for (var n = 0; n < length && messages < 100; n++) {
 		var obj = data[n];
-		if (((queuedTime += obj[1]) < currentTime) || currentTime >= midi.endTime) {
+
+		if ((queuedTime += obj[1]) <= currentTime) {
 			offset = queuedTime;
 			continue;
 		}
-
-
 		///
 		currentTime = queuedTime - offset;
 		///

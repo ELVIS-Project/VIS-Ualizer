@@ -173,5 +173,5 @@ def hello():
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(host=sys.argv[1], port=int(sys.argv[2]))
-    #app.run(host='127.0.0.1', port=5000)
+    #app.run(host=sys.argv[1], port=int(sys.argv[2]))
+    app.run(host='127.0.0.1', port=5000)
