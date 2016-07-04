@@ -17,7 +17,7 @@ app = FlaskAPI(__name__)
 
 @app.route("/data/score-display/")
 def data_score_display():
-    return send_file("../data/raw-files/hairpin2.mei")
+    return send_file("../data/raw-files/chords.mei")
 
 @app.route("/data/pie-chart/")
 def data_pie_chart():
@@ -173,5 +173,5 @@ def hello():
 
 if __name__ == "__main__":
     app.debug = True
-    #app.run(host=sys.argv[1], port=int(sys.argv[2]))
-    app.run(host='127.0.0.1', port=5000)
+    app.run(host=sys.argv[1], port=int(sys.argv[2]))
+    #app.run(host='127.0.0.1', port=5000)

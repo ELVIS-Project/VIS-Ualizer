@@ -20,77 +20,6 @@ var ScoreDisplay = function(selector, width, height)
         piano: 25
     };
 
-    MIDI.loadPlugin({
-        soundfontUrl: "/static/soundfont/",
-        instrument: "acoustic_grand_piano",})
-
-    var player = MIDI.Player
-
-    var ids = []
-
-    player.addListener(function(data) {
-        var vrvTime = Math.max(0, 2 * data.now - 800);
-        var elementsattime = JSON.parse(vrvToolkit.getElementsAtTime(vrvTime))
-            if ((elementsattime.notes.length > 0) && (ids != elementsattime.notes)) {
-                ids.forEach(function(noteid) {
-                    if ($.inArray(noteid, elementsattime.notes) == -1) {
-                        $("#" + noteid ).attr("fill", "#000");
-                        $("#" + noteid ).attr("stroke", "#000");
-                    }
-                });
-                ids = elementsattime.notes;
-                ids.forEach(function(noteid) {
-                    if ($.inArray(noteid, elementsattime.notes) != -1) {
-                        $("#" + noteid ).attr("fill", "#00F");
-                        $("#" + noteid ).attr("stroke", "#00F");
-                    }
-                });
-            }
-
-    })
-
-
-
-
-
-    var attachPlayAndStopButtons = function(parentSelector, audioController)
-    {
-
-
-        var parent = d3.select(parentSelector).append("p")
-            .style({"display":"table",
-            "width":"100%"});
-        parent.append("button").text("Play")
-            .on("click", function()
-            {
-                if(player.currentTime == 0 && !player.playing ){
-                    player.start()
-                }
-                else if(player.currentTime != 0){
-                    player.resume()
-                }
-            })
-            .style("display","table-header-group");
-        parent.append("button").text("Pause")
-            .on("click", function()
-            {
-                player.pause(true)
-            })
-            .style("display","table-header-group");
-        parent.append("button").text("Stop")
-            .on("click", function()
-            {
-                player.stop()
-                ids.forEach(function(noteid) {
-                    $("#" + noteid ).attr("fill", "#000");
-                    $("#" + noteid ).attr("stroke", "#000");
-                });
-            })
-            .style({"position":"absolute",
-                    "z-index":"1"});
-
-    };
-
     chart.svg = d3.select(selector)
 
 
@@ -104,6 +33,160 @@ var ScoreDisplay = function(selector, width, height)
         .attr("name", "content-area")
         .attr("transform", "translate(" + margins.left + "," + margins.top + ")");
 
+    MIDI.loadPlugin({
+        soundfontUrl: "/static/soundfont/",
+        instrument: "acoustic_grand_piano",})
+
+    var player = MIDI.Player
+
+    var ids = []
+
+    player.addListener(function(data) {
+        console.log(player.endTime)
+        var vrvTime = Math.max(0, 2 * data.now - 800);
+        var elementsattime = JSON.parse(vrvToolkit.getElementsAtTime(vrvTime))
+        if ((elementsattime.notes.length > 0) && (ids != elementsattime.notes)) {
+            ids.forEach(function(noteid) {
+                if ($.inArray(noteid, elementsattime.notes) == -1) {
+                    $("#" + noteid ).attr("fill", "#000");
+                    $("#" + noteid ).attr("stroke", "#000");
+                }
+            });
+            ids = elementsattime.notes;
+            ids.forEach(function(noteid) {
+                if ($.inArray(noteid, elementsattime.notes) != -1) {
+                    $("#" + noteid ).attr("fill", "#00F");
+                    $("#" + noteid ).attr("stroke", "#00F");
+                }
+            });
+        }
+    })
+
+
+    var attachPlayAndStopButtons = function(parentSelector)
+    {
+
+        var parent = d3.select(parentSelector).append("p");
+        parent.append("button").text("Play")
+            .on("click", function()
+            {
+                if(player.currentTime == 0 && !player.playing ){
+                    player.start()
+                }
+                else if(player.currentTime != 0){
+                    player.resume()
+                }
+            })
+        parent.append("button").text("Pause")
+            .on("click", function()
+            {
+                player.pause(true)
+            })
+        parent.append("button").text("Stop")
+            .on("click", function()
+            {
+                player.stop()
+                ids.forEach(function(noteid) {
+                    $("#" + noteid ).attr("fill", "#000");
+                    $("#" + noteid ).attr("stroke", "#000");
+                });
+            })
+
+    };
+
+    var attachSectionSelector = function(parentSelector)
+    {
+        var selection = d3.select(parentSelector).append("form");
+
+        selection.append("label")
+            .text("Select:  ");
+
+        selection.append("label")
+            .text("From ")
+            .append("input")
+            .attr({
+                "name": "from",
+                "id":"from",
+                "type":"number",
+                "min":"0",
+                "step":"1",
+                "value":"0.5"
+            });
+        selection.append("label")
+            .text("Until ")
+            .append("input")
+            .attr({
+                "name": "until",
+                "id":"until",
+                "type":"number",
+                "min":"0",
+                "step":"0.5",
+                "value":player.endTime
+            });
+
+        selection.append("input")
+            .attr({
+                "name": "selectbtn",
+                "id":"selectbtn",
+                "type": "submit",
+                "value": "Select"
+            });
+
+        selection.on("submit", function()
+        {
+            d3.event.preventDefault();
+            var fromValue = parseInt(document.getElementById("from").value, 10)
+            var untilValue = parseInt(document.getElementById("until").value, 10)+1;
+            if (fromValue < untilValue){
+                    player.currentTime = fromValue;
+                    player.endTime = untilValue;
+            }
+            else {
+                //if the selection doesn't make sense
+                window.alert("Please select appropriate values (starting point must be smaller than ending point).");
+            }
+        });
+    };
+
+    var attachBPMSelector = function(parentSelector)
+    {
+        var bpmSelect = d3.select(parentSelector)
+            .append("p")
+            .append("form");
+
+        bpmSelect.append("label")
+            .text("BPM:  ");
+
+        bpmSelect.append("label")
+            .append("input")
+            .attr({
+                "name":"bpm",
+                "id":"bpm",
+                "type":"number",
+                "max":"360",
+                "min":"30",
+                "step":"1",
+                "value":player.BPM
+            });
+
+        bpmSelect.append("label")
+            .append("input")
+            .attr({
+                "name":"bpmbutton",
+                "id":"bpmbutton",
+                "type":"submit",
+                "value":"Change BPM"
+            });
+
+        bpmSelect.on("submit", function(){
+            d3.event.preventDefault();
+            var newBPM = parseInt(document.getElementById("bpm").value, 10);
+            player.BPM = newBPM;
+        });
+    };
+
+
+
 
     function chart(data)
     {
@@ -113,6 +196,7 @@ var ScoreDisplay = function(selector, width, height)
         //document.getElementById("score-display").innerHTML = rendered
         chart.contentArea.html(rendered)
         var midiVersion = 'data:audio/midi;base64,' + vrvToolkit.renderToMidi()
+        player.BPM = null
         player.loadFile(midiVersion, player.pause)
 
     }
@@ -123,8 +207,10 @@ var ScoreDisplay = function(selector, width, height)
     
 
     // GUI components
-    //attachZoomAndLocationPicker();
-    attachPlayAndStopButtons(selector)
+    attachEmptyControlPanel(selector)
+    attachPlayAndStopButtons(".control-panel")
+    attachSectionSelector(".control-panel")
+    attachBPMSelector(".control-panel")
 
     return chart
 
