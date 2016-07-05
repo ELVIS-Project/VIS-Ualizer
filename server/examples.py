@@ -6,7 +6,7 @@ example_types = {
     },
     "bar-graph-clustered": {
         "name": "Bar Graph - Clustered",
-        "js": ["js/bargraph_grouped.js"],
+        "js": ["js/bargraph.js", "js/bargraph_grouped.js"],
         "template": "example/bar-graph-grouped.html"
     },
     "force-directed-graph": {
