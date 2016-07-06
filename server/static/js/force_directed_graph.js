@@ -347,6 +347,7 @@ var ForceDirectedGraph = function(selector, width, height)
 
                 if (source == target)
                 {
+
                     // Values that affect the loop size
                     var relativeMultiplier = link.relativeValue * 2 * circleRadius;
                     // It's a self-link.  So, we make a little loop.
@@ -414,7 +415,8 @@ var ForceDirectedGraph = function(selector, width, height)
             .on("mousedown.zoom", null)
             .on("touchstart.zoom", null)
             .on("touchmove.zoom", null)
-            .on("touchend.zoom", null);
+            .on("touchend.zoom", null)
+            .on("dblclick.zoom", null);
 
         /**
          * "Search" for a particular node.  Highlight that node and the nodes
