@@ -172,6 +172,8 @@ function drawAxisLines(parentElement, xAxis, yAxis, svgHeight, topMargin, leftMa
         .call(yAxis);
     // Apply CSS styling
     parentElement.selectAll([".axis path ", ".axis line"]).style(cssStyling.axis);
+
+    
 }
 
 /**

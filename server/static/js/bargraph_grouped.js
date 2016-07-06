@@ -51,6 +51,7 @@ var BarGraphGrouped = function(selector, width, height) {
         chart.y.domain([0, maxValue]);
 
         // Draw the axes
+
         drawAxisLines(chart.g, chart.xAxis, chart.yAxis, chart.height, 0, 0, 0);
 
         data.forEach(function(group) {
@@ -74,7 +75,7 @@ var BarGraphGrouped = function(selector, width, height) {
                 .attr("x", chart.x(group.group_label))
                 .on("click", function(){
                     console.log("hi")
-                    var isolateGraph = new BarGraph(".isolate-graph", 640, 320)
+                    var isolateGraph = new BarGraph(".isolate-graph", 640, 320, true)
                     isolateGraph(group.group_members)
                 });
 

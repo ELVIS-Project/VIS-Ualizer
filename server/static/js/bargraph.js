@@ -1,4 +1,4 @@
-var BarGraph = function(selector, width, height)
+var BarGraph = function(selector, width, height,  numericAxis)
 {
     var margin = {
         top: 20,
@@ -25,7 +25,8 @@ var BarGraph = function(selector, width, height)
 
     var xAxis = d3.svg.axis()
         .scale(xScale)
-        .orient("bottom");
+        .orient("bottom")
+        
 
     var yAxis = d3.svg.axis()
         .scale(yScale)
@@ -100,7 +101,12 @@ var BarGraph = function(selector, width, height)
         };
 
         // Draw the axes
+        if (numericAxis){
+            xAxis.tickValues(xScale.domain().filter(function(d, i){ return !(i%2); }));
+        }
         drawAxisLines(chart.g, xAxis, yAxis, computedHeight, 0, 0, 0);
+
+
 
         var bars = chart.g.append("g")
             .attr("class", "bars")
@@ -145,6 +151,7 @@ var BarGraph = function(selector, width, height)
     chart.g = chart.svg
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
 
     function attachSortChooser(selector)
     {
@@ -209,6 +216,6 @@ var BarGraph = function(selector, width, height)
  */
 d3.json("/graph/", function(error, data)
 {
-    var barGraph = new BarGraph(".bar-graph", 640, 320);
+    var barGraph = new BarGraph(".bar-graph", 640, 320, false);
     barGraph(data);
 });
