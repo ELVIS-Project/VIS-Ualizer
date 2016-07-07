@@ -41,25 +41,33 @@ var ScoreDisplay = function(selector, width, height)
 
     var ids = []
 
+    var counter = 0
+
     player.addListener(function(data) {
-        console.log(player.endTime)
-        var vrvTime = Math.max(0, 2 * data.now - 800);
+        console.log(data.now)
+        var vrvTime = Math.max(0, 2 * data.now + 200);
+        console.log(vrvTime)
+        console.log()
         var elementsattime = JSON.parse(vrvToolkit.getElementsAtTime(vrvTime))
-        if ((elementsattime.notes.length > 0) && (ids != elementsattime.notes)) {
-            ids.forEach(function(noteid) {
-                if ($.inArray(noteid, elementsattime.notes) == -1) {
-                    $("#" + noteid ).attr("fill", "#000");
-                    $("#" + noteid ).attr("stroke", "#000");
-                }
-            });
-            ids = elementsattime.notes;
-            ids.forEach(function(noteid) {
-                if ($.inArray(noteid, elementsattime.notes) != -1) {
-                    $("#" + noteid ).attr("fill", "#00F");
-                    $("#" + noteid ).attr("stroke", "#00F");
-                }
-            });
+        //console.log(vrvToolkit.getTimeForElement("p1cdd4n0v1b2s1"))
+        if(elementsattime.notes != []){
+            if ((elementsattime.notes.length > 0) && (ids != elementsattime.notes)) {
+                ids.forEach(function(noteid) {
+                    if ($.inArray(noteid, elementsattime.notes) == -1) {
+                        $("#" + noteid ).attr("fill", "#000");
+                        $("#" + noteid ).attr("stroke", "#000");
+                    }
+                });
+                ids = elementsattime.notes;
+                ids.forEach(function(noteid) {
+                    if ($.inArray(noteid, elementsattime.notes) != -1) {
+                        $("#" + noteid ).attr("fill", "#00F");
+                        $("#" + noteid ).attr("stroke", "#00F");
+                    }
+                });
+            }
         }
+
     })
 
 
@@ -73,7 +81,7 @@ var ScoreDisplay = function(selector, width, height)
                 if(player.currentTime == 0 && !player.playing ){
                     player.start()
                 }
-                else if(player.currentTime != 0){
+                if(player.currentTime != 0 && !player.playing){
                     player.resume()
                 }
             })
