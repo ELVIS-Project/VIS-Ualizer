@@ -264,7 +264,10 @@ var startAudio = function(currentTime, fromCache, onsuccess) {
 		midi.playing && stopAudio();
 		midi.playing = true;
 		midi.data = midi.replayer.getData();
-		midi.endTime = getLength();
+		if (midi.endTime === 0 ){
+			midi.endTime = getLength();
+		}
+
 	}
 	///
 	var note;
@@ -291,6 +294,9 @@ var startAudio = function(currentTime, fromCache, onsuccess) {
 		var obj = data[n];
 		if (((queuedTime += obj[1]) < currentTime) || currentTime >= midi.endTime) {
 			offset = queuedTime;
+			if(currentTime >= midi.endTime){
+				midi.endTime = 0
+			}
 			continue;
 		}
 

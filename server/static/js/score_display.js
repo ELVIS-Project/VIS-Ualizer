@@ -46,8 +46,6 @@ var ScoreDisplay = function(selector, width, height)
     player.addListener(function(data) {
         console.log(data.now)
         var vrvTime = Math.max(0, 2 * data.now + 200);
-        console.log(vrvTime)
-        console.log()
         var elementsattime = JSON.parse(vrvToolkit.getElementsAtTime(vrvTime))
         //console.log(vrvToolkit.getTimeForElement("p1cdd4n0v1b2s1"))
         if(elementsattime.notes != []){
@@ -117,7 +115,7 @@ var ScoreDisplay = function(selector, width, height)
                 "id":"from",
                 "type":"number",
                 "min":"0",
-                "step":"1",
+                "step":"0.5",
                 "value":"0.5"
             });
         selection.append("label")
@@ -129,7 +127,7 @@ var ScoreDisplay = function(selector, width, height)
                 "type":"number",
                 "min":"0",
                 "step":"0.5",
-                "value":player.endTime
+                "value":"0.5"
             });
 
         selection.append("input")
@@ -218,7 +216,7 @@ var ScoreDisplay = function(selector, width, height)
     attachEmptyControlPanel(selector)
     attachPlayAndStopButtons(".control-panel")
     attachSectionSelector(".control-panel")
-    attachBPMSelector(".control-panel")
+    //attachBPMSelector(".control-panel")
 
     return chart
 
