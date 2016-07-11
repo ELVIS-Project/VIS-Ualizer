@@ -45,8 +45,10 @@ var ScoreDisplay = function(selector, width, height)
 
     player.addListener(function(data) {
         console.log(data.now)
-        var vrvTime = Math.max(0, 2 * data.now + 200);
+        console.log(player.BPM)
+        var vrvTime = Math.max(0, (2 * data.now + 200) * (player.BPM/120));
         var elementsattime = JSON.parse(vrvToolkit.getElementsAtTime(vrvTime))
+        console.log(elementsattime)
         //console.log(vrvToolkit.getTimeForElement("p1cdd4n0v1b2s1"))
         if(elementsattime.notes != []){
             if ((elementsattime.notes.length > 0) && (ids != elementsattime.notes)) {
@@ -170,7 +172,7 @@ var ScoreDisplay = function(selector, width, height)
                 "id":"bpm",
                 "type":"number",
                 "max":"360",
-                "min":"30",
+                "min":"1",
                 "step":"1",
                 "value":player.BPM
             });
@@ -187,7 +189,8 @@ var ScoreDisplay = function(selector, width, height)
         bpmSelect.on("submit", function(){
             d3.event.preventDefault();
             var newBPM = parseInt(document.getElementById("bpm").value, 10);
-            player.BPM = newBPM;
+            player.BPM = newBPM
+            player.replayer = new Replayer(MidiFile(player.currentData), 1, null, player.BPM)
         });
     };
 
@@ -202,7 +205,7 @@ var ScoreDisplay = function(selector, width, height)
         //document.getElementById("score-display").innerHTML = rendered
         chart.contentArea.html(rendered)
         var midiVersion = 'data:audio/midi;base64,' + vrvToolkit.renderToMidi()
-        player.BPM = null
+        //player.BPM = null
         player.loadFile(midiVersion, player.pause)
 
     }
@@ -216,7 +219,7 @@ var ScoreDisplay = function(selector, width, height)
     attachEmptyControlPanel(selector)
     attachPlayAndStopButtons(".control-panel")
     attachSectionSelector(".control-panel")
-    //attachBPMSelector(".control-panel")
+    attachBPMSelector(".control-panel")
 
     return chart
 
