@@ -186,6 +186,24 @@ midi.getFileInstruments = function() {
 	return ret;
 };
 
+midi.getEnd = function() {
+	var data =  midi.data;
+	console.log("hey")
+	var counter = [0.5, 0.5]
+	var length = data.length;
+	console.log(midi.endTime)
+	for (var n = 0; n < length; n++) {
+		if (data[n][1]!==0 && counter[0]<midi.endTime) {
+			counter[1] = counter[0]
+			counter[0] = data[n][1] + counter[0]
+		}
+
+	}
+	console.log(counter[1])
+	return counter[1];
+}
+
+
 // Playing the audio
 
 var eventQueue = []; // hold events to be triggered
@@ -292,7 +310,7 @@ var startAudio = function(currentTime, fromCache, onsuccess) {
 	///
 	for (var n = 0; n < length && messages < 100; n++) {
 		var obj = data[n];
-		if (((queuedTime += obj[1]) < currentTime) || currentTime >= midi.endTime) {
+		if (((queuedTime += obj[1]) < currentTime) || currentTime >= midi.endTime ) {
 			offset = queuedTime;
 			if(currentTime >= midi.endTime){
 				midi.endTime = 0

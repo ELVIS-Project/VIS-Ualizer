@@ -36,10 +36,11 @@ example_types = {
     },
     "score-display": {
         "name": "Score Display",
-        "js": ["js/libs/jquery.js", "js/libs/MIDI/shim/Base64.js", "js/libs/MIDI/shim/Base64binary.js", "js/libs/MIDI/MIDI.js",
+        "js": ["js/libs/jquery.js", "js/libs/MIDI/shim/Base64.js", "js/libs/MIDI/shim/Base64binary.js", "js/libs/verovio-toolkit.js",
+               "js/libs/MIDI/MIDI.js",
                "js/libs/MIDI/player.js", "js/libs/MIDI/jasmid/stream.js", "js/libs/MIDI/jasmid/midifile.js",
                "js/libs/MIDI/jasmid/replayer.js", "js/audio_controller.js",
-               "js/libs/verovio-toolkit.js", "js/score_display.js"],
+                "js/score_display.js"],
         "template": "example/score-display.html"
     }
 }

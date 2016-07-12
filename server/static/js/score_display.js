@@ -20,6 +20,8 @@ var ScoreDisplay = function(selector, width, height)
         piano: 25
     };
 
+    var initialEnd = 0;
+
     chart.svg = d3.select(selector)
 
 
@@ -45,10 +47,11 @@ var ScoreDisplay = function(selector, width, height)
 
     player.addListener(function(data) {
         console.log(data.now)
-        console.log(player.BPM)
+        //console.log(player.BPM)
+        //console.log(player.endTime)
         var vrvTime = Math.max(0, (2 * data.now + 200) * (player.BPM/120));
         var elementsattime = JSON.parse(vrvToolkit.getElementsAtTime(vrvTime))
-        console.log(elementsattime)
+        console.log(vrvToolkit.getElementsAtTime(vrvTime))
         //console.log(vrvToolkit.getTimeForElement("p1cdd4n0v1b2s1"))
         if(elementsattime.notes != []){
             if ((elementsattime.notes.length > 0) && (ids != elementsattime.notes)) {
@@ -116,8 +119,9 @@ var ScoreDisplay = function(selector, width, height)
                 "name": "from",
                 "id":"from",
                 "type":"number",
+                "max":player.endTime,
                 "min":"0",
-                "step":"0.5",
+                "step":"0.1",
                 "value":"0.5"
             });
         selection.append("label")
@@ -127,9 +131,10 @@ var ScoreDisplay = function(selector, width, height)
                 "name": "until",
                 "id":"until",
                 "type":"number",
+                "max": player.endTime,
                 "min":"0",
-                "step":"0.5",
-                "value":"0.5"
+                "step":"0.1",
+                "value":"1.5"
             });
 
         selection.append("input")
@@ -172,7 +177,7 @@ var ScoreDisplay = function(selector, width, height)
                 "id":"bpm",
                 "type":"number",
                 "max":"360",
-                "min":"1",
+                "min":"30",
                 "step":"1",
                 "value":player.BPM
             });
@@ -191,6 +196,9 @@ var ScoreDisplay = function(selector, width, height)
             var newBPM = parseInt(document.getElementById("bpm").value, 10);
             player.BPM = newBPM
             player.replayer = new Replayer(MidiFile(player.currentData), 1, null, player.BPM)
+            player.endTime = initialEnd * 120/player.BPM
+            d3.select("#until").attr("max", player.getEnd())
+            d3.select("#until").attr("value", player.getEnd())
         });
     };
 
@@ -207,6 +215,10 @@ var ScoreDisplay = function(selector, width, height)
         var midiVersion = 'data:audio/midi;base64,' + vrvToolkit.renderToMidi()
         //player.BPM = null
         player.loadFile(midiVersion, player.pause)
+        d3.select("#from").attr("max", player.getEnd())
+        d3.select("#until").attr("max", player.getEnd())
+        d3.select("#until").attr("value", player.getEnd())
+        initialEnd = player.getEnd()
 
     }
 
