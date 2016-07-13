@@ -15,13 +15,12 @@ from examples import example_types
 
 app = FlaskAPI(__name__)
 
-<<<<<<< HEAD
+
 @app.route("/data/score-display/")
 def data_score_display():
     return send_file("../data/scores/Absalon-fili-mi_Josquin-Des-Prez_file5.mei")
 
-=======
->>>>>>> origin/develop
+
 @app.route("/data/pie-chart/")
 def data_pie_chart():
     return [
