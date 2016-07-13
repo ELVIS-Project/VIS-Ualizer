@@ -17,7 +17,7 @@ app = FlaskAPI(__name__)
 
 @app.route("/data/score-display/")
 def data_score_display():
-    return send_file("../data/raw-files/chords.mei")
+    return send_file("../data/scores/Absalon-fili-mi_Josquin-Des-Prez_file5.mei")
 
 @app.route("/data/pie-chart/")
 def data_pie_chart():

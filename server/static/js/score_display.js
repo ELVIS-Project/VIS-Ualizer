@@ -43,19 +43,15 @@ var ScoreDisplay = function(selector, width, height)
 
     var ids = []
 
-    var counter = 0
-
+    //listener to color the note(s) being played
     player.addListener(function(data) {
-        console.log(data.now)
-        //console.log(player.BPM)
-        //console.log(player.endTime)
         var vrvTime = Math.max(0, (2 * data.now + 200) * (player.BPM/120));
         var elementsattime = JSON.parse(vrvToolkit.getElementsAtTime(vrvTime))
-        console.log(vrvToolkit.getElementsAtTime(vrvTime))
-        //console.log(vrvToolkit.getTimeForElement("p1cdd4n0v1b2s1"))
+        //if there are notes at that particular time
         if(elementsattime.notes != []){
             if ((elementsattime.notes.length > 0) && (ids != elementsattime.notes)) {
                 ids.forEach(function(noteid) {
+                    //notes that aren't being played are colored in black
                     if ($.inArray(noteid, elementsattime.notes) == -1) {
                         $("#" + noteid ).attr("fill", "#000");
                         $("#" + noteid ).attr("stroke", "#000");
@@ -64,6 +60,7 @@ var ScoreDisplay = function(selector, width, height)
                 ids = elementsattime.notes;
                 ids.forEach(function(noteid) {
                     if ($.inArray(noteid, elementsattime.notes) != -1) {
+                        //color in blue the current playing note(s)
                         $("#" + noteid ).attr("fill", "#00F");
                         $("#" + noteid ).attr("stroke", "#00F");
                     }
@@ -73,7 +70,7 @@ var ScoreDisplay = function(selector, width, height)
 
     })
 
-
+    //add play, pause, stop buttons
     var attachPlayAndStopButtons = function(parentSelector)
     {
 
@@ -105,12 +102,13 @@ var ScoreDisplay = function(selector, width, height)
 
     };
 
+    //attach from-until selection of a chunk of time (in milliseconds)
     var attachSectionSelector = function(parentSelector)
     {
         var selection = d3.select(parentSelector).append("form");
 
         selection.append("label")
-            .text("Select:  ");
+            .text("Select (in ms):  ");
 
         selection.append("label")
             .text("From ")
@@ -161,6 +159,7 @@ var ScoreDisplay = function(selector, width, height)
         });
     };
 
+    //attach BPM selection.
     var attachBPMSelector = function(parentSelector)
     {
         var bpmSelect = d3.select(parentSelector)
@@ -195,30 +194,35 @@ var ScoreDisplay = function(selector, width, height)
             d3.event.preventDefault();
             var newBPM = parseInt(document.getElementById("bpm").value, 10);
             player.BPM = newBPM
+            //the player needs to be "reloaded" with the new BPM for it to take effect
             player.replayer = new Replayer(MidiFile(player.currentData), 1, null, player.BPM)
+            /* adjust the maximum possible ending time according to bpm (it stays the same if less than 120 because
+            there are no notes beyond the end of the file so the ending time can't get any longer, it reduces if more
+            than 120 because the ending comes sooner). Note that the maximum time corresponds to the time of the last
+            playable note.
+            */
             player.endTime = initialEnd * 120/player.BPM
+            d3.select("#from").attr("max", player.getEnd())
             d3.select("#until").attr("max", player.getEnd())
             d3.select("#until").attr("value", player.getEnd())
         });
     };
 
 
-
-
     function chart(data)
     {
-
+        //load verovio toolkit instance with the data and render the first page
         vrvToolkit.loadData(data)
         var rendered = vrvToolkit.renderPage(1)
-        //document.getElementById("score-display").innerHTML = rendered
         chart.contentArea.html(rendered)
+        //convert file to midi and load into the player
         var midiVersion = 'data:audio/midi;base64,' + vrvToolkit.renderToMidi()
-        //player.BPM = null
         player.loadFile(midiVersion, player.pause)
+        //set the maximum times and the original ending according to the file
         d3.select("#from").attr("max", player.getEnd())
         d3.select("#until").attr("max", player.getEnd())
         d3.select("#until").attr("value", player.getEnd())
-        initialEnd = player.getEnd()
+        initialEnd = player.endTime
 
     }
 
