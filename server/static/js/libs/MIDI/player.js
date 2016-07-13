@@ -167,7 +167,6 @@ midi.getFileInstruments = function() {
 		var channel = event.channel;
 		switch(event.subtype) {
 			case 'controller':
-//				console.log(event.channel, MIDI.defineControl[event.controllerType], event.value);
 				break;
 			case 'programChange':
 				programs[channel] = event.programNumber;
@@ -185,6 +184,24 @@ midi.getFileInstruments = function() {
 	}
 	return ret;
 };
+
+/*necessary to get the correct last note to play, using the direct endTime it plays notes "after" it that don't exist
+and crashes. adjusting the time to one note before the end in the data gets teh correct ending time and plays correctly.
+*/
+midi.getEnd = function() {
+	var data =  midi.data;
+	var counter = [0.5, 0.5]
+	var length = data.length;
+	for (var n = 0; n < length; n++) {
+		if (data[n][1]!==0 && counter[0]<=midi.endTime) {
+			counter[1] = counter[0]
+			counter[0] = data[n][1] + counter[0]
+		}
+
+	}
+	return counter[1];
+}
+
 
 // Playing the audio
 
@@ -264,7 +281,10 @@ var startAudio = function(currentTime, fromCache, onsuccess) {
 		midi.playing && stopAudio();
 		midi.playing = true;
 		midi.data = midi.replayer.getData();
-		midi.endTime = getLength();
+		if (midi.endTime === 0 ){
+			midi.endTime = getLength();
+		}
+
 	}
 	///
 	var note;
@@ -289,9 +309,17 @@ var startAudio = function(currentTime, fromCache, onsuccess) {
 	///
 	for (var n = 0; n < length && messages < 100; n++) {
 		var obj = data[n];
+<<<<<<< HEAD
+		//extra check if we're past the end time to make sure the file finishes playing correctly
+		if (((queuedTime += obj[1]) < currentTime) || currentTime >= midi.endTime ) {
+=======
 
 		if ((queuedTime += obj[1]) <= currentTime) {
+>>>>>>> origin/develop
 			offset = queuedTime;
+			if(currentTime >= midi.endTime){
+				midi.endTime = 0
+			}
 			continue;
 		}
 		///
