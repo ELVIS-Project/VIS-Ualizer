@@ -1,0 +1,1068 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?oxygen SCHSchema="http://music-encoding.org/mei/schemata/2011-05/rng/mei-all.rng"?>
+<?oxygen RNGSchema="http://music-encoding.org/mei/schemata/2011-05/rng/mei-all.rng" type="xml"?>
+<mei xmlns:xlink="http://www.w3.org/1999/xlink" xmlns="http://www.music-encoding.org/ns/mei" meiversion="2011-05">
+  <meiHead>
+    <fileDesc>
+      <titleStmt>
+        <title type="main">A la mort / Monstra te esse matrem</title>
+      </titleStmt>
+      <pubStmt/>
+    </fileDesc>
+    <?Humdrum type="bib" key="COA" value="Josquin des Prez" meaning="Attributed composer"?>
+    <?Humdrum type="bib" key="CDT" value="~1450-1521/08/27" meaning="Composer's dates"?>
+    <?Humdrum type="bib" key="OTL" value="A la mort / Monstra te esse matrem" meaning="Title"?>
+    <?Humdrum type="bib" key="AGN" value="Chanson; Motet-Chanson" meaning="Genre designation"?>
+    <?Humdrum type="bib" key="SCT" value="NJE 27.1" meaning="Scholarly cat. num."?>
+    <?Humdrum type="bib" key="SCA" value="New Josquin Edition 27.1" meaning="Full cat. name"?>
+    <?Humdrum type="bib" key="voices" value="3"?>
+    <?Humdrum type="bib" key="RDF**kern" value="l=long note in original notation" meaning="User-defined signifiers"?>
+    <?Humdrum type="bib" key="RDF**kern" value="i=musica ficta" meaning="User-defined signifiers"?>
+    <?Humdrum type="bib" key="ENC" value="Jesse Rodin; Victoria Chang 2011/05/30/" meaning="Music encoder"?>
+    <?Humdrum type="bib" key="END" value="2011/05/30/" meaning="Initial enc. date"?>
+    <?Humdrum type="bib" key="EED" value="Jesse Rodin" meaning="Electronic editor"?>
+    <?Humdrum type="bib" key="EEV" value="2011/08/09/" meaning="Electronic edition version"?>
+    <?Humdrum type="bib" key="ONB" value="Translated from MusicXML and edited on 2011/08/09/ by Craig Sapp" meaning="Free format note"?>
+  </meiHead>
+  <music>
+    <body>
+      <mdiv>
+        <score>
+          <scoreDef key.sig="0" meter.count="2" meter.unit="1" meter.sym="cut">
+            <staffGrp>
+              <staffDef n="1" clef.shape="G" clef.line="2"/>
+              <staffDef n="2" clef.shape="G" clef.line="2" clef.trans="8vb"/>
+              <staffDef n="3" clef.shape="F" clef.line="4"/>
+            </staffGrp>
+          </scoreDef>
+          <measure n="1" xml:id="m_sc_16" left="invis">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_18_2" pname="d" oct="4" dur="1"/>
+                <note xml:id="n_sc_19_2" pname="d" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <rest xml:id="n_sc_18_1" dur="breve"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_18_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="2" xml:id="m_sc_20">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_21_2" pname="a" oct="4" dur="breve"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_21_1" pname="a" oct="3" dur="1"/>
+                <note xml:id="n_sc_22_1" pname="a" oct="3" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_21_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="3" xml:id="m_sc_23">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_24_2" pname="g" oct="4" dur="1"/>
+                <note xml:id="n_sc_25_2" pname="g" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_24_1" pname="e" oct="4" dur="breve" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_24_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="4" xml:id="m_sc_26">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_27_2" pname="g" oct="4" dur="1"/>
+                <note xml:id="n_sc_28_2" pname="g" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_27_1" pname="e" oct="4" dur="breve" tie="t"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_27_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="5" xml:id="m_sc_29">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_30_2" pname="f" oct="4" dur="1" dots="1"/>
+                <note xml:id="n_sc_32_2" pname="e" oct="4" dur="4"/>
+                <note xml:id="n_sc_33_2" pname="d" oct="4" dur="4"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_30_1" pname="d" oct="4" dur="1"/>
+                <note xml:id="n_sc_31_1" pname="d" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_30_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="6" xml:id="m_sc_34">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_35_2" pname="f" oct="4" dur="2" dots="1"/>
+                <note xml:id="n_sc_36_2" pname="g" oct="4" dur="4"/>
+                <note xml:id="n_sc_37_2" pname="a" oct="4" dur="2" dots="1"/>
+                <note xml:id="n_sc_38_2" pname="b" oct="4" dur="4"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_35_1" pname="d" oct="4" dur="1"/>
+                <note xml:id="n_sc_37_1" pname="d" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_35_0" pname="d" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="7" xml:id="m_sc_39">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_41_2" pname="c" oct="5" dur="2"/>
+                <note xml:id="n_sc_42_2" pname="a" oct="4" dur="4"/>
+                <note xml:id="n_sc_43_2" pname="b" oct="4" dur="4"/>
+                <note xml:id="n_sc_44_2" pname="c" oct="5" dur="4"/>
+                <note xml:id="n_sc_45_2" pname="d" oct="5" dur="4"/>
+                <note xml:id="n_sc_46_2" pname="e" oct="5" dur="2" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_41_1" pname="c" oct="4" dur="1" dots="1"/>
+                <note xml:id="n_sc_46_1" pname="b" oct="3" dur="4"/>
+                <note xml:id="n_sc_47_1" pname="a" oct="3" dur="4"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_41_0" pname="a" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="8" xml:id="m_sc_48">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_49_2" pname="e" oct="5" dur="4" tie="t"/>
+                <note xml:id="n_sc_50_2" pname="d" oct="5" dur="4"/>
+                <note xml:id="n_sc_51_2" pname="d" oct="5" dur="1"/>
+                <note xml:id="n_sc_53_2" pname="c" oct="5" dur="2"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_49_1" pname="c" oct="4" dur="2"/>
+                <note xml:id="n_sc_51_1" pname="d" oct="4" dur="2"/>
+                <note xml:id="n_sc_52_1" pname="e" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_49_0" pname="a" oct="3" dur="1" dots="1"/>
+                <note xml:id="n_sc_53_0" pname="g" oct="3" dur="4"/>
+                <note xml:id="n_sc_54_0" pname="a" oct="3" dur="4"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="9" xml:id="m_sc_55">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_56_2" pname="d" oct="5" dur="1"/>
+                <rest xml:id="n_sc_57_2" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_56_1" pname="d" oct="4" dur="breve"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_56_0" pname="b" oct="3" dur="breve" tie="i"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="10" xml:id="m_sc_58">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_59_2" pname="d" oct="4" dur="1"/>
+                <note xml:id="n_sc_60_2" pname="d" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <rest xml:id="n_sc_59_1" dur="1"/>
+                <note xml:id="n_sc_60_1" pname="g" oct="3" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_59_0" pname="b" oct="3" dur="breve" tie="t"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="11" xml:id="m_sc_61">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_62_2" pname="d" oct="4" dur="1"/>
+                <note xml:id="n_sc_63_2" pname="g" oct="4" dur="1" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_62_1" pname="g" oct="3" dur="1"/>
+                <note xml:id="n_sc_63_1" pname="g" oct="3" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_62_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="12" xml:id="m_sc_64">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_65_2" pname="g" oct="4" dur="1" tie="t"/>
+                <note xml:id="n_sc_66_2" pname="g" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_65_1" pname="c" oct="4" dur="breve"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_65_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="13" xml:id="m_sc_67">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_69_2" pname="a" oct="4" dur="1"/>
+                <note xml:id="n_sc_70_2" pname="a" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_69_1" pname="c" oct="4" dur="1"/>
+                <note xml:id="n_sc_70_1" pname="d" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_69_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="14" xml:id="m_sc_71">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_72_2" pname="b" oct="4" dur="1"/>
+                <rest xml:id="n_sc_73_2" dur="2"/>
+                <note xml:id="n_sc_74_2" pname="b" oct="4" dur="2"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_72_1" pname="d" oct="4" dur="1"/>
+                <note xml:id="n_sc_73_1" pname="e" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_72_0" pname="g" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="15" xml:id="m_sc_75">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_76_2" pname="c" oct="5" dur="2" dots="1"/>
+                <note xml:id="n_sc_78_2" pname="b" oct="4" dur="4"/>
+                <note xml:id="n_sc_79_2" pname="a" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <rest xml:id="n_sc_76_1" dur="2"/>
+                <note xml:id="n_sc_77_1" pname="a" oct="3" dur="2"/>
+                <note xml:id="n_sc_79_1" pname="c" oct="4" dur="2"/>
+                <note xml:id="n_sc_80_1" pname="d" oct="4" dur="2"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_76_0" pname="a" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="16" xml:id="m_sc_81">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_82_2" pname="g" oct="4" dur="2" dots="1"/>
+                <note xml:id="n_sc_83_2" pname="f" oct="4" dur="4"/>
+                <note xml:id="n_sc_84_2" pname="g" oct="4" dur="4"/>
+                <note xml:id="n_sc_85_2" pname="a" oct="4" dur="4"/>
+                <note xml:id="n_sc_86_2" pname="g" oct="4" dur="2" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_82_1" pname="e" oct="4" dur="2" dots="1"/>
+                <note xml:id="n_sc_83_1" pname="d" oct="4" dur="4"/>
+                <note xml:id="n_sc_84_1" pname="e" oct="4" dur="4"/>
+                <note xml:id="n_sc_85_1" pname="f" oct="4" dur="4"/>
+                <note xml:id="n_sc_86_1" pname="e" oct="4" dur="2" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_82_0" pname="c" oct="4" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="17" xml:id="m_sc_87">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_88_2" pname="g" oct="4" dur="2" tie="t"/>
+                <note xml:id="n_sc_90_2" pname="e" oct="4" dur="4"/>
+                <note xml:id="n_sc_91_2" pname="f" oct="4" dur="4"/>
+                <note xml:id="n_sc_92_2" pname="g" oct="4" dur="4"/>
+                <note xml:id="n_sc_93_2" pname="a" oct="4" dur="4"/>
+                <note xml:id="n_sc_94_2" pname="g" oct="4" dur="2" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_88_1" pname="e" oct="4" dur="4" tie="t"/>
+                <note xml:id="n_sc_89_1" pname="d" oct="4" dur="4"/>
+                <note xml:id="n_sc_90_1" pname="c" oct="4" dur="1"/>
+                <note xml:id="n_sc_94_1" pname="b" oct="3" dur="4"/>
+                <note xml:id="n_sc_95_1" pname="a" oct="3" dur="4"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_88_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="18" xml:id="m_sc_96">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_97_2" pname="g" oct="4" dur="2" tie="t"/>
+                <note xml:id="n_sc_98_2" pname="f" oct="4" dur="4"/>
+                <note xml:id="n_sc_99_2" pname="e" oct="4" dur="4"/>
+                <note xml:id="n_sc_100_2" pname="d" oct="4" dur="2"/>
+                <note xml:id="n_sc_101_2" pname="g" oct="4" dur="2" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_97_1" pname="g" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_97_0" pname="b" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="19" xml:id="m_sc_102">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_104_2" pname="g" oct="4" dur="4" tie="t"/>
+                <note xml:id="n_sc_105_2" pname="e" oct="4" dur="4"/>
+                <note xml:id="n_sc_106_2" pname="a" oct="4" dur="2"/>
+                <note xml:id="n_sc_107_2" pname="g" oct="4" dur="2"/>
+                <note xml:id="n_sc_108_2" pname="c" oct="5" dur="2"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <rest xml:id="n_sc_104_1" dur="1"/>
+                <note xml:id="n_sc_107_1" pname="e" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_104_0" pname="c" oct="4" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="20" xml:id="m_sc_109">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_110_2" pname="b" oct="4" dur="2"/>
+                <note xml:id="n_sc_111_2" pname="a" oct="4" dur="1"/>
+                <note xml:id="n_sc_112_2" pname="g" oct="4" dur="4"/>
+                <note xml:id="n_sc_113_2" pname="f" oct="4" dur="4"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_110_1" pname="f" oct="4" dur="1" dots="1"/>
+                <note xml:id="n_sc_112_1" pname="e" oct="4" dur="4"/>
+                <note xml:id="n_sc_113_1" pname="f" oct="4" dur="4"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_110_0" pname="d" oct="4" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="21" xml:id="m_sc_114">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_115_2" pname="e" oct="4" dur="1"/>
+                <rest xml:id="n_sc_116_2" dur="2"/>
+                <note xml:id="n_sc_117_2" pname="a" oct="4" dur="2"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_115_1" pname="g" oct="4" dur="1"/>
+                <note xml:id="n_sc_116_1" pname="c" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_115_0" pname="c" oct="4" dur="1"/>
+                <note xml:id="n_sc_116_0" pname="a" oct="3" dur="1"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="22" xml:id="m_sc_118">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_119_2" pname="g" oct="4" dur="2"/>
+                <note xml:id="n_sc_120_2" pname="f" oct="4" dur="1"/>
+                <note xml:id="n_sc_121_2" pname="e" oct="4" dur="4"/>
+                <note xml:id="n_sc_122_2" pname="d" oct="4" dur="4"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_119_1" pname="d" oct="4" dur="1" dots="1"/>
+                <note xml:id="n_sc_121_1" pname="c" oct="4" dur="4"/>
+                <note xml:id="n_sc_122_1" pname="d" oct="4" dur="4"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_119_0" pname="b" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="23" xml:id="m_sc_123">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_124_2" pname="c" oct="4" dur="breve"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_124_1" pname="e" oct="4" dur="breve"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_124_0" pname="a" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="24" xml:id="m_sc_125">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_126_2" pname="f" oct="4" dur="1" dots="1"/>
+                <note xml:id="n_sc_127_2" pname="e" oct="4" dur="4"/>
+                <note xml:id="n_sc_128_2" pname="d" oct="4" dur="4"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_126_1" pname="d" oct="4" dur="breve"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_126_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="25" xml:id="m_sc_129">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_131_2" pname="e" oct="4" dur="1"/>
+                <note xml:id="n_sc_132_2" pname="e" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_131_1" pname="g" oct="4" dur="1"/>
+                <note xml:id="n_sc_132_1" pname="g" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_131_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="26" xml:id="m_sc_133">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_134_2" pname="d" oct="4" dur="1"/>
+                <note xml:id="n_sc_135_2" pname="d" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_134_1" pname="f" oct="4" dur="1" dots="1"/>
+                <note xml:id="n_sc_136_1" pname="e" oct="4" dur="4"/>
+                <note xml:id="n_sc_137_1" pname="d" oct="4" dur="4"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_134_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="27" xml:id="m_sc_138">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_139_2" pname="g" oct="4" dur="1" dots="1"/>
+                <note xml:id="n_sc_141_2" pname="f" oct="4" dur="4"/>
+                <note xml:id="n_sc_142_2" pname="e" oct="4" dur="4"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_139_1" pname="e" oct="4" dur="1"/>
+                <note xml:id="n_sc_140_1" pname="c" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_139_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="28" xml:id="m_sc_143">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_144_2" pname="f" oct="4" dur="1"/>
+                <note xml:id="n_sc_145_2" pname="f" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_144_1" pname="d" oct="4" dur="1"/>
+                <note xml:id="n_sc_145_1" pname="d" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_144_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="29" xml:id="m_sc_146">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_147_2" pname="e" oct="4" dur="1"/>
+                <rest xml:id="n_sc_149_2" dur="2"/>
+                <note xml:id="n_sc_150_2" pname="a" oct="3" dur="2"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_147_1" pname="a" oct="3" dur="2" dots="1"/>
+                <note xml:id="n_sc_148_1" pname="b" oct="3" dur="4"/>
+                <note xml:id="n_sc_149_1" pname="c" oct="4" dur="2" dots="1"/>
+                <note xml:id="n_sc_151_1" pname="d" oct="4" dur="4"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_147_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="30" xml:id="m_sc_152">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_153_2" pname="c" oct="4" dur="2" dots="1"/>
+                <note xml:id="n_sc_154_2" pname="d" oct="4" dur="4"/>
+                <note xml:id="n_sc_155_2" pname="e" oct="4" dur="2"/>
+                <note xml:id="n_sc_156_2" pname="f" oct="4" dur="2"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_153_1" pname="e" oct="4" dur="1"/>
+                <note xml:id="n_sc_155_1" pname="c" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_153_0" pname="a" oct="2" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="31" xml:id="m_sc_157">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_159_2" pname="g" oct="4" dur="2" dots="1"/>
+                <note xml:id="n_sc_161_2" pname="f" oct="4" dur="4"/>
+                <note xml:id="n_sc_162_2" pname="e" oct="4" dur="4"/>
+                <note xml:id="n_sc_163_2" pname="d" oct="4" dur="4"/>
+                <note xml:id="n_sc_164_2" pname="e" oct="4" dur="2" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_159_1" pname="b" oct="3" dur="2"/>
+                <note xml:id="n_sc_160_1" pname="e" oct="4" dur="4"/>
+                <note xml:id="n_sc_161_1" pname="d" oct="4" dur="4"/>
+                <note xml:id="n_sc_162_1" pname="c" oct="4" dur="4"/>
+                <note xml:id="n_sc_163_1" pname="b" oct="3" dur="4"/>
+                <note xml:id="n_sc_164_1" pname="c" oct="4" dur="2"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_159_0" pname="e" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="32" xml:id="m_sc_165">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_166_2" pname="e" oct="4" dur="2" tie="t"/>
+                <note xml:id="n_sc_168_2" pname="c" oct="4" dur="2"/>
+                <note xml:id="n_sc_169_2" pname="b" oct="3" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_166_1" pname="b" oct="3" dur="4"/>
+                <note xml:id="n_sc_167_1" pname="a" oct="3" dur="4"/>
+                <note xml:id="n_sc_168_1" pname="a" oct="3" dur="1"/>
+                <note xml:id="n_sc_170_1" pname="g" oct="3" dur="2"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_166_0" pname="e" oct="3" dur="1" dots="1"/>
+                <note xml:id="n_sc_170_0" pname="d" oct="3" dur="4"/>
+                <note xml:id="n_sc_171_0" pname="e" oct="3" dur="4"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="33" xml:id="m_sc_172">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_173_2" pname="a" oct="3" dur="1"/>
+                <rest xml:id="n_sc_174_2" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_173_1" pname="a" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_173_0" pname="f" oct="3" dur="breve" tie="i"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="34" xml:id="m_sc_175">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_176_2" pname="a" oct="4" dur="breve"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <rest xml:id="n_sc_176_1" dur="1"/>
+                <note xml:id="n_sc_177_1" pname="a" oct="3" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_176_0" pname="f" oct="3" dur="breve" tie="t"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="35" xml:id="m_sc_178">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_179_2" pname="a" oct="4" dur="1"/>
+                <note xml:id="n_sc_180_2" pname="a" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_179_1" pname="c" oct="4" dur="1"/>
+                <note xml:id="n_sc_180_1" pname="d" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_179_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="36" xml:id="m_sc_181">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_182_2" pname="g" oct="4" dur="2" dots="1"/>
+                <note xml:id="n_sc_184_2" pname="a" oct="4" dur="4"/>
+                <note xml:id="n_sc_185_2" pname="b" oct="4" dur="2"/>
+                <note xml:id="n_sc_186_2" pname="c" oct="5" dur="2" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_182_1" pname="e" oct="4" dur="2"/>
+                <note xml:id="n_sc_183_1" pname="c" oct="4" dur="2"/>
+                <note xml:id="n_sc_185_1" pname="d" oct="4" dur="2"/>
+                <note xml:id="n_sc_186_1" pname="e" oct="4" dur="2"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_182_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="37" xml:id="m_sc_187">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_189_2" pname="c" oct="5" dur="4" tie="t"/>
+                <note xml:id="n_sc_190_2" pname="b" oct="4" dur="4"/>
+                <note xml:id="n_sc_191_2" pname="a" oct="4" dur="4"/>
+                <note xml:id="n_sc_192_2" pname="g" oct="4" dur="4"/>
+                <note xml:id="n_sc_193_2" pname="b" oct="4" dur="2"/>
+                <note xml:id="n_sc_195_2" pname="a" oct="4" dur="2" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_189_1" pname="f" oct="4" dur="2" dots="1"/>
+                <note xml:id="n_sc_192_1" pname="e" oct="4" dur="4"/>
+                <note xml:id="n_sc_193_1" pname="d" oct="4" dur="4"/>
+                <note xml:id="n_sc_194_1" pname="c" oct="4" dur="4"/>
+                <note xml:id="n_sc_195_1" pname="d" oct="4" dur="2" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_189_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="38" xml:id="m_sc_196">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_197_2" pname="a" oct="4" dur="4" tie="t"/>
+                <note xml:id="n_sc_198_2" pname="g" oct="4" dur="4"/>
+                <note xml:id="n_sc_199_2" pname="g" oct="4" dur="1"/>
+                <note xml:id="n_sc_201_2" pname="f" oct="4" dur="2"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_197_1" pname="d" oct="4" dur="2" tie="t"/>
+                <note xml:id="n_sc_199_1" pname="b" oct="3" dur="2"/>
+                <note xml:id="n_sc_200_1" pname="a" oct="3" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_197_0" pname="d" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="39" xml:id="m_sc_202">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_203_2" pname="g" oct="4" dur="1"/>
+                <note xml:id="n_sc_204_2" pname="e" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_203_1" pname="g" oct="3" dur="1" dots="1"/>
+                <note xml:id="n_sc_205_1" pname="a" oct="3" dur="2"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_203_0" pname="e" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="40" xml:id="m_sc_206">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_207_2" pname="d" oct="4" dur="1"/>
+                <rest xml:id="n_sc_208_2" dur="2"/>
+                <note xml:id="n_sc_209_2" pname="g" oct="4" dur="2" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_207_1" pname="b" oct="3" dur="1"/>
+                <note xml:id="n_sc_208_1" pname="b" oct="3" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_207_0" pname="g" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="41" xml:id="m_sc_210">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_211_2" pname="g" oct="4" dur="2" tie="t"/>
+                <note xml:id="n_sc_212_2" pname="a" oct="4" dur="2"/>
+                <note xml:id="n_sc_213_2" pname="g" oct="4" dur="2"/>
+                <note xml:id="n_sc_214_2" pname="a" oct="4" dur="2" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_211_1" pname="c" oct="4" dur="breve"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_211_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="42" xml:id="m_sc_215">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_216_2" pname="a" oct="4" dur="4" tie="t"/>
+                <note xml:id="n_sc_217_2" pname="b" oct="4" dur="4"/>
+                <note xml:id="n_sc_218_2" pname="c" oct="5" dur="1"/>
+                <note xml:id="n_sc_220_2" pname="b" oct="4" dur="4"/>
+                <note xml:id="n_sc_221_2" pname="a" oct="4" dur="4"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_216_1" pname="c" oct="4" dur="1"/>
+                <note xml:id="n_sc_219_1" pname="d" oct="4" dur="1" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_216_0" pname="f" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="43" xml:id="m_sc_222">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_224_2" pname="b" oct="4" dur="2"/>
+                <note xml:id="n_sc_225_2" pname="a" oct="4" dur="2"/>
+                <note xml:id="n_sc_227_2" pname="g" oct="4" dur="2"/>
+                <note xml:id="n_sc_228_2" pname="f" oct="4" dur="2"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_224_1" pname="d" oct="4" dur="2" tie="t"/>
+                <note xml:id="n_sc_225_1" pname="c" oct="4" dur="4"/>
+                <note xml:id="n_sc_226_1" pname="d" oct="4" dur="4"/>
+                <note xml:id="n_sc_227_1" pname="e" oct="4" dur="1" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_224_0" pname="g" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="44" xml:id="m_sc_229">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_230_2" pname="e" oct="4" dur="1"/>
+                <note xml:id="n_sc_231_2" pname="c" oct="5" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_230_1" pname="e" oct="4" dur="1" tie="t"/>
+                <note xml:id="n_sc_231_1" pname="c" oct="4" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_230_0" pname="a" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="45" xml:id="m_sc_232">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_233_2" pname="b" oct="4" dur="2" dots="1"/>
+                <note xml:id="n_sc_235_2" pname="a" oct="4" dur="4"/>
+                <note xml:id="n_sc_236_2" pname="b" oct="4" dur="2"/>
+                <note xml:id="n_sc_238_2" pname="c" oct="5" dur="2" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_233_1" pname="d" oct="4" dur="2"/>
+                <note xml:id="n_sc_234_1" pname="e" oct="4" dur="2" dots="1"/>
+                <note xml:id="n_sc_237_1" pname="d" oct="4" dur="4"/>
+                <note xml:id="n_sc_238_1" pname="c" oct="4" dur="4"/>
+                <note xml:id="n_sc_239_1" pname="b" oct="3" dur="4"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_233_0" pname="g" oct="3" dur="1"/>
+                <note xml:id="n_sc_236_0" pname="e" oct="3" dur="1"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="46" xml:id="m_sc_240">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_241_2" pname="c" oct="5" dur="4" tie="t"/>
+                <note xml:id="n_sc_242_2" pname="b" oct="4" dur="4"/>
+                <note xml:id="n_sc_243_2" pname="a" oct="4" dur="4"/>
+                <note xml:id="n_sc_244_2" pname="g" oct="4" dur="4"/>
+                <note xml:id="n_sc_245_2" pname="a" oct="4" dur="2"/>
+                <note xml:id="n_sc_246_2" pname="c" oct="5" dur="2" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_241_1" pname="a" oct="3" dur="2"/>
+                <note xml:id="n_sc_243_1" pname="c" oct="4" dur="1"/>
+                <note xml:id="n_sc_246_1" pname="b" oct="3" dur="4"/>
+                <note xml:id="n_sc_247_1" pname="a" oct="3" dur="4"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_241_0" pname="f" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="47" xml:id="m_sc_248">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_249_2" pname="c" oct="5" dur="2" tie="t"/>
+                <note xml:id="n_sc_250_2" pname="b" oct="4" dur="4"/>
+                <note xml:id="n_sc_251_2" pname="a" oct="4" dur="4"/>
+                <note xml:id="n_sc_252_2" pname="c" oct="5" dur="2"/>
+                <note xml:id="n_sc_254_2" pname="b" oct="4" dur="2" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_249_1" pname="e" oct="4" dur="2"/>
+                <note xml:id="n_sc_250_1" pname="g" oct="4" dur="4"/>
+                <note xml:id="n_sc_251_1" pname="f" oct="4" dur="4"/>
+                <note xml:id="n_sc_252_1" pname="e" oct="4" dur="4"/>
+                <note xml:id="n_sc_253_1" pname="d" oct="4" dur="4"/>
+                <note xml:id="n_sc_254_1" pname="e" oct="4" dur="2" tie="i"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_249_0" pname="e" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="48" xml:id="m_sc_255">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_256_2" pname="b" oct="4" dur="4" tie="t"/>
+                <note xml:id="n_sc_257_2" pname="a" oct="4" dur="4"/>
+                <note xml:id="n_sc_258_2" pname="a" oct="4" dur="1"/>
+                <note xml:id="n_sc_260_2" pname="g" oct="4" dur="2"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_256_1" pname="e" oct="4" dur="2" tie="t"/>
+                <note xml:id="n_sc_258_1" pname="c" oct="4" dur="2"/>
+                <note xml:id="n_sc_259_1" pname="b" oct="3" dur="1"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <rest xml:id="n_sc_256_0" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+          <measure n="49" xml:id="m_sc_261">
+            <staff n="1">
+              <layer n="1">
+                <note xml:id="n_sc_263_2" pname="a" oct="4" dur="breve"/>
+              </layer>
+            </staff>
+            <staff n="2">
+              <layer n="1">
+                <note xml:id="n_sc_263_1" pname="a" oct="3" dur="breve"/>
+              </layer>
+            </staff>
+            <staff n="3">
+              <layer n="1">
+                <note xml:id="n_sc_263_0" pname="a" oct="2" dur="breve"/>
+              </layer>
+            </staff>
+          </measure>
+        </score>
+      </mdiv>
+    </body>
+  </music>
+</mei>

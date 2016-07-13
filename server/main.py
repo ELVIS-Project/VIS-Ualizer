@@ -2,7 +2,7 @@ import random
 import sys
 import uuid
 
-from flask import render_template, url_for, abort
+from flask import render_template, url_for, abort, send_file
 from flask.ext.api import FlaskAPI
 from flask.ext.api.decorators import set_renderers
 from flask.ext.api.renderers import HTMLRenderer
@@ -12,9 +12,16 @@ from data import dendrogram
 from examples import example_types
 
 
+
 app = FlaskAPI(__name__)
 
+<<<<<<< HEAD
+@app.route("/data/score-display/")
+def data_score_display():
+    return send_file("../data/scores/Absalon-fili-mi_Josquin-Des-Prez_file5.mei")
 
+=======
+>>>>>>> origin/develop
 @app.route("/data/pie-chart/")
 def data_pie_chart():
     return [
@@ -146,6 +153,7 @@ def example(example_id):
         example_item = example_types[example_id]
         for js_file in example_item["js"]:
             js_files.append(url_for("static", filename=js_file))
+        print(js_files)
         return render_template(example_item["template"], js_files=js_files)
     else:
         # Invalid ID

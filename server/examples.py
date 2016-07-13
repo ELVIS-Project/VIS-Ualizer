@@ -6,7 +6,7 @@ example_types = {
     },
     "bar-graph-clustered": {
         "name": "Bar Graph - Clustered",
-        "js": ["js/bargraph_grouped.js"],
+        "js": ["js/bargraph.js", "js/bargraph_grouped.js"],
         "template": "example/bar-graph-grouped.html"
     },
     "force-directed-graph": {
@@ -33,5 +33,17 @@ example_types = {
         "name": "Pie Chart",
         "js": ["js/pie_chart.js"],
         "template": "example/pie-chart.html"
+<<<<<<< HEAD
+    },
+    "score-display": {
+        "name": "Score Display",
+        "js": ["js/libs/jquery.js", "js/libs/MIDI/shim/Base64.js", "js/libs/MIDI/shim/Base64binary.js", "js/libs/verovio-toolkit.js",
+               "js/libs/MIDI/MIDI.js",
+               "js/libs/MIDI/player.js", "js/libs/MIDI/jasmid/stream.js", "js/libs/MIDI/jasmid/midifile.js",
+               "js/libs/MIDI/jasmid/replayer.js", "js/audio_controller.js",
+                "js/score_display.js"],
+        "template": "example/score-display.html"
+=======
+>>>>>>> origin/develop
     }
 }
