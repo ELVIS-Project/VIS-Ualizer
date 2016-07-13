@@ -33,7 +33,7 @@ example_types = {
         "name": "Pie Chart",
         "js": ["js/pie_chart.js"],
         "template": "example/pie-chart.html"
-<<<<<<< HEAD
+
     },
     "score-display": {
         "name": "Score Display",
@@ -43,7 +43,6 @@ example_types = {
                "js/libs/MIDI/jasmid/replayer.js", "js/audio_controller.js",
                 "js/score_display.js"],
         "template": "example/score-display.html"
-=======
->>>>>>> origin/develop
+
     }
 }
