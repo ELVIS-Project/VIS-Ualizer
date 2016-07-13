@@ -121,11 +121,9 @@ var AudioController = function()
         var that = this;
         var playNoteIfReady = function()
         {
-<<<<<<< HEAD
-            if (that.isPlaying && that.notesIndex < that.stopIndex)
-=======
+
             if (playing && that.notesIndex < that.notes.length)
->>>>>>> master
+
             {
                 // Play all the notes that are currently playable
                 while (that.notesIndex < that.stopIndex && that.notes[that.notesIndex].starttime[0] < that.currentBeat)
@@ -136,14 +134,10 @@ var AudioController = function()
                     // Play the note if it's part is activated
                     if ((that.currentBeat - 1) == startTime && that.isPartActivated(note.partname))
                     {
-<<<<<<< HEAD
 
-                        var pitch = that.notes[that.notesIndex].pitch.b12;
-                        var duration = that.beatsToSeconds(that.notes[that.notesIndex].duration[0]);
-=======
                         var pitch = that.notes[that.notesIndex].pitch.b12,
-                            duration = that.beatsToSeconds(that.notes[that.notesIndex].duration[0]);
->>>>>>> master
+                        var duration = that.beatsToSeconds(that.notes[that.notesIndex].duration[0]);
+
 
                         that.playNote(pitch, velocity, duration);
 
