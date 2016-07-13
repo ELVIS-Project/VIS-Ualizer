@@ -4,9 +4,23 @@ var BarGraphGrouped = function(selector, width, height) {
 
     var margin = {top: 20, right: 30, bottom: 30, left: 40};
 
+
+    d3.select("body")
+      .insert("div", "isolate-graph")
+      .attr("class", "isolate-graph")
+      .style(cssStyling.global);
+
+
+
+
     function chart(data) {
+
+        chart.data = data;
+        chart.g.selectAll("*").remove();
+
         // Get all labels
         var labels = d3.set();
+
         data.forEach(function(group) {
             group.group_members.forEach(function(bar) {
                 labels.add(bar.label);
@@ -37,6 +51,7 @@ var BarGraphGrouped = function(selector, width, height) {
         chart.y.domain([0, maxValue]);
 
         // Draw the axes
+
         drawAxisLines(chart.g, chart.xAxis, chart.yAxis, chart.height, 0, 0, 0);
 
         data.forEach(function(group) {
@@ -53,10 +68,16 @@ var BarGraphGrouped = function(selector, width, height) {
 
             var groupArea = chart.g.append("g")
                 .attr("label", group.group_label)
+                .attr("id", group.group_label)
                 .attr("class", "group")
                 .attr("height", chart.height)
                 .attr("width", chart.x.rangeBand())
-                .attr("x", chart.x(group.group_label));
+                .attr("x", chart.x(group.group_label))
+                .on("click", function(){
+                    console.log("hi")
+                    var isolateGraph = new BarGraph(".isolate-graph", 640, 320, true)
+                    isolateGraph(group.group_members)
+                });
 
             groupArea.selectAll(".group")
                 .data(group.group_members)
@@ -66,7 +87,8 @@ var BarGraphGrouped = function(selector, width, height) {
                 .attr("fill", function(d) { console.log(d); return colors(d.label) })
                 .attr("height", function(d) { return chart.height - chart.y(d.value); })
                 .attr("width", o.rangeBand())
-                .style(cssStyling.bar);
+                .style(cssStyling.bar)
+
         });
     }
 
@@ -97,8 +119,12 @@ var BarGraphGrouped = function(selector, width, height) {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+
+
     // Draw GUI components
     attachPrintButton(selector, d3.select(selector).select("svg")[0][0]);
+
+
 
     return chart;
 };
@@ -111,7 +137,9 @@ d3.json("/graph/grouped/", function(error, data) {
     var barGraphGrouped = new BarGraphGrouped(".bar-graph-grouped", 640, 320);
     barGraphGrouped(data);
 
+
     var printButton = d3.select(".save-bar-graph-grouped");
+
     printButton.on("click", function() {
         printToSVG(barGraphGrouped.svg[0][0]);
     });

@@ -1,4 +1,4 @@
-var BarGraph = function(selector, width, height)
+var BarGraph = function(selector, width, height,  numericAxis)
 {
     var margin = {
         top: 20,
@@ -6,6 +6,7 @@ var BarGraph = function(selector, width, height)
         bottom: 30,
         left: 40
     };
+
 
     // Which sort we're using
     var sort = {
@@ -24,7 +25,8 @@ var BarGraph = function(selector, width, height)
 
     var xAxis = d3.svg.axis()
         .scale(xScale)
-        .orient("bottom");
+        .orient("bottom")
+        
 
     var yAxis = d3.svg.axis()
         .scale(yScale)
@@ -32,8 +34,7 @@ var BarGraph = function(selector, width, height)
 
     var sortComparator = function(a,b)
     {
-        var aValue,
-            bValue;
+        var aValue, bValue;
 
         if (sort.value === SortEnum.value)
         {
@@ -48,7 +49,7 @@ var BarGraph = function(selector, width, height)
 
         if (sort.direction === SortDirectionEnum.ascending)
         {
-            return d3.ascending(aValue, bValue);
+            return d3.ascending(aValue, bValue) ;
         }
         else
         {
@@ -78,6 +79,7 @@ var BarGraph = function(selector, width, height)
         // Sort the data
         data = data.sort(sortComparator);
 
+
         // Map x-axis labels
         xScale.domain(
             data.map(function(d)
@@ -93,14 +95,25 @@ var BarGraph = function(selector, width, height)
             }
         )]);
 
+        var label =  function(d)
+        {
+            return d.label;
+        };
+
         // Draw the axes
+        if (numericAxis){
+            xAxis.tickValues(xScale.domain().filter(function(d, i){ return !(i%2); }));
+        }
         drawAxisLines(chart.g, xAxis, yAxis, computedHeight, 0, 0, 0);
+
+
 
         var bars = chart.g.append("g")
             .attr("class", "bars")
             .selectAll(".bar")
-            .data(data)
-            .enter().append("rect")
+            .data(data, label)
+            .enter()
+            .append("rect")
             .attr("x",
                 function(d)
                 {
@@ -139,6 +152,7 @@ var BarGraph = function(selector, width, height)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+
     function attachSortChooser(selector)
     {
         var parent = d3.select(selector)
@@ -153,9 +167,9 @@ var BarGraph = function(selector, width, height)
         sortChooser.append("option")
             .attr("value", "value")
             .text("Value");
-        sortChooser.on("input", function()
+        sortChooser.on("change", function()
         {
-            if (this.value === "label")
+            if (this.value == "label")
             {
                 sort.value = SortEnum.label;
             }
@@ -163,6 +177,7 @@ var BarGraph = function(selector, width, height)
             {
                 sort.value = SortEnum.value;
             }
+
             chart(chart.data);
         });
 
@@ -173,9 +188,9 @@ var BarGraph = function(selector, width, height)
         directionChooser.append("option")
             .attr("value", "desc")
             .text("Desc");
-        directionChooser.on("input", function()
+        directionChooser.on("change", function()
         {
-            if (this.value === "asc")
+            if (this.value == "asc")
             {
                 sort.direction = SortDirectionEnum.ascending;
             }
@@ -201,6 +216,6 @@ var BarGraph = function(selector, width, height)
  */
 d3.json("/graph/", function(error, data)
 {
-    var barGraph = new BarGraph(".bar-graph", 640, 320);
+    var barGraph = new BarGraph(".bar-graph", 640, 320, false);
     barGraph(data);
 });

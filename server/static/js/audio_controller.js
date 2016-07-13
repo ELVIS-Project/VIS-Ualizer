@@ -1,10 +1,12 @@
 var AudioController = function()
 {
-    this.bpm = 360;
+    this.bpm = 120;
 
-    this.isPlaying = false;
+    var playing = false;
     this.currentBeat = 0;
     this.notesIndex = 0;
+    this.stopIndex = 0;
+    //this.stopBeat = 0;
     this.notes = [];
     this.parts = [];
     this.activatedParts = {};
@@ -61,6 +63,8 @@ var AudioController = function()
     this.loadPiece = function(notes, parts)
     {
         this.notes = notes;
+        this.stopIndex = notes.length;
+        //this.stopBeat = notes[notes.length-1].starttime[0]+notes[notes.length-1].duration[0]
         this.parts = parts;
         // Create the "part activated" array
         this.activatedParts = {};
@@ -106,29 +110,45 @@ var AudioController = function()
     this.playPiece = function()
     {
         // Don't do anything if already playing
-        if (this.isPlaying)
+        if (playing)
         {
             return;
         }
 
         var milisecondsPerBeat = this.beatsToSeconds(1) * 1000;
-        this.isPlaying = true;
+        playing = true;
         var velocity = 87;
         var that = this;
         var playNoteIfReady = function()
         {
-            if (that.isPlaying && that.notesIndex < that.notes.length)
+<<<<<<< HEAD
+            if (that.isPlaying && that.notesIndex < that.stopIndex)
+=======
+            if (playing && that.notesIndex < that.notes.length)
+>>>>>>> master
             {
                 // Play all the notes that are currently playable
-                while (that.notesIndex < that.notes.length && that.notes[that.notesIndex].starttime[0] < that.currentBeat)
+                while (that.notesIndex < that.stopIndex && that.notes[that.notesIndex].starttime[0] < that.currentBeat)
                 {
+                    var note = that.notes[that.notesIndex],
+                        startTime = note.starttime[0];
+
                     // Play the note if it's part is activated
-                    if (that.isPartActivated(that.notes[that.notesIndex].partname))
+                    if ((that.currentBeat - 1) == startTime && that.isPartActivated(note.partname))
                     {
+<<<<<<< HEAD
+
                         var pitch = that.notes[that.notesIndex].pitch.b12;
                         var duration = that.beatsToSeconds(that.notes[that.notesIndex].duration[0]);
+=======
+                        var pitch = that.notes[that.notesIndex].pitch.b12,
+                            duration = that.beatsToSeconds(that.notes[that.notesIndex].duration[0]);
+>>>>>>> master
+
                         that.playNote(pitch, velocity, duration);
+
                     }
+
                     // Increment the noteindex whether or not we actually play the note
                     that.notesIndex++;
                 }
@@ -146,14 +166,36 @@ var AudioController = function()
 
     this.pausePiece = function()
     {
-        this.isPlaying = false;
+        playing = false;
+    };
+
+    /**
+     * Set the current beat that's playing.
+     *
+     * @param beat
+     */
+    this.setBeat = function(beat)
+    {
+        this.currentBeat = parseInt(beat);
+        this.notesIndex = 0;
+    };
+
+    /**
+     * Test if the audiocontroller is currently playing.
+     *
+     * @returns {boolean}
+     */
+    this.isPlaying = function()
+    {
+        return playing === true;
     };
 
     this.resetPiece = function()
     {
-        this.isPlaying = false;
+        playing = false;
         this.currentBeat = 0;
         this.notesIndex = 0;
+        this.stopIndex = this.notes.length;
         this.beatEventDispatch.beat(this.currentBeat);
     }
 };

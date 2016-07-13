@@ -7,7 +7,7 @@ var PianoRoll = function(selector, width, height)
         bottom: 30,
         piano: 25
     };
-
+    
     // Construct the audio controller
     var audioController = new AudioController();
 
@@ -211,6 +211,56 @@ var PianoRoll = function(selector, width, height)
                 "stroke-width": 1
             });
 
+        var scrobbler = chart.svg
+            .append("rect")
+            .attr({
+                name: "scrobbler",
+                x: xScale(0) + margins.left,
+                y: height - margins.bottom,
+                width: 10,
+                height: 10
+            })
+            .style({
+                "fill": "red",
+                "cursor": "move"
+            });
+
+        var wasPlaying = false;
+        var scrobblerDrag = d3.behavior.drag()
+            .on("dragstart", function()
+            {
+                d3.event.sourceEvent.stopPropagation(); // silence other listeners
+                console.log(audioController);
+                wasPlaying = audioController.isPlaying();
+                audioController.pausePiece();
+            })
+            .on("drag", function()
+            {
+                var newX = d3.event.x;
+
+                scrobbler.attr({
+                    x: newX
+                });
+                noteHead.attr({
+                    x1: newX - margins.left,
+                    x2: newX - margins.left
+                });
+
+                var beat = xScale.invert(newX - margins.left);
+                console.log(beat);
+                audioController.setBeat(beat);
+            })
+            .on("dragend", function()
+            {
+                // If the piece was playing before the drag, start playing again
+                if (wasPlaying)
+                {
+                    audioController.playPiece();
+                }
+            });
+
+        scrobbler.call(scrobblerDrag);
+
         audioController.beatEventDispatch.on("beat", function(beat)
         {
             var x = xScale(beat);
@@ -218,6 +268,10 @@ var PianoRoll = function(selector, width, height)
                 .attr({
                     "x1": x,
                     "x2": x
+                });
+            scrobbler.transition()
+                .attr({
+                    x: x + margins.left
                 });
             // Advance the zoom if necessary
             // console.log(beat + zoom.translate()[0]);
@@ -233,6 +287,9 @@ var PianoRoll = function(selector, width, height)
                     "x1": x,
                     "x2": x
                 });
+            scrobbler.attr({
+                "x": x + margins.left
+            })
         })
     };
 
@@ -430,6 +487,134 @@ var PianoRoll = function(selector, width, height)
         }
     };
 
+    var attachSectionSelector = function(parentSelector, audioController)
+    {
+        var selection = d3.select(parentSelector).append("form");
+
+        selection.append("label")
+            .text("Select:  ");
+
+        selection.append("label")
+            .text("From ")
+            .append("input")
+            .attr({
+                "name": "from",
+                "id":"from",
+                "type":"number",
+                "min":"0",
+                "step":"1",
+                "value":"0"
+            });
+        selection.append("label")
+            .text("Until ")
+            .append("input")
+            .attr({
+                "name": "until",
+                "id":"until",
+                "type":"number",
+                "min":"0",
+                "step":"1",
+                "value":"1"
+            });
+        //can select by beats or by notes
+        var beatNoteChooser = selection.append("select")
+            .attr("id", "beatnotechooser")
+
+        beatNoteChooser.append("option")
+            .attr("value", "beat")
+            .text("beat")
+
+        beatNoteChooser.append("option")
+            .attr("value","note")
+            .text("note")
+        
+        selection.append("input")
+            .attr({
+                "name": "selectbtn",
+                "id":"selectbtn",
+                "type": "submit",
+                "value": "Select"
+            });
+
+        selection.on("submit", function()
+            {
+                d3.event.preventDefault();
+                var fromValue = parseInt(document.getElementById("from").value, 10)
+                var untilValue = parseInt(document.getElementById("until").value, 10)+1;
+                var beatOrNote = document.getElementById("beatnotechooser").options;
+                if (fromValue < untilValue){
+                    if(beatOrNote[0].selected){
+                        //if selecting by beat, the start note is teh first one with the start beat inside it,
+                        // and the stop note is the one with the stop beat inside it
+                        audioController.currentBeat = fromValue;
+                        var index=0
+                        while(audioController.currentBeat>=audioController.notes[index].starttime[0]+audioController.notes[index].duration[0])
+                        {
+                            index++
+                        }
+                        audioController.notesIndex = (index);
+                        while(untilValue>=audioController.notes[index].starttime[0])
+                        {
+                            index++
+                        }
+                        audioController.stopIndex = index;
+                    }
+                    else{
+                        //if selecting by note number, set the corresponding start and stop notes
+                        audioController.notesIndex = fromValue;
+                        audioController.stopIndex = untilValue;
+                        audioController.currentBeat = audioController.notes[audioController.notesIndex].starttime[0];
+                    }
+                    //reposition the cursor in the correct spot
+                    var xNew = chart.x(audioController.currentBeat);
+                    var cursor = d3.select(".noteHead");
+                    cursor.attr("x1", xNew);
+                    cursor.attr("x2", xNew);
+                    }
+                else {
+                    //if the selection doesn't make sense
+                    window.alert("Please select appropriate values (starting point must be smaller than ending point).");
+                }
+            });
+    };
+
+    var attachBPMSelector = function(parentSelector, audioController)
+    {
+        var bpmSelect = d3.select(parentSelector)
+            .append("p")
+            .append("form");
+
+        bpmSelect.append("label")
+            .text("BPM:  ");
+
+        bpmSelect.append("label")
+            .append("input")
+            .attr({
+                "name":"bpm",
+                "id":"bpm",
+                "type":"number",
+                "max":"360",
+                "min":"30",
+                "step":"1",
+                "value":audioController.bpm
+            });
+
+        bpmSelect.append("label")
+            .append("input")
+            .attr({
+                "name":"bpmbutton",
+                "id":"bpmbutton",
+                "type":"submit",
+                "value":"Change BPM"
+            });
+
+        bpmSelect.on("submit", function(){
+            d3.event.preventDefault();
+            var newBPM = parseInt(document.getElementById("bpm").value, 10);
+            audioController.bpm = newBPM;
+        });
+    };
+
     /**
      * Given data, construct the chart.
      *
@@ -438,6 +623,7 @@ var PianoRoll = function(selector, width, height)
     function chart(data)
     {
         // The function that labels the midi pitches
+
         var midiPitchLabeller = buildMidiPitchLabeller(data.partdata);
 
         // Build scales
@@ -523,6 +709,8 @@ var PianoRoll = function(selector, width, height)
     //attachZoomAndLocationPicker();
     attachPlayAndStopButtons(selector, audioController);
     attachPrintButton(selector, d3.select(selector).select("svg")[0][0]);
+    attachSectionSelector(selector, audioController);
+    attachBPMSelector(selector, audioController);
 
     return chart;
 };

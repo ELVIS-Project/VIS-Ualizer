@@ -181,7 +181,7 @@ var PieChart = function(selector, width, height) {
         sortChooser.append("option").attr("value", "label").text("Label");
         sortChooser.append("option").attr("value", "value").text("Value");
 
-        sortChooser.on("input", function() {
+        sortChooser.on("change", function() {
             if (this.value === "label") {
                 sort = sortEnum.label;
             } else {

@@ -4,7 +4,7 @@ import json
 
 class CSVParser():
     def __init__(self, csv_file_path):
-        csv_file = open(csv_file_path, "rb")
+        csv_file = open(csv_file_path, "rt")
         self.csv_reader = csv.reader(csv_file, delimiter=',', quotechar="|")
 
 
@@ -12,7 +12,7 @@ class CoOccurrenceMatrixParser(CSVParser):
     def parse(self):
         output = dict()
         # Get the keys
-        keys = self.csv_reader.next()
+        keys = next(self.csv_reader)
         # Read to output
         for row in self.csv_reader:
             output_row = dict()
@@ -26,7 +26,7 @@ class CoOccurrenceMatrixParser(CSVParser):
 
 class JsonParser():
     def __init__(self, file_path):
-        self.file = open(file_path, "rb")
+        self.file = open(file_path, "rt")
 
     def parse(self):
         return json.load(self.file)

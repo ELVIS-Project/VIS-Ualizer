@@ -55,6 +55,7 @@ function printToSVG(svg) {
  * @param svg The SVG that we print.
  */
 function attachPrintButton(selector, svg) {
+
     d3.select(selector).append("p").append("button")
         .text("Save SVG")
         .on("click", function() {
@@ -171,6 +172,8 @@ function drawAxisLines(parentElement, xAxis, yAxis, svgHeight, topMargin, leftMa
         .call(yAxis);
     // Apply CSS styling
     parentElement.selectAll([".axis path ", ".axis line"]).style(cssStyling.axis);
+
+    
 }
 
 /**
@@ -185,7 +188,9 @@ function attachEmptyControlPanel(parentSelector) {
         .attr("class", "control-panel")
         .style(cssStyling.global)
         .style({
-            "position": "fixed"
+            "position": "fixed",
+            "bottom": "0",
+            "background-color": "rgba(255, 255, 255, 0.95)"
         });
 }
 
@@ -217,3 +222,6 @@ var LineStylesEnum = Object.freeze({
     curved: "Curved",
     straight: "Straight"
 });
+
+
+
