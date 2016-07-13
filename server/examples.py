@@ -6,7 +6,7 @@ example_types = {
     },
     "bar-graph-clustered": {
         "name": "Bar Graph - Clustered",
-        "js": ["js/bargraph_grouped.js"],
+        "js": ["js/bargraph.js", "js/bargraph_grouped.js"],
         "template": "example/bar-graph-grouped.html"
     },
     "force-directed-graph": {
@@ -33,6 +33,7 @@ example_types = {
         "name": "Pie Chart",
         "js": ["js/pie_chart.js"],
         "template": "example/pie-chart.html"
+<<<<<<< HEAD
     },
     "score-display": {
         "name": "Score Display",
@@ -42,5 +43,7 @@ example_types = {
                "js/libs/MIDI/jasmid/replayer.js", "js/audio_controller.js",
                 "js/score_display.js"],
         "template": "example/score-display.html"
+=======
+>>>>>>> origin/develop
     }
 }

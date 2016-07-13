@@ -309,16 +309,19 @@ var startAudio = function(currentTime, fromCache, onsuccess) {
 	///
 	for (var n = 0; n < length && messages < 100; n++) {
 		var obj = data[n];
+<<<<<<< HEAD
 		//extra check if we're past the end time to make sure the file finishes playing correctly
 		if (((queuedTime += obj[1]) < currentTime) || currentTime >= midi.endTime ) {
+=======
+
+		if ((queuedTime += obj[1]) <= currentTime) {
+>>>>>>> origin/develop
 			offset = queuedTime;
 			if(currentTime >= midi.endTime){
 				midi.endTime = 0
 			}
 			continue;
 		}
-
-
 		///
 		currentTime = queuedTime - offset;
 		///
