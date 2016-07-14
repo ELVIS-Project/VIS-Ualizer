@@ -2,7 +2,7 @@ var AudioController = function()
 {
     this.bpm = 120;
 
-    var playing = false;
+    this.isPlaying = false;
     this.currentBeat = 0;
     this.notesIndex = 0;
     this.stopIndex = 0;
@@ -110,37 +110,32 @@ var AudioController = function()
     this.playPiece = function()
     {
         // Don't do anything if already playing
-        if (playing)
+        if (this.isPlaying)
         {
             return;
         }
 
         var milisecondsPerBeat = this.beatsToSeconds(1) * 1000;
-        playing = true;
+        this.isPlaying = true;
         var velocity = 87;
         var that = this;
         var playNoteIfReady = function()
         {
-
-            if (that.playing && that.notesIndex < that.stopIndex)
-
+            if (that.isPlaying && that.notesIndex < that.stopIndex)
             {
                 // Play all the notes that are currently playable
                 while (that.notesIndex < that.stopIndex && that.notes[that.notesIndex].starttime[0] < that.currentBeat)
                 {
-
                     // Play the note if it's part is activated
                     if (that.isPartActivated(that.notes[that.notesIndex].partname))
                     {
 
-                        var pitch = that.notes[that.notesIndex].pitch.b12,
-                        duration = that.beatsToSeconds(that.notes[that.notesIndex].duration[0]);
-
+                        var pitch = that.notes[that.notesIndex].pitch.b12;
+                        var duration = that.beatsToSeconds(that.notes[that.notesIndex].duration[0]);
 
                         that.playNote(pitch, velocity, duration);
 
                     }
-
                     // Increment the noteindex whether or not we actually play the note
                     that.notesIndex++;
                 }
@@ -158,33 +153,12 @@ var AudioController = function()
 
     this.pausePiece = function()
     {
-        playing = false;
-    };
-
-    /**
-     * Set the current beat that's playing.
-     *
-     * @param beat
-     */
-    this.setBeat = function(beat)
-    {
-        this.currentBeat = parseInt(beat);
-        this.notesIndex = 0;
-    };
-
-    /**
-     * Test if the audiocontroller is currently playing.
-     *
-     * @returns {boolean}
-     */
-    this.isPlaying = function()
-    {
-        return playing === true;
+        this.isPlaying = false;
     };
 
     this.resetPiece = function()
     {
-        playing = false;
+        this.isPlaying = false;
         this.currentBeat = 0;
         this.notesIndex = 0;
         this.stopIndex = this.notes.length;
