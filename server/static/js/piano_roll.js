@@ -7,7 +7,7 @@ var PianoRoll = function(selector, width, height)
         bottom: 30,
         piano: 25
     };
-    
+
     // Construct the audio controller
     var audioController = new AudioController();
 
@@ -77,7 +77,7 @@ var PianoRoll = function(selector, width, height)
     /**
      * Draw the horizontal piano lines in the background.
      *
-      * @param pitches
+     * @param pitches
      */
     var drawPianoBackground = function(pitches)
     {
@@ -211,56 +211,6 @@ var PianoRoll = function(selector, width, height)
                 "stroke-width": 1
             });
 
-        var scrobbler = chart.svg
-            .append("rect")
-            .attr({
-                name: "scrobbler",
-                x: xScale(0) + margins.left,
-                y: height - margins.bottom,
-                width: 10,
-                height: 10
-            })
-            .style({
-                "fill": "red",
-                "cursor": "move"
-            });
-
-        var wasPlaying = false;
-        var scrobblerDrag = d3.behavior.drag()
-            .on("dragstart", function()
-            {
-                d3.event.sourceEvent.stopPropagation(); // silence other listeners
-                console.log(audioController);
-                wasPlaying = audioController.isPlaying();
-                audioController.pausePiece();
-            })
-            .on("drag", function()
-            {
-                var newX = d3.event.x;
-
-                scrobbler.attr({
-                    x: newX
-                });
-                noteHead.attr({
-                    x1: newX - margins.left,
-                    x2: newX - margins.left
-                });
-
-                var beat = xScale.invert(newX - margins.left);
-                console.log(beat);
-                audioController.setBeat(beat);
-            })
-            .on("dragend", function()
-            {
-                // If the piece was playing before the drag, start playing again
-                if (wasPlaying)
-                {
-                    audioController.playPiece();
-                }
-            });
-
-        scrobbler.call(scrobblerDrag);
-
         audioController.beatEventDispatch.on("beat", function(beat)
         {
             var x = xScale(beat);
@@ -268,10 +218,6 @@ var PianoRoll = function(selector, width, height)
                 .attr({
                     "x1": x,
                     "x2": x
-                });
-            scrobbler.transition()
-                .attr({
-                    x: x + margins.left
                 });
             // Advance the zoom if necessary
             // console.log(beat + zoom.translate()[0]);
@@ -284,12 +230,9 @@ var PianoRoll = function(selector, width, height)
         {
             var x = xScale(audioController.currentBeat);
             noteHead.attr({
-                    "x1": x,
-                    "x2": x
-                });
-            scrobbler.attr({
-                "x": x + margins.left
-            })
+                "x1": x,
+                "x2": x
+            });
         })
     };
 
@@ -527,7 +470,7 @@ var PianoRoll = function(selector, width, height)
         beatNoteChooser.append("option")
             .attr("value","note")
             .text("note")
-        
+
         selection.append("input")
             .attr({
                 "name": "selectbtn",
@@ -537,45 +480,45 @@ var PianoRoll = function(selector, width, height)
             });
 
         selection.on("submit", function()
-            {
-                d3.event.preventDefault();
-                var fromValue = parseInt(document.getElementById("from").value, 10)
-                var untilValue = parseInt(document.getElementById("until").value, 10)+1;
-                var beatOrNote = document.getElementById("beatnotechooser").options;
-                if (fromValue < untilValue){
-                    if(beatOrNote[0].selected){
-                        //if selecting by beat, the start note is teh first one with the start beat inside it,
-                        // and the stop note is the one with the stop beat inside it
-                        audioController.currentBeat = fromValue;
-                        var index=0
-                        while(audioController.currentBeat>=audioController.notes[index].starttime[0]+audioController.notes[index].duration[0])
-                        {
-                            index++
-                        }
-                        audioController.notesIndex = (index);
-                        while(untilValue>=audioController.notes[index].starttime[0])
-                        {
-                            index++
-                        }
-                        audioController.stopIndex = index;
+        {
+            d3.event.preventDefault();
+            var fromValue = parseInt(document.getElementById("from").value, 10)
+            var untilValue = parseInt(document.getElementById("until").value, 10)+1;
+            var beatOrNote = document.getElementById("beatnotechooser").options;
+            if (fromValue < untilValue){
+                if(beatOrNote[0].selected){
+                    //if selecting by beat, the start note is teh first one with the start beat inside it,
+                    // and the stop note is the one with the stop beat inside it
+                    audioController.currentBeat = fromValue;
+                    var index=0
+                    while(audioController.currentBeat>=audioController.notes[index].starttime[0]+audioController.notes[index].duration[0])
+                    {
+                        index++
                     }
-                    else{
-                        //if selecting by note number, set the corresponding start and stop notes
-                        audioController.notesIndex = fromValue;
-                        audioController.stopIndex = untilValue;
-                        audioController.currentBeat = audioController.notes[audioController.notesIndex].starttime[0];
+                    audioController.notesIndex = (index);
+                    while(untilValue>=audioController.notes[index].starttime[0])
+                    {
+                        index++
                     }
-                    //reposition the cursor in the correct spot
-                    var xNew = chart.x(audioController.currentBeat);
-                    var cursor = d3.select(".noteHead");
-                    cursor.attr("x1", xNew);
-                    cursor.attr("x2", xNew);
-                    }
-                else {
-                    //if the selection doesn't make sense
-                    window.alert("Please select appropriate values (starting point must be smaller than ending point).");
+                    audioController.stopIndex = index;
                 }
-            });
+                else{
+                    //if selecting by note number, set the corresponding start and stop notes
+                    audioController.notesIndex = fromValue;
+                    audioController.stopIndex = untilValue;
+                    audioController.currentBeat = audioController.notes[audioController.notesIndex].starttime[0];
+                }
+                //reposition the cursor in the correct spot
+                var xNew = chart.x(audioController.currentBeat);
+                var cursor = d3.select(".noteHead");
+                cursor.attr("x1", xNew);
+                cursor.attr("x2", xNew);
+            }
+            else {
+                //if the selection doesn't make sense
+                window.alert("Please select appropriate values (starting point must be smaller than ending point).");
+            }
+        });
     };
 
     var attachBPMSelector = function(parentSelector, audioController)
@@ -618,7 +561,7 @@ var PianoRoll = function(selector, width, height)
     /**
      * Given data, construct the chart.
      *
-      * @param data
+     * @param data
      */
     function chart(data)
     {
