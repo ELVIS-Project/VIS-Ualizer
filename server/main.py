@@ -11,18 +11,23 @@ from helpers.parsers import CoOccurrenceMatrixParser, JsonParser
 from data import dendrogram
 from examples import example_types
 
-
-
 app = FlaskAPI(__name__)
 
 
 @app.route("/data/score-display/")
 def data_score_display():
+    """
+    Missing docstring.
+    """
     return send_file("../data/scores/Absalon-fili-mi_Josquin-Des-Prez_file5.mei")
 
 
 @app.route("/data/pie-chart/")
 def data_pie_chart():
+    """
+    Missing DOCSTRING.
+    Please tell me what this function does...
+    """
     return [
         {
             "label": "a",
@@ -57,21 +62,34 @@ def data_pie_chart():
 
 @app.route("/data/piano-roll/")
 def data_piano_roll():
+    """
+    Missing DOCSTRING.
+    Please tell me what this function does...
+    """
     return JsonParser("../data/json/Domine_non_secundum_peccata.json").parse()
 
 
 @app.route("/data/piano-roll/qui-habitat/")
 def data_piano_roll_qui_habitat():
+    """
+    Missing docstring.
+    """
     return JsonParser("../data/json/qui_habitat.json").parse()
 
 
 @app.route("/data/dendrogram/")
 def data_dendrogram():
+    """
+    Missing docstring.
+    """
     return dendrogram.matrix
 
 
 @app.route("/data/arbitrary-matrix/<data_max>/")
 def data_arbitrary_matrix(data_max):
+    """
+    Missing docstring.
+    """
     data_max = int(data_max)
     output = dict()
     for i in range(data_max):
@@ -83,6 +101,9 @@ def data_arbitrary_matrix(data_max):
 
 @app.route("/data/duet/heat/")
 def data_heatmap_duet():
+    """
+    Missing docstring.
+    """
     file_path = "../data/non-truncated/Heatmap-vis36duet_int_corrs.csv"
     return CoOccurrenceMatrixParser(file_path).parse()
 
@@ -90,6 +111,9 @@ def data_heatmap_duet():
 @app.route("/data/ave-maria/", defaults={'voice': None})
 @app.route("/data/ave-maria/<voice>/")
 def data_ave_maria(voice):
+    """
+    Missing docstring.
+    """
     # Build the string
     file_path = "../data/truncated/Josquin-Des-Prez_Ave-Maria...-virgo-serena"
     if voice == "alto":
@@ -107,6 +131,9 @@ def data_ave_maria(voice):
 
 @app.route("/graph/grouped/")
 def data_grouped_bar_graph():
+    """
+    Missing docstring.
+    """
     data_min = 0.0
     data_max = 100.0
     data = [list(), list(), list()]
@@ -133,6 +160,9 @@ def data_grouped_bar_graph():
 @app.route("/graph/<num>/")
 @app.route("/graph/")
 def data_bar_graph(num=32):
+    """
+    Missing docstring.
+    """
     data_min = 0.0
     data_max = 100.0
     output = []
@@ -144,6 +174,9 @@ def data_bar_graph(num=32):
 @app.route("/example/<example_id>/")
 @set_renderers(HTMLRenderer)
 def example(example_id):
+    """
+    Missing docstring.
+    """
     js_files = [
         url_for("static", filename="js/libs/d3.js"),
         url_for("static", filename="js/utils.js")
@@ -162,6 +195,9 @@ def example(example_id):
 @app.route("/")
 @set_renderers(HTMLRenderer)
 def hello():
+    """
+    Missing docstring.
+    """
     example_links = []
     for example_id in list(example_types.keys()):
         example_links.append({
