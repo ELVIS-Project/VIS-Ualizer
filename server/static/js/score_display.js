@@ -209,6 +209,7 @@ var ScoreDisplay = function(selector, width, height)
     };
 
 
+
     function chart(data)
     {
         //load verovio toolkit instance with the data and render the first page
@@ -227,6 +228,52 @@ var ScoreDisplay = function(selector, width, height)
     }
 
 
+    var attachFileUpload = function(parentSelector)
+    {
+        var fileUpload = d3.select(parentSelector)
+            .append("p")
+            .append("form");
+
+        fileUpload.append("label")
+            .append("input")
+            .attr({
+                "name":"uploadfile",
+                "id":"uploadfile",
+                "type":"file",
+                "accept":".mei"
+            });
+
+        fileUpload.append("label")
+            .append("input")
+            .attr({
+                "name":"uploadrender",
+                "id":"uploadrender",
+                "type":"submit",
+                "value":"Render file"
+            });
+
+        fileUpload.on("submit", function(){
+            d3.event.preventDefault();
+            var input = $("#uploadfile")
+            var file = input.prop('files')[0]
+            var read = new FileReader();
+            read.onload = (function(f) {
+                return function(e) {
+                    var filename = file.name
+                    var j = filename.substr(filename.lastIndexOf('.')+1)
+                    var readData = e.target.result
+                    var i = readData.search("<\/mei>")
+                    if (i>0 && j=="mei"){
+                        chart(e.target.result)
+                    }
+
+                };
+            })(file);
+            read.readAsText(file);
+
+        })
+    }
+
 
 
     
@@ -236,6 +283,7 @@ var ScoreDisplay = function(selector, width, height)
     attachPlayAndStopButtons(".control-panel")
     attachSectionSelector(".control-panel")
     attachBPMSelector(".control-panel")
+    attachFileUpload(".control-panel")
 
     return chart
 
