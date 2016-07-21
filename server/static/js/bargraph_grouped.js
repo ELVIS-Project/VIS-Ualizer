@@ -4,11 +4,11 @@ var BarGraphGrouped = function(selector, width, height) {
 
     var margin = {top: 20, right: 30, bottom: 30, left: 40};
 
-
     d3.select("body")
-      .insert("div", "isolate-graph")
-      .attr("class", "isolate-graph")
-      .style(cssStyling.global);
+        .insert("div", "isolate-graph" )
+        .attr("class", "isolate-graph")
+        .style(cssStyling.global)
+
 
 
 
@@ -74,9 +74,23 @@ var BarGraphGrouped = function(selector, width, height) {
                 .attr("width", chart.x.rangeBand())
                 .attr("x", chart.x(group.group_label))
                 .on("click", function(){
-                    console.log("hi")
-                    var isolateGraph = new BarGraph(".isolate-graph", 640, 320, true)
+                    var whichGraph = String(group.group_label).replace(/\s/g, "-")
+                    var isolateGraph = new BarGraph(".isolate-graph", 640, 320, true, whichGraph)
                     isolateGraph(group.group_members)
+                    console.log(d3.selectAll("."+whichGraph).select(":nth-child(1)"))
+                    d3.selectAll("."+whichGraph).select(":nth-child(1)").filter("label")
+                      .append("p")
+                      .append("button")
+                      .attr({
+                            "name":"closebutton"+whichGraph,
+                            "id":"closebutton"+whichGraph,
+                            "type":"button"
+                        })
+                      .text("Close graph")
+                      .on("click", function(){
+                            d3.selectAll("."+whichGraph).remove()
+                        });
+
                 });
 
             groupArea.selectAll(".group")
