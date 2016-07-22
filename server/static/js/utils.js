@@ -202,10 +202,55 @@ function attachEmptyControlPanel(parentSelector) {
 /**
  * Attach a file upload button to the parent.
  *
- * @param parentSelector
+ * @param parentSelector, filetype, chart
  * @returns {*}
  */
 
+var attachFileUpload = function(parentSelector, filetype, chart)
+{
+    var fileUpload = d3.select(parentSelector)
+        .append("p")
+        .append("form");
+
+    fileUpload.append("label")
+        .append("input")
+        .attr({
+            "name":"uploadfile",
+            "id":"uploadfile",
+            "type":"file",
+            "accept": filetype
+        });
+
+    fileUpload.append("label")
+        .append("input")
+        .attr({
+            "name":"uploadrender",
+            "id":"uploadrender",
+            "type":"submit",
+            "value":"Render file"
+        });
+
+    fileUpload.on("submit", function(){
+        d3.event.preventDefault();
+        var input = $("#uploadfile")
+        var file = input.prop('files')[0]
+        var read = new FileReader();
+        read.onload = (function(f) {
+            return function(e) {
+                var filename = file.name
+                var j = filename.substr(filename.lastIndexOf('.'))
+                /*var readData = e.target.result
+                 var i = readData.search("<\/mei>")*/
+                if (j==filetype){
+                    chart(e.target.result)
+                }
+
+            };
+        })(file);
+        read.readAsText(file);
+
+    })
+}
 
 /**
  * An enum to handle possible sorting.
