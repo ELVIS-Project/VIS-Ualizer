@@ -3,14 +3,7 @@
 var ScoreDisplay = function(selector, width, height)
 {
     var vrvToolkit = new verovio.toolkit()
-    var options = JSON.stringify({
-        pageHeight: 2100,
-        pageWidth: 4200,
-        ignoreLayout: 1,
-        border: 100,
-        scale: 50
-    })
-    vrvToolkit.setOptions(options)
+
 
     var margins = {
         top: 10,
@@ -69,6 +62,14 @@ var ScoreDisplay = function(selector, width, height)
         }
 
     })
+
+    var attachDialog = function(parentSelector)
+    {
+        return d3.select(parentSelector)
+            .insert("div", ":last-child")
+            .attr("id", "dialog")
+
+    }
 
     //add play, pause, stop buttons
     var attachPlayAndStopButtons = function(parentSelector)
@@ -134,6 +135,18 @@ var ScoreDisplay = function(selector, width, height)
                 "step":"0.1",
                 "value":"1.5"
             });
+       /* var selectionChooser = selection.append("select")
+            .attr("id", "selectionchooser")
+
+        selectionChooser.append("option")
+            .attr("value", "time")
+            .text("time")
+
+        selectionChooser.append("option")
+            .attr("value","measure")
+            .text("measure")
+*/
+
 
         selection.append("input")
             .attr({
@@ -141,23 +154,110 @@ var ScoreDisplay = function(selector, width, height)
                 "id":"selectbtn",
                 "type": "submit",
                 "value": "Select"
-            });
+            })
+            .on("submit", function()
+            {
+                d3.event.preventDefault();
+                var fromValue = parseInt(document.getElementById("from").value, 10)
+                var untilValue = parseInt(document.getElementById("until").value, 10)+1;
+                // var selectionChoice = document.getElementById("selectionchooser").options;
+                if (fromValue < untilValue){
+                    // if(selectionChoice[0].selected){
+                        player.currentTime = fromValue;
+                        player.endTime = untilValue;
+                    /*}
+                    else{
+                        player.currentTime = vrvToolkit.getTimeForElement("measure n=" + String(fromValue))
+                        player.endTime = vrvToolkit.getTimeForElement("measure n=" + String(untilValue))
+                    }*/
 
-        selection.on("submit", function()
-        {
-            d3.event.preventDefault();
-            var fromValue = parseInt(document.getElementById("from").value, 10)
-            var untilValue = parseInt(document.getElementById("until").value, 10)+1;
-            if (fromValue < untilValue){
-                    player.currentTime = fromValue;
-                    player.endTime = untilValue;
-            }
-            else {
-                //if the selection doesn't make sense
-                window.alert("Please select appropriate values (starting point must be smaller than ending point).");
-            }
-        });
+                }
+                else {
+                    //if the selection doesn't make sense
+                    window.alert("Please select appropriate values (starting point must be smaller than ending point).");
+                }
+            });
     };
+
+    // var attachDisplaySelector = function(parentSelector)
+    // {
+    //    var displaySelect = d3.select(parentSelector)
+    //        .append("p")
+    //        .append("form");
+    //
+    //     displaySelect.append("label")
+    //         .text("Display measures:   ")
+    //
+    //     displaySelect.append("label")
+    //         .text("From ")
+    //         .append("input")
+    //         .attr({
+    //             "name": "displayfrom",
+    //             "id":"displayfrom",
+    //             "type":"number",
+    //             "max":player.endTime,
+    //             "min":"1",
+    //             "step":"1",
+    //             "value":"1"
+    //         });
+    //     displaySelect.append("label")
+    //         .text("Until ")
+    //         .append("input")
+    //         .attr({
+    //             "name": "displayuntil",
+    //             "id":"displayuntil",
+    //             "type":"number",
+    //             "max": player.endTime,
+    //             "min":"1",
+    //             "step":"1",
+    //             "value":"1"
+    //         });
+    //     displaySelect.append("input")
+    //         .attr({
+    //             "name": "displaybtn",
+    //             "id":"displaybtn",
+    //             "type": "button",
+    //             "value": "Display"
+    //         })
+    //
+    //     displaySelect.on("click", function(){
+    //         d3.event.preventDefault();
+    //         var fromDisplay = parseInt(document.getElementById("displayfrom").value, 10);
+    //         var untilDisplay = parseInt(document.getElementById("displayuntil").value, 10);
+    //         var fullScore = d3.select("svg")
+    //         var measures = fullScore.selectAll(".measure")
+    //         console.log(measures[0][0])
+    //         if (fromDisplay <= untilDisplay && untilDisplay<=measures[0].length){
+    //             var diff = measures[0].length - untilDisplay
+    //             for(var i=fromDisplay-1; i<untilDisplay; i++){
+    //                 measures[0][i].setAttribute("visibility","hidden")
+    //             }
+    //             for(var j=untilDisplay; j<measures[0].length; j++) {
+    //                 measures[0][j].setAttribute("visibility","hidden")
+    //             }
+    //
+    //
+    //             //var displayScore = d3.select(".page-margin")
+    //
+    //             // $( function() {
+    //             //     $( "#dialog" ).dialog({
+    //             //         height: "auto",
+    //             //         width: "auto",
+    //             //         modal: true,
+    //             //         dialogClass: "no-close",
+    //             //         closeText:"x"
+    //             //     });
+    //             // } );
+    //
+    //
+    //         }
+    //         else {
+    //             //if the selection doesn't make sense
+    //             window.alert("Please select appropriate values (starting point must be smaller than ending point).");
+    //         }
+    //     })
+    //
+    // }
 
     //attach BPM selection.
     var attachBPMSelector = function(parentSelector)
@@ -209,11 +309,20 @@ var ScoreDisplay = function(selector, width, height)
     };
 
 
+
     function chart(data)
     {
         //load verovio toolkit instance with the data and render the first page
+        var options = JSON.stringify({
+            pageHeight: "auto",
+            pageWidth: "auto",
+            ignoreLayout: 1,
+            border: 100,
+            scale: 50
+        })
+        vrvToolkit.setOptions(options)
         vrvToolkit.loadData(data)
-        var rendered = vrvToolkit.renderPage(1)
+        var rendered = vrvToolkit.renderPage(1," ")
         chart.contentArea.html(rendered)
         //convert file to midi and load into the player
         var midiVersion = 'data:audio/midi;base64,' + vrvToolkit.renderToMidi()
@@ -222,8 +331,62 @@ var ScoreDisplay = function(selector, width, height)
         d3.select("#from").attr("max", player.getEnd())
         d3.select("#until").attr("max", player.getEnd())
         d3.select("#until").attr("value", player.getEnd())
-        initialEnd = player.endTime
 
+        var m = d3.selectAll(".measure")
+        d3.select("#displayfrom").attr("max", m[0].length)
+        d3.select("#displayuntil").attr("max", m[0].length)
+        d3.select("#displayuntil").attr("value",m[0].length)
+        initialEnd = player.endTime
+        // var svg = d3.select("svg")
+        // var test = (svg[0][0].childNodes[3]).childNodes
+
+
+    }
+
+    var attachFileUpload = function(parentSelector, filetype)
+    {
+        var fileUpload = d3.select(parentSelector)
+            .append("p")
+            .append("form");
+
+        fileUpload.append("label")
+            .append("input")
+            .attr({
+                "name":"uploadfile",
+                "id":"uploadfile",
+                "type":"file",
+                "accept": filetype
+            });
+
+        fileUpload.append("label")
+            .append("input")
+            .attr({
+                "name":"uploadrender",
+                "id":"uploadrender",
+                "type":"submit",
+                "value":"Render file"
+            });
+
+        fileUpload.on("submit", function(){
+            d3.event.preventDefault();
+            var input = $("#uploadfile")
+            var file = input.prop('files')[0]
+            var read = new FileReader();
+            read.onload = (function(f) {
+                return function(e) {
+                    var filename = file.name
+                    var j = filename.substr(filename.lastIndexOf('.'))
+                    /*var readData = e.target.result
+                     var i = readData.search("<\/mei>")*/
+                    if (j==filetype){
+                        chart(e.target.result)
+                    }
+
+                };
+            })(file);
+            read.readAsText(file);
+
+        })
     }
 
 
@@ -233,9 +396,12 @@ var ScoreDisplay = function(selector, width, height)
 
     // GUI components
     attachEmptyControlPanel(selector)
+    attachDialog(selector)
     attachPlayAndStopButtons(".control-panel")
     attachSectionSelector(".control-panel")
+    // attachDisplaySelector(".control-panel")
     attachBPMSelector(".control-panel")
+    attachFileUpload(".control-panel", ".mei")
 
     return chart
 

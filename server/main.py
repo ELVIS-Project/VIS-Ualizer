@@ -17,7 +17,7 @@ app = FlaskAPI(__name__)
 @app.route("/data/score-display/")
 def data_score_display():
     """
-    Missing docstring.
+    Returns an mei file (raw).
     """
     return send_file("../data/scores/Absalon-fili-mi_Josquin-Des-Prez_file5.mei")
 
@@ -25,8 +25,7 @@ def data_score_display():
 @app.route("/data/pie-chart/")
 def data_pie_chart():
     """
-    Missing DOCSTRING.
-    Please tell me what this function does...
+    Labeled data values for the pie chart.
     """
     return [
         {
@@ -63,8 +62,7 @@ def data_pie_chart():
 @app.route("/data/piano-roll/")
 def data_piano_roll():
     """
-    Missing DOCSTRING.
-    Please tell me what this function does...
+    Parses piano roll json data (loads the json file to be used)
     """
     return JsonParser("../data/json/Domine_non_secundum_peccata.json").parse()
 
@@ -72,7 +70,7 @@ def data_piano_roll():
 @app.route("/data/piano-roll/qui-habitat/")
 def data_piano_roll_qui_habitat():
     """
-    Missing docstring.
+    Parses piano roll json data (loads the json file to be used)
     """
     return JsonParser("../data/json/qui_habitat.json").parse()
 
@@ -80,7 +78,7 @@ def data_piano_roll_qui_habitat():
 @app.route("/data/dendrogram/")
 def data_dendrogram():
     """
-    Missing docstring.
+    Returns a dendrogram matrix (for an eventual dendrogram graph).
     """
     return dendrogram.matrix
 
@@ -88,7 +86,7 @@ def data_dendrogram():
 @app.route("/data/arbitrary-matrix/<data_max>/")
 def data_arbitrary_matrix(data_max):
     """
-    Missing docstring.
+    Returns a matrix of data (any data) in dict form.
     """
     data_max = int(data_max)
     output = dict()
@@ -102,7 +100,7 @@ def data_arbitrary_matrix(data_max):
 @app.route("/data/duet/heat/")
 def data_heatmap_duet():
     """
-    Missing docstring.
+    Returns a matrix of data usable for the the heatmap (converts it from csv).
     """
     file_path = "../data/non-truncated/Heatmap-vis36duet_int_corrs.csv"
     return CoOccurrenceMatrixParser(file_path).parse()
@@ -112,7 +110,7 @@ def data_heatmap_duet():
 @app.route("/data/ave-maria/<voice>/")
 def data_ave_maria(voice):
     """
-    Missing docstring.
+    Returns a matrix of data according to the currently selected voice. Used for the force-directed graph currently.
     """
     # Build the string
     file_path = "../data/truncated/Josquin-Des-Prez_Ave-Maria...-virgo-serena"
@@ -132,7 +130,7 @@ def data_ave_maria(voice):
 @app.route("/graph/grouped/")
 def data_grouped_bar_graph():
     """
-    Missing docstring.
+    Generates labeled groups/clusters of data from raw data.
     """
     data_min = 0.0
     data_max = 100.0
@@ -161,7 +159,7 @@ def data_grouped_bar_graph():
 @app.route("/graph/")
 def data_bar_graph(num=32):
     """
-    Missing docstring.
+    Gives randomized labels to raw data.
     """
     data_min = 0.0
     data_max = 100.0
@@ -175,7 +173,7 @@ def data_bar_graph(num=32):
 @set_renderers(HTMLRenderer)
 def example(example_id):
     """
-    Missing docstring.
+    Renders a particular example/graph when its link is clicked from the main page.
     """
     js_files = [
         url_for("static", filename="js/libs/d3.js"),
@@ -196,7 +194,7 @@ def example(example_id):
 @set_renderers(HTMLRenderer)
 def hello():
     """
-    Missing docstring.
+    Renders the main page with the links to all the examples.
     """
     example_links = []
     for example_id in list(example_types.keys()):

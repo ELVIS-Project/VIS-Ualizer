@@ -54,9 +54,14 @@ function printToSVG(svg) {
  * @param selector Global selector for the visualization
  * @param svg The SVG that we print.
  */
-function attachPrintButton(selector, svg) {
+function attachPrintButton(selector, svg, title) {
 
-    d3.select(selector).append("p").append("button")
+    if (typeof title != "string"){
+        title = "Chart"
+    }
+    d3.select(selector).append("p")
+        .attr("class", title)
+        .append("button")
         .text("Save SVG")
         .on("click", function() {
             printToSVG(svg);
@@ -193,6 +198,14 @@ function attachEmptyControlPanel(parentSelector) {
             "background-color": "rgba(255, 255, 255, 0.95)"
         });
 }
+
+/**
+ * Attach a file upload button to the parent.
+ *
+ * @param parentSelector
+ * @returns {*}
+ */
+
 
 /**
  * An enum to handle possible sorting.
