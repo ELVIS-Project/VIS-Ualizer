@@ -77,7 +77,6 @@ var BarGraphGrouped = function(selector, width, height) {
                     var whichGraph = String(group.group_label).replace(/\s/g, "-")
                     var isolateGraph = new BarGraph(".isolate-graph", 640, 320, true, whichGraph)
                     isolateGraph(group.group_members)
-                    console.log(d3.selectAll("."+whichGraph).select(":nth-child(1)"))
                     d3.selectAll("."+whichGraph).select(":nth-child(1)").filter("label")
                       .append("p")
                       .append("button")
