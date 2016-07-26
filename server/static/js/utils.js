@@ -54,9 +54,14 @@ function printToSVG(svg) {
  * @param selector Global selector for the visualization
  * @param svg The SVG that we print.
  */
-function attachPrintButton(selector, svg) {
+function attachPrintButton(selector, svg, title) {
 
-    d3.select(selector).append("p").append("button")
+    if (typeof title != "string"){
+        title = "Chart"
+    }
+    d3.select(selector).append("p")
+        .attr("class", title)
+        .append("button")
         .text("Save SVG")
         .on("click", function() {
             printToSVG(svg);
@@ -192,6 +197,59 @@ function attachEmptyControlPanel(parentSelector) {
             "bottom": "0",
             "background-color": "rgba(255, 255, 255, 0.95)"
         });
+}
+
+/**
+ * Attach a file upload button to the parent.
+ *
+ * @param parentSelector, filetype, chart
+ * @returns {*}
+ */
+
+var attachFileUpload = function(parentSelector, filetype, chart)
+{
+    var fileUpload = d3.select(parentSelector)
+        .append("p")
+        .append("form");
+
+    fileUpload.append("label")
+        .append("input")
+        .attr({
+            "name":"uploadfile",
+            "id":"uploadfile",
+            "type":"file",
+            "accept": filetype
+        });
+
+    fileUpload.append("label")
+        .append("input")
+        .attr({
+            "name":"uploadrender",
+            "id":"uploadrender",
+            "type":"submit",
+            "value":"Render file"
+        });
+
+    fileUpload.on("submit", function(){
+        d3.event.preventDefault();
+        var input = $("#uploadfile")
+        var file = input.prop('files')[0]
+        var read = new FileReader();
+        read.onload = (function(f) {
+            return function(e) {
+                var filename = file.name
+                var j = filename.substr(filename.lastIndexOf('.'))
+                /*var readData = e.target.result
+                 var i = readData.search("<\/mei>")*/
+                if (j==filetype){
+                    chart(e.target.result)
+                }
+
+            };
+        })(file);
+        read.readAsText(file);
+
+    })
 }
 
 /**

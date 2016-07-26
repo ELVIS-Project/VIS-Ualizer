@@ -1,5 +1,12 @@
-var BarGraph = function(selector, width, height,  numericAxis)
+var BarGraph = function(selector, width, height, numericAxis, title)
 {
+
+    if (typeof title != "string"){
+        title = "Chart"
+    }
+
+    var editedTitle = title.replace(/\s/g, "-")
+    
     var margin = {
         top: 20,
         right: 30,
@@ -144,6 +151,7 @@ var BarGraph = function(selector, width, height,  numericAxis)
 
     chart.svg = d3.select(selector)
         .append("svg")
+        .attr("class", title)
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
         .style(cssStyling.global);
@@ -152,11 +160,24 @@ var BarGraph = function(selector, width, height,  numericAxis)
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    
+    chart.svg.append("text")
+        .attr("x", (width / 2))
+        .attr("y",  margin.bottom / 2)
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .style("text-decoration", "underline")
+        .text(title);
+    
+
+
 
     function attachSortChooser(selector)
     {
+
         var parent = d3.select(selector)
             .append("p")
+            .attr("class",editedTitle)
             .append("label")
             .text("Sort: ");
 
@@ -204,7 +225,7 @@ var BarGraph = function(selector, width, height,  numericAxis)
     }
 
     // GUI components
-    attachPrintButton(selector, d3.select(selector).select("svg")[0][0]);
+    attachPrintButton(selector, d3.select(selector).select("svg")[0][0], editedTitle);
     attachSortChooser(selector);
 
     return chart;
