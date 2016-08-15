@@ -135,6 +135,7 @@ var BarGraphGrouped = function(selector, width, height) {
 
 
     // Draw GUI components
+    attachHorizontalButton(selector, chart)
     attachPrintButton(selector, d3.select(selector).select("svg")[0][0]);
 
 

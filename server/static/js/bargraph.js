@@ -224,7 +224,11 @@ var BarGraph = function(selector, width, height, numericAxis, title)
 
     }
 
+
+
     // GUI components
+    //attachEmptyControlPanel(selector);
+    attachHorizontalButton(selector, chart, editedTitle);
     attachPrintButton(selector, d3.select(selector).select("svg")[0][0], editedTitle);
     attachSortChooser(selector);
 
