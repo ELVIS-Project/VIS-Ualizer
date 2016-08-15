@@ -209,8 +209,10 @@ function attachEmptyControlPanel(parentSelector) {
 var attachFileUpload = function(parentSelector, filetype, chart)
 {
     var fileUpload = d3.select(parentSelector)
-        .append("p")
-        .append("form");
+        .append("p");
+
+
+    fileUpload.append("form");
 
     fileUpload.append("label")
         .append("input")
@@ -248,6 +250,52 @@ var attachFileUpload = function(parentSelector, filetype, chart)
             };
         })(file);
         read.readAsText(file);
+
+    })
+}
+
+/**
+ * Attach a horizontal/vertical tilt button to the parent.
+ *
+ * @param parentSelector, whichChart
+ * @returns {*}
+ */
+function attachHorizontalButton(parentSelector, whichChart, title)
+{
+    if (typeof title != "string"){
+        title = "Chart"
+    }
+    var tilt = d3.select(parentSelector)
+        .append("p")
+        .attr("class", title);
+
+
+    tilt.append("label")
+        .append("button")
+        .attr({
+            "name":"tilt",
+            "id":"tilt",
+            "type":"button",
+
+        })
+        .text("Tilt 90 degrees");
+
+
+    tilt.on("click", function(){
+        d3.event.preventDefault();
+        var originalHeight = whichChart.svg.attr("height")
+        if (whichChart.g.attr("transform")=="rotate(90 200 200) translate(40,40)")
+        {
+            whichChart.svg.attr("height", whichChart.svg.attr("width"))
+            whichChart.svg.attr("width", originalHeight)
+            whichChart.g.attr("transform","translate(40,20)");
+        }
+        else{
+            whichChart.svg.attr("height", whichChart.svg.attr("width"))
+            whichChart.svg.attr("width", originalHeight)
+            whichChart.g.attr("transform","rotate(90 200 200) translate(40,40)");
+        }
+
 
     })
 }
