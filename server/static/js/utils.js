@@ -209,11 +209,9 @@ function attachEmptyControlPanel(parentSelector) {
 var attachFileUpload = function(parentSelector, filetype, chart)
 {
     var fileUpload = d3.select(parentSelector)
-        .append("p");
-
-
-    fileUpload.append("form");
-
+        .append("p")
+        .append("form");
+    
     fileUpload.append("label")
         .append("input")
         .attr({
@@ -251,8 +249,10 @@ var attachFileUpload = function(parentSelector, filetype, chart)
         })(file);
         read.readAsText(file);
 
-    })
-}
+    });
+};
+
+
 
 /**
  * Attach a horizontal/vertical tilt button to the parent.
